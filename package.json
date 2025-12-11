@@ -1,0 +1,30 @@
+{
+  "name": "ethical-shopping-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "services/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend & npm run start:dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run start:dev --workspace=backend",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "install:all": "npm install --workspaces",
+    "clean": "npm run clean --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@eslint/js": "^8.57.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.2",
+    "globals": "^15.12.0",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.18.2"
+  }
+}
+

@@ -1,0 +1,232 @@
+// Ethical Shopping Platform Database Schema - MongoDB
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Products collection - stores scraped product information
+model Product {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  url           String   @unique
+  title         String
+  description   String?
+  price         Float
+  originalPrice Float?
+  currency      String   @default("INR")
+  platform      String   // amazon, flipkart, etc.
+  productId     String   // platform-specific product ID
+  brand         String?
+  category      String?
+  rating        Float?
+  reviewCount   Int?
+  availability  String   @default("unknown")
+  imageUrl      String?
+  features      Json?    // JSON array of features
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations (MongoDB doesn't enforce relations, but we keep for Prisma)
+  analyses      Analysis[]
+  priceHistory  PriceHistory[]
+  
+  @@map("products")
+}
+
+// Analysis results - stores each product analysis
+model Analysis {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId        String   @db.ObjectId
+  
+  // Scores
+  dealScore        Float
+  ethicalScore     Float
+  trustScore       Float
+  
+  // Analysis results
+  decision         String   // buy_now, wait, avoid, insufficient_data
+  recommendation   String
+  confidence       Float
+  
+  // Price analysis
+  isGoodDeal       Boolean
+  savingsAmount    Float?
+  priceRank        String   // lowest, below_average, average, above_average, highest
+  marketComparison String
+  
+  // AI insights
+  honestAssessment String
+  pros             Json     // JSON array
+  cons             Json     // JSON array
+  warnings         Json     // JSON array
+  
+  // Sustainability
+  brandRating      Float
+  environmentalImpact String
+  ethicalSourcing  Float
+  
+  // Metadata
+  analysisVersion  String   @default("1.0")
+  aiModel          String?  // gemini-pro, gpt-4, etc.
+  processingTime   Int?     // milliseconds
+  
+  // Timestamps
+  createdAt        DateTime @default(now())
+  
+  // Relations (MongoDB references)
+  product          Product  @relation(fields: [productId], references: [id])
+  alternatives     Alternative[]
+  ruleEvaluations  RuleEvaluation[]
+  
+  @@map("analyses")
+}
+
+// Alternative products suggested for each analysis
+model Alternative {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  analysisId   String   @db.ObjectId
+  
+  title        String
+  url          String
+  price        Float?
+  ethicalScore Float
+  rationale    String
+  confidence   Float
+  platform     String
+  
+  createdAt    DateTime @default(now())
+  
+  // Relations
+  analysis     Analysis @relation(fields: [analysisId], references: [id])
+  
+  @@map("alternatives")
+}
+
+// Ethics rules catalog
+model EthicsRule {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  category     String   // sustainability, labor, environment, etc.
+  description  String
+  weight       Float    // 0.0 to 1.0
+  active       Boolean  @default(true)
+  
+  // Rule logic
+  criteria     Json     // JSON object defining evaluation criteria
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  evaluations  RuleEvaluation[]
+  
+  @@map("ethics_rules")
+}
+
+// Individual rule evaluations for each analysis
+model RuleEvaluation {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  analysisId   String   @db.ObjectId
+  ruleId       String   @db.ObjectId
+  
+  score        Float    // 0-100
+  contribution Float    // weighted contribution to overall ethical score
+  explanation  String
+  confidence   Float
+  
+  createdAt    DateTime @default(now())
+  
+  // Relations
+  analysis     Analysis    @relation(fields: [analysisId], references: [id])
+  rule         EthicsRule  @relation(fields: [ruleId], references: [id])
+  
+  @@map("rule_evaluations")
+}
+
+// Price history tracking
+model PriceHistory {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String   @db.ObjectId
+  
+  price     Float
+  currency  String   @default("INR")
+  source    String   // direct_scrape, api, manual
+  
+  createdAt DateTime @default(now())
+  
+  // Relations
+  product   Product  @relation(fields: [productId], references: [id])
+  
+  @@map("price_history")
+}
+
+// User consent and privacy management
+model Consent {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String?  // optional - for anonymous users
+  sessionId        String   // browser session ID
+  
+  // Consent details
+  analyticsConsent Boolean  @default(false)
+  functionalConsent Boolean @default(true)
+  marketingConsent Boolean  @default(false)
+  
+  // Legal compliance
+  consentVersion   String
+  ipAddress        String?
+  userAgent        String?
+  
+  // Timestamps
+  consentDate      DateTime @default(now())
+  withdrawnDate    DateTime?
+  
+  @@map("consents")
+}
+
+// System analytics and metrics
+model Analytics {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Analysis metrics
+  totalAnalyses     Int      @default(0)
+  successfulAnalyses Int     @default(0)
+  failedAnalyses    Int      @default(0)
+  
+  // Platform metrics
+  platformStats     Json     // { "amazon": 150, "flipkart": 75, ... }
+  avgDealScore      Float?
+  avgEthicalScore   Float?
+  
+  // Performance metrics
+  avgProcessingTime Int?     // milliseconds
+  
+  // Date for daily aggregation
+  date             DateTime
+  createdAt        DateTime @default(now())
+  
+  @@map("analytics")
+}
+
+// Cached external API responses
+model ApiCache {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  cacheKey     String
+  
+  // Cache data
+  response     Json
+  ttl          Int      // Time to live in seconds
+  
+  // Metadata
+  apiProvider  String   // gemini, openai, etc.
+  requestHash  String   // hash of request parameters
+  
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime
+  
+  @@map("api_cache")
+}

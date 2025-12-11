@@ -1,0 +1,69 @@
+===========================================
+  INSTALL EXTENSION IN EDGE - EASY STEPS
+===========================================
+
+STEP 1: Open Edge Extensions
+-----------------------------
+Edge should already be open at: edge://extensions/
+
+If not, copy this and paste in Edge address bar:
+edge://extensions/
+
+
+STEP 2: Turn ON Developer Mode
+-------------------------------
+Look at the LEFT side of the page
+Find "Developer mode" toggle
+Click it to turn it ON
+
+
+STEP 3: Load Extension
+-----------------------
+1. Click "Load unpacked" button (top of page)
+2. A file browser will open
+3. Navigate to this folder:
+   D:\Projects Base Web Dev\Final YR New Project Idea\New_Scrapping_Project\ethical-shopping-platform\browser-extension
+4. Click "Select Folder"
+
+
+STEP 4: See Your Extension
+---------------------------
+The extension will appear in the list!
+Name: "Ethical Shopping Assistant"
+
+
+STEP 5: Test It!
+-----------------
+1. Go to this Amazon product:
+   https://www.amazon.in/ZEBRONICS-Pixigo-Portable-Adjustable-Lightweight/dp/B0DPWQ5S7D
+
+2. Click the extension icon in Edge toolbar (top-right)
+   
+3. Click "Analyze This Product" button
+
+4. You should see:
+   ✅ Price: ₹7,899
+   ✅ Rating: 3.5★
+   ✅ Reviews: 141
+   ✅ Ethical Score
+   ✅ Deal Score
+
+
+TROUBLESHOOTING:
+----------------
+❌ Extension not appearing?
+   - Make sure Developer mode is ON
+   - Try refreshing Edge
+   
+❌ "Could not extract data"?
+   - Make sure you're on a product page
+   - Refresh the product page
+   
+❌ Backend error?
+   - Backend must be running on port 4000
+   - Check: http://localhost:4000/api/health
+
+
+===========================================
+        READY TO INSTALL NOW!
+===========================================

@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900 antialiased dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 dark:text-slate-50;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  direction: ltr;
+  min-height: 100vh;
+}
+
+* {
+  writing-mode: horizontal-tb;
+  direction: ltr;
+}
+
+/* Enhanced scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #475569;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+}
+
+/* Smooth focus transitions */
+*:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  transition: outline-offset 0.2s ease;
+}
+
+/* Enhanced text selection */
+::selection {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Loading shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 468px 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #2a2a2a 25%,
+      #3a3a3a 50%,
+      #2a2a2a 75%
+    );
+    background-size: 468px 100%;
+  }
+}
+
+/* Improved button interactions */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Enhanced link interactions */
+a {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+/* Smooth page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+a {
+  @apply text-brand-600 transition hover:text-brand-700;
+}
+
+.focus-ring {
+  @apply outline-none ring-2 ring-offset-2 ring-brand-500 ring-offset-white transition-shadow dark:ring-offset-slate-950;
+}
+
+.card {
+  @apply rounded-2xl border border-slate-200/60 bg-white/90 shadow-lg backdrop-blur-sm dark:border-slate-700/60 dark:bg-slate-800/90 dark:shadow-2xl;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  @apply shadow-xl dark:shadow-slate-900/50 border-slate-300/80 dark:border-slate-600/80;
+}
+
+/* Enhanced text contrast */
+.text-primary {
+  @apply text-slate-900 dark:text-slate-100;
+}
+
+.text-secondary {
+  @apply text-slate-700 dark:text-slate-300;
+}
+
+.text-muted {
+  @apply text-slate-600 dark:text-slate-400;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+  @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600;
+}
+
+.btn-secondary {
+  @apply bg-white/80 hover:bg-white text-slate-900 border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-slate-100 dark:border-slate-600 dark:hover:border-slate-500;
+}
+
+/* Enhanced form inputs */
+input, textarea, select {
+  @apply bg-white/90 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400;
+}
+
+input:focus, textarea:focus, select:focus {
+  @apply border-blue-500 dark:border-blue-400 ring-2 ring-blue-500/20 dark:ring-blue-400/20;
+}
