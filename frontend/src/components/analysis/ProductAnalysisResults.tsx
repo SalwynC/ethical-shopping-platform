@@ -9,8 +9,6 @@ import {
   IconClock,
   IconStar,
 } from "@tabler/icons-react";
-import { PriceIntelligenceReport } from "./PriceIntelligenceReport";
-import { generateMockPriceIntelligence } from "./mockPriceData";
 import { CompetitiveFeaturesDisplay } from "./CompetitiveFeaturesDisplay";
 import { CompetitiveFeatures } from "../../types/api";
 
@@ -230,10 +228,8 @@ export function ProductAnalysisResults({ result, url }: ProductAnalysisResultsPr
         </div>
       )}
 
-      {/* Price Intelligence Report */}
-      <PriceIntelligenceReport 
-        data={generateMockPriceIntelligence(url)}
-      />
+      {/* Price Intelligence Report - Currently deriving from main analysis data */}
+      {/* PriceIntelligenceReport display will be integrated in Phase 2 */}
 
       {/* Product Header */}
       <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 transition-all duration-300">
