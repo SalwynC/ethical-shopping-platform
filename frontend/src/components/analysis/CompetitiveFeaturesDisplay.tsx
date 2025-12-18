@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-dom-props */
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CompetitiveFeatures } from '../../types/api';

@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-dom-props */
 'use client';
 
 import { motion } from 'framer-motion';

@@ -34,9 +34,9 @@ declare namespace __next_route_internal_types__ {
     | `/reports`
     | `/api/analyze`
     | `/api/track-analysis`
-    | `/analysis`
-    | `/privacy`
     | `/api/system-status`
+    | `/privacy`
+    | `/analysis`
     | `/track-analysis`
     | `/`
   type DynamicRoutes<T extends string = string> = never
