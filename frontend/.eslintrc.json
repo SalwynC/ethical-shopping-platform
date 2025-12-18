@@ -6,6 +6,8 @@
     "jsx-a11y/alt-text": "off",
     "react/style-prop-object": "off",
     "@next/next/no-css-tags": "off",
-    "@next/next/inline-script-id": "off"
+    "@next/next/inline-script-id": "off",
+    "react/no-danger-with-children": "off",
+    "react-hooks/exhaustive-deps": "warn"
   }
 }

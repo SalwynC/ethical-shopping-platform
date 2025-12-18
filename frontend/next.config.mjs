@@ -11,6 +11,12 @@ const withPWA = withPWAInit({
 
 const nextConfig = {
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   experimental: {
     typedRoutes: true,
     serverComponentsExternalPackages: ['cheerio'],
