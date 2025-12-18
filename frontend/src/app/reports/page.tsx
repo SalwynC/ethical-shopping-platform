@@ -236,55 +236,57 @@ export default function ReportsPage() {
         }
         
         // Handle comprehensive analysis for new URLs
-        const urlParam = searchParams.get('url');
-        if (urlParam) {
-          try {
-            // Perform comprehensive analysis
-            const comprehensiveResponse = await fetch('/api/comprehensive-analysis', {
-              method: 'POST',
-              headers: { 
-                'Content-Type': 'application/json',
-                'X-Session-Id': `comprehensive_${Date.now()}`
-              },
-              body: JSON.stringify({
-                action: 'comprehensive_analysis',
-                productData: {
-                  url: urlParam,
-                  title: `Advanced Analysis: ${new URL(urlParam).hostname}`,
-                  category: 'electronics'
+        if (searchParams) {
+          const urlParam = searchParams.get('url');
+          if (urlParam) {
+            try {
+              // Perform comprehensive analysis
+              const comprehensiveResponse = await fetch('/api/comprehensive-analysis', {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                  'X-Session-Id': `comprehensive_${Date.now()}`
                 },
-                analysisResults: {
-                  ethicalScore: Math.floor(Math.random() * 40) + 60
-                }
-              })
-            });
+                body: JSON.stringify({
+                  action: 'comprehensive_analysis',
+                  productData: {
+                    url: urlParam,
+                    title: `Advanced Analysis: ${new URL(urlParam).hostname}`,
+                    category: 'electronics'
+                  },
+                  analysisResults: {
+                    ethicalScore: Math.floor(Math.random() * 40) + 60
+                  }
+                })
+              });
 
-            if (comprehensiveResponse.ok) {
-              const comprehensiveData = await comprehensiveResponse.json();
-              const analysis = comprehensiveData.analysis;
-              
-              const newAnalysis: ProductAnalysis = {
-                id: `comprehensive_${Date.now()}`,
-                url: urlParam,
-                title: analysis.productData.title,
-                category: analysis.productData.category,
-                ethicalScore: analysis.ethicalAssessment.overallScore,
-                priceScore: Math.floor(Math.random() * 30) + 70,
-                reviewTrust: Math.floor(Math.random() * 25) + 75,
-                environmentalImpact: analysis.ethicalAssessment.environmentalImpact.sustainabilityRating,
-                laborPractices: analysis.ethicalAssessment.laborPractices.workingConditions,
-                alternatives: analysis.alternativesRecommendations.length,
-                analyzedAt: analysis.timeBasedAnalytics.analysisTimestamp,
-                source: 'comprehensive_analysis',
-                domain: new URL(urlParam).hostname,
-                analysisTime: analysis.timeBasedAnalytics.processingTime
-              };
-              
-              realAnalyses = [newAnalysis, ...realAnalyses];
-              console.log('🚀 COMPREHENSIVE ANALYSIS COMPLETE:', analysis);
+              if (comprehensiveResponse.ok) {
+                const comprehensiveData = await comprehensiveResponse.json();
+                const analysis = comprehensiveData.analysis;
+                
+                const newAnalysis: ProductAnalysis = {
+                  id: `comprehensive_${Date.now()}`,
+                  url: urlParam,
+                  title: analysis.productData.title,
+                  category: analysis.productData.category,
+                  ethicalScore: analysis.ethicalAssessment.overallScore,
+                  priceScore: Math.floor(Math.random() * 30) + 70,
+                  reviewTrust: Math.floor(Math.random() * 25) + 75,
+                  environmentalImpact: analysis.ethicalAssessment.environmentalImpact.sustainabilityRating,
+                  laborPractices: analysis.ethicalAssessment.laborPractices.workingConditions,
+                  alternatives: analysis.alternativesRecommendations.length,
+                  analyzedAt: analysis.timeBasedAnalytics.analysisTimestamp,
+                  source: 'comprehensive_analysis',
+                  domain: new URL(urlParam).hostname,
+                  analysisTime: analysis.timeBasedAnalytics.processingTime
+                };
+                
+                realAnalyses = [newAnalysis, ...realAnalyses];
+                console.log('🚀 COMPREHENSIVE ANALYSIS COMPLETE:', analysis);
+              }
+            } catch (urlError) {
+              console.error('Error in comprehensive analysis:', urlError);
             }
-          } catch (urlError) {
-            console.error('Error in comprehensive analysis:', urlError);
           }
         }
         
@@ -715,6 +717,7 @@ export default function ReportsPage() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
+                aria-label="Filter by category"
                 className="appearance-none px-4 py-2 pr-8 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white min-w-[150px]"
               >
                 {categories.map(category => (
@@ -731,6 +734,7 @@ export default function ReportsPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
+                aria-label="Sort analyses by"
                 className="appearance-none px-4 py-2 pr-8 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white min-w-[150px]"
               >
                 <option value="recent">Most Recent</option>
@@ -814,7 +818,10 @@ export default function ReportsPage() {
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreBg(analysis.ethicalScore)} ${getScoreColor(analysis.ethicalScore)}`}>
                         {analysis.ethicalScore}/100
                       </span>
-                      <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                      <button 
+                        aria-label="View product details"
+                        className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      >
                         <IconExternalLink size={16} />
                       </button>
                     </div>

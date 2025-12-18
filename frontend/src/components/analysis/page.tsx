@@ -53,7 +53,7 @@ const calcOverall = (steps: AnalysisStep[]) => {
 
 export default function AnalysisPage() {
   const searchParams = useSearchParams();
-  const productUrl = searchParams.get("url") || "";
+  const productUrl = searchParams ? searchParams.get("url") || "" : "";
 
   const [steps, setSteps] = useState<AnalysisStep[]>(INITIAL_STEPS);
   const [overall, setOverall] = useState(0);

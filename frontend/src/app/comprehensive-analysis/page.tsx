@@ -70,12 +70,14 @@ export default function ComprehensiveAnalysisPage() {
   ];
 
   useEffect(() => {
-    const url = searchParams.get("url");
-    if (url) {
-      setProductUrl(decodeURIComponent(url));
-      setSteps(analysisSteps);
-    } else {
-      window.location.href = "/";
+    if (searchParams) {
+      const url = searchParams.get("url");
+      if (url) {
+        setProductUrl(decodeURIComponent(url));
+        setSteps(analysisSteps);
+      } else {
+        window.location.href = "/";
+      }
     }
   }, [searchParams]);
 

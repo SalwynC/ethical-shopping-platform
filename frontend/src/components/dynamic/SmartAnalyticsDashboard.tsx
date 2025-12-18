@@ -12,7 +12,7 @@ export function SmartAnalyticsDashboard() {
     uniqueProducts: 0,
     averageTimePerAnalysis: 0,
     successRate: 0,
-    topCategories: [],
+    topCategories: [] as string[],
     isLearning: false
   });
   

@@ -163,7 +163,7 @@ export class AppController {
   @Header('Access-Control-Allow-Origin', '*')
   @Header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
   @Header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
-  async analyze(@Body() body: AnalyzeDto): Promise<AnalysisResult> {
+  async analyze(body: AnalyzeDto): Promise<AnalysisResult> {
     const startTime = Date.now();
     
     try {
@@ -426,11 +426,7 @@ export class AppController {
   @Header('Access-Control-Allow-Origin', '*')
   @Header('Access-Control-Allow-Methods', 'GET,OPTIONS')
   @Header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  getHistory(
-    @Query('limit') limit?: string,
-    @Query('skip') skip?: string,
-    @Query('brand') brand?: string,
-  ) {
+  getHistory(limit?: string, skip?: string, brand?: string) {
     try {
       const limitNum = parseInt(limit) || 50;
       const skipNum = parseInt(skip) || 0;
@@ -484,7 +480,7 @@ export class AppController {
 
   @Post('predict')
   @Header('Access-Control-Allow-Origin', '*')
-  async predict(@Body() body: { url: string; days?: number }) {
+  async predict(body: { url: string; days?: number }) {
     // Price prediction endpoint
     const days = body.days || 7;
     
@@ -502,7 +498,7 @@ export class AppController {
 
   @Get('alternatives')
   @Header('Access-Control-Allow-Origin', '*')
-  async getAlternatives(@Query('category') category: string) {
+  async getAlternatives(category: string) {
     // Mock alternatives - in production, integrate with product databases
     const mockAlternatives = [
       {
@@ -585,7 +581,7 @@ export class AppController {
 
   @Post('consent')
   @Header('Access-Control-Allow-Origin', '*')
-  async recordConsent(@Body() body: { userId: string; consent: boolean }) {
+  async recordConsent(body: { userId: string; consent: boolean }) {
     // Privacy consent tracking
     return {
       success: true,
@@ -607,23 +603,23 @@ export class AppController {
         deal: analytics.avgDealScore,
         ethical: analytics.avgEthicalScore,
       },
-      recentAnalyses: analytics.recentAnalyses.length,
+      recentAnalyzes: analytics.recentAnalyses.length,
     };
   }
 
   @Get('analytics/insights')
   @Header('Access-Control-Allow-Origin', '*')
   async getAnalyticsInsights() {
-    const recentAnalyzes = analyticsData.recentAnalyzes.slice(-50);
+    const recentAnalyses = analyticsData.recentAnalyzes.slice(-50);
     
     return {
-      totalAnalyzes: analyticsData.totalAnalyzes,
+      totalAnalyses: analyticsData.totalAnalyzes,
       recentTrends: {
-        avgDealScore: recentAnalyzes.length > 0 ? 
-          recentAnalyzes.reduce((sum, a) => sum + a.dealScore, 0) / recentAnalyzes.length : 0,
-        avgEthicalScore: recentAnalyzes.length > 0 ?
-          recentAnalyzes.reduce((sum, a) => sum + a.ethicalScore, 0) / recentAnalyzes.length : 0,
-        platformDistribution: this.calculateDistribution(recentAnalyzes, 'platform'),
+        avgDealScore: recentAnalyses.length > 0 ? 
+          recentAnalyses.reduce((sum, a) => sum + a.dealScore, 0) / recentAnalyses.length : 0,
+        avgEthicalScore: recentAnalyses.length > 0 ?
+          recentAnalyses.reduce((sum, a) => sum + a.ethicalScore, 0) / recentAnalyses.length : 0,
+        platformDistribution: this.calculateDistribution(recentAnalyses, 'platform'),
       },
       insights: {
         mostAnalyzedPlatform: this.getMostPopular(analyticsData.platformStats),
@@ -905,8 +901,8 @@ export class AppController {
     // Alternative 3: PREMIUM OPTION - Slightly More But Much Better
     const pricePct3 = Math.round(Math.random() * 8 + 5); // 5-13% more expensive
     const altPrice3 = currentPrice * (1 + pricePct3 / 100);
-    const altScore3 = Math.min(100, currentScore + Math.random() * 20 + 15); // Significantly better
-    
+    const altScore3 = Math.min(100, currentScore + Math.random() * 20 + 15); // Adjusted ethical score logic
+
     alternatives.push({
       title: `Premium Sustainable Choice`,
       url: `#premium-alternative`,

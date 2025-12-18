@@ -214,8 +214,14 @@ function getSmartAnalytics(): SmartAnalytics {
         successRate: 0,
         favoriteCategory: 'None',
         isLearningActive: false
-      })
-    } as SmartAnalytics;
+      }),
+      initializeSession: () => {},
+      loadDailyStats: () => {},
+      updateLearningData: () => {},
+      saveDailyStats: () => {},
+      resetDailyStats: () => {},
+      generateSessionId: () => "mock_session_id"
+    } as unknown as SmartAnalytics;
   }
   
   if (!smartAnalytics) {
@@ -255,7 +261,7 @@ export async function recordProductAnalysis(productData: {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Session-Id': smartAnalytics.getSessionInsights().sessionDuration.toString()
+        'X-Session-Id': smartAnalytics ? smartAnalytics.getSessionInsights().sessionDuration.toString() : "0"
       },
       body: JSON.stringify({
         action: 'track_analysis',

@@ -8,9 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 var AppController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
@@ -418,19 +415,19 @@ let AppController = AppController_1 = class AppController {
                 deal: analytics.avgDealScore,
                 ethical: analytics.avgEthicalScore,
             },
-            recentAnalyses: analytics.recentAnalyses.length,
+            recentAnalyzes: analytics.recentAnalyses.length,
         };
     }
     async getAnalyticsInsights() {
-        const recentAnalyzes = analyticsData.recentAnalyzes.slice(-50);
+        const recentAnalyses = analyticsData.recentAnalyzes.slice(-50);
         return {
-            totalAnalyzes: analyticsData.totalAnalyzes,
+            totalAnalyses: analyticsData.totalAnalyzes,
             recentTrends: {
-                avgDealScore: recentAnalyzes.length > 0 ?
-                    recentAnalyzes.reduce((sum, a) => sum + a.dealScore, 0) / recentAnalyzes.length : 0,
-                avgEthicalScore: recentAnalyzes.length > 0 ?
-                    recentAnalyzes.reduce((sum, a) => sum + a.ethicalScore, 0) / recentAnalyzes.length : 0,
-                platformDistribution: this.calculateDistribution(recentAnalyzes, 'platform'),
+                avgDealScore: recentAnalyses.length > 0 ?
+                    recentAnalyses.reduce((sum, a) => sum + a.dealScore, 0) / recentAnalyses.length : 0,
+                avgEthicalScore: recentAnalyses.length > 0 ?
+                    recentAnalyses.reduce((sum, a) => sum + a.ethicalScore, 0) / recentAnalyses.length : 0,
+                platformDistribution: this.calculateDistribution(recentAnalyses, 'platform'),
             },
             insights: {
                 mostAnalyzedPlatform: this.getMostPopular(analyticsData.platformStats),
@@ -789,7 +786,6 @@ __decorate([
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
     (0, common_1.Header)('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS'),
     (0, common_1.Header)('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With'),
-    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [AnalyzeDto]),
     __metadata("design:returntype", Promise)
@@ -799,9 +795,6 @@ __decorate([
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
     (0, common_1.Header)('Access-Control-Allow-Methods', 'GET,OPTIONS'),
     (0, common_1.Header)('Access-Control-Allow-Headers', 'Content-Type, Authorization'),
-    __param(0, (0, common_1.Query)('limit')),
-    __param(1, (0, common_1.Query)('skip')),
-    __param(2, (0, common_1.Query)('brand')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
@@ -816,7 +809,6 @@ __decorate([
 __decorate([
     (0, common_1.Post)('predict'),
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
-    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
@@ -824,7 +816,6 @@ __decorate([
 __decorate([
     (0, common_1.Get)('alternatives'),
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
-    __param(0, (0, common_1.Query)('category')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -846,7 +837,6 @@ __decorate([
 __decorate([
     (0, common_1.Post)('consent'),
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
-    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

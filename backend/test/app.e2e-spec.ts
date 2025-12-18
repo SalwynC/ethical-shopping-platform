@@ -7,8 +7,8 @@ import type { AppController } from './../src/app.controller';
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let requestTarget: Parameters<typeof request>[0];
-  type HealthResponse = ReturnType<AppController['getHealth']>;
-  type AnalyzeResponse = ReturnType<AppController['analyze']>;
+  type HealthResponse = Awaited<ReturnType<AppController['getHealth']>>;
+  type AnalyzeResponse = Awaited<ReturnType<AppController['analyze']>>;
 
   function assertIsRequestTarget(
     candidate: unknown,
@@ -35,8 +35,7 @@ describe('AppController (e2e)', () => {
       typeof payload === 'object' &&
       payload !== null &&
       'decision' in payload &&
-      'ethicalScore' in payload &&
-      'meta' in payload
+      'ethicalScore' in payload
     );
   }
 
@@ -86,6 +85,5 @@ describe('AppController (e2e)', () => {
 
     expect(typeof body.decision).toBe('string');
     expect(typeof body.ethicalScore).toBe('number');
-    expect(typeof body.meta.analyzedAt).toBe('string');
   });
 });

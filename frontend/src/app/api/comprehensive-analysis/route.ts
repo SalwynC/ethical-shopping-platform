@@ -470,14 +470,14 @@ function generateRecommendations(): string[] {
 }
 
 function generatePriceHistory(): Array<{ date: string; price: number; source: string }> {
-  const history = [];
+  const history: Array<{ date: string; price: number; source: string }> = [];
   for (let i = 30; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
     history.push({
       date: date.toISOString(),
       price: Math.floor(Math.random() * 50) + 50,
-      source: Math.random() > 0.5 ? 'retailer' : 'third_party'
+      source: Math.random() > 0.5 ? 'retailer' : 'third_party',
     });
   }
   return history;

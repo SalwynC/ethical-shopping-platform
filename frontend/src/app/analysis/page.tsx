@@ -58,13 +58,15 @@ export default function AnalysisPage() {
 
   // Read URL query param on component mount
   useEffect(() => {
-    const url = searchParams.get("url");
-    if (url) {
-      setProductUrl(decodeURIComponent(url));
-      setSteps(initialSteps);
-    } else {
-      // Redirect to home if no URL provided
-      window.location.href = "/";
+    if (searchParams) {
+      const url = searchParams.get("url");
+      if (url) {
+        setProductUrl(decodeURIComponent(url));
+        setSteps(initialSteps);
+      } else {
+        // Redirect to home if no URL provided
+        window.location.href = "/";
+      }
     }
   }, [searchParams]);
 
