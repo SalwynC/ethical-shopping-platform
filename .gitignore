@@ -47,6 +47,8 @@ frontend/.env.*
 *.tsbuildinfo
 next-env.d.ts
 
-# documentation (keep local only)
+# documentation (keep local only - not tracked in git)
+docs/
+/docs/
 /docs/
 docs/
