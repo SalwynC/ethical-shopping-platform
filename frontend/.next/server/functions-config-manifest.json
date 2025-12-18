@@ -1,1 +1,1 @@
-{"version":1,"functions":{"/api/analyze":{"maxDuration":300},"/api/system-status":{},"/api/track-analysis":{},"/analysis":{},"/comprehensive-analysis":{},"/integrated-dashboard":{},"/":{},"/privacy":{},"/reports":{},"/track-analysis":{}}}
+{"version":1,"functions":{"/api/analyze":{"maxDuration":300},"/api/system-status":{},"/comprehensive-analysis":{},"/integrated-dashboard":{},"/reports":{},"/privacy":{},"/":{},"/analysis":{},"/track-analysis":{},"/api/track-analysis":{}}}

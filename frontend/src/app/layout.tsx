@@ -3,6 +3,8 @@ import { Inter, Fira_Code } from "next/font/google";
 
 import "./globals.css";
 import { Providers } from "./providers";
+import { NavigationBar } from "../components/layout/NavigationBar";
+import { BackToTop } from "../components/common/BackToTop";
 
 // Force dynamic rendering for the entire app
 // Note: This applies to server components, client components are already dynamic
@@ -83,7 +85,11 @@ export default function RootLayout({
         className={`${inter.variable} ${firaCode.variable} bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-950 dark:to-indigo-950/30 text-slate-900 dark:text-slate-50 transition-all duration-500 min-h-screen`}
         suppressHydrationWarning
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <NavigationBar />
+          {children}
+          <BackToTop />
+        </Providers>
       </body>
     </html>
   );

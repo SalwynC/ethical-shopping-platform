@@ -33,13 +33,13 @@ declare namespace __next_route_internal_types__ {
     | `/api/analyze`
     | `/analysis`
     | `/api/system-status`
-    | `/privacy`
-    | `/comprehensive-analysis`
+    | `/integrated-dashboard`
     | `/api/track-analysis`
     | `/reports`
-    | `/track-analysis`
+    | `/privacy`
+    | `/comprehensive-analysis`
     | `/`
-    | `/integrated-dashboard`
+    | `/track-analysis`
   type DynamicRoutes<T extends string = string> = never
 
   type RouteImpl<T> = 

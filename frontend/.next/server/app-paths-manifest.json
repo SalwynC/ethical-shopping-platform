@@ -5,11 +5,11 @@
   "/api/analyze/route": "app/api/analyze/route.js",
   "/analysis/page": "app/analysis/page.js",
   "/api/system-status/route": "app/api/system-status/route.js",
-  "/privacy/page": "app/privacy/page.js",
-  "/comprehensive-analysis/page": "app/comprehensive-analysis/page.js",
+  "/integrated-dashboard/page": "app/integrated-dashboard/page.js",
   "/api/track-analysis/route": "app/api/track-analysis/route.js",
   "/reports/page": "app/reports/page.js",
-  "/track-analysis/page": "app/track-analysis/page.js",
+  "/privacy/page": "app/privacy/page.js",
+  "/comprehensive-analysis/page": "app/comprehensive-analysis/page.js",
   "/page": "app/page.js",
-  "/integrated-dashboard/page": "app/integrated-dashboard/page.js"
+  "/track-analysis/page": "app/track-analysis/page.js"
 }
