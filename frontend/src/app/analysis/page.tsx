@@ -185,12 +185,13 @@ export default function AnalysisPage() {
                   <div className="text-sm text-gray-500">{overallProgress}% Complete</div>
                 </div>
                 
-                <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
-                  {/* eslint-disable-next-line react/forbid-dom-props */}
-                  <div 
-                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${overallProgress}%` }}
-                  ></div>
+                <div className="w-full bg-gray-200 rounded-full h-2 mb-6 overflow-hidden">
+                  <motion.div 
+                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 h-2 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${overallProgress}%` }}
+                    transition={{ duration: 0.5 }}
+                  ></motion.div>
                 </div>
                 
                 <div className="space-y-4">
