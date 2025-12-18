@@ -123,6 +123,7 @@ export default function AnalysisPage() {
       className="min-h-screen relative bg-gradient-to-br from-indigo-500 to-purple-600"
     >
       {/* subtle background */}
+      {/* eslint-disable-next-line react/forbid-dom-props */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{

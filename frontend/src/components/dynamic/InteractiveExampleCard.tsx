@@ -141,6 +141,7 @@ export function InteractiveExampleCard({ product, isSelected, onSelect, isAnalyz
             }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
+            {/* eslint-disable-next-line react/forbid-dom-props */}
             <h3 
               className={`font-bold text-xl leading-tight transition-all duration-300 ${
                 isSelected 
@@ -157,6 +158,7 @@ export function InteractiveExampleCard({ product, isSelected, onSelect, isAnalyz
           
           {/* Status Badge */}
           <div className="flex items-center gap-2">
+            {/* eslint-disable-next-line react/forbid-dom-props */}
             <span 
               className="px-3 py-1 text-xs font-semibold rounded-full border-2"
               style={{
@@ -217,6 +219,7 @@ export function InteractiveExampleCard({ product, isSelected, onSelect, isAnalyz
                   rotate: { duration: 0.6, ease: "easeInOut" }
                 }}
               >
+                {/* eslint-disable-next-line react/forbid-dom-props */}
                 <span 
                   className="px-4 py-2 text-sm rounded-xl font-bold shadow-md border-2 transition-all duration-300 text-gray-800 dark:text-gray-200 bg-white dark:bg-slate-700 hover:shadow-lg"
                   style={{ borderColor: `${product.color}60` }}
@@ -318,6 +321,7 @@ export function InteractiveExampleCard({ product, isSelected, onSelect, isAnalyz
             transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
             className="relative"
           >
+            {/* eslint-disable-next-line react/forbid-dom-props */}
             <div 
               className="p-4 rounded-2xl border-2 shadow-lg backdrop-blur-sm"
               style={{

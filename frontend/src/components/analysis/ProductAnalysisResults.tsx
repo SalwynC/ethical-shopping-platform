@@ -288,6 +288,7 @@ export function ProductAnalysisResults({ result, url }: ProductAnalysisResultsPr
               {result.dealScore}/100
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+              {/* eslint-disable-next-line react/forbid-dom-props */}
               <div 
                 className={`h-3 rounded-full transition-all duration-300 ${getProgressColorClass(result.dealScore)}`}
                 style={{ width: `${result.dealScore || 0}%` }}
@@ -305,6 +306,7 @@ export function ProductAnalysisResults({ result, url }: ProductAnalysisResultsPr
               {result.ethicalScore}/100
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+              {/* eslint-disable-next-line react/forbid-dom-props */}
               <div 
                 className={`h-3 rounded-full transition-all duration-300 ${getProgressColorClass(result.ethicalScore)}`}
                 style={{ width: `${result.ethicalScore || 0}%` }}
@@ -322,6 +324,7 @@ export function ProductAnalysisResults({ result, url }: ProductAnalysisResultsPr
               {result.trustScore?.dataReliability || 95}/100
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+              {/* eslint-disable-next-line react/forbid-dom-props */}
               <div 
                 className="h-3 rounded-full bg-blue-500 transition-all duration-300"
                 style={{ width: `${result.trustScore?.dataReliability || 95}%` }}
@@ -339,6 +342,7 @@ export function ProductAnalysisResults({ result, url }: ProductAnalysisResultsPr
               {Math.round(((result.dealScore || 95) + (result.ethicalScore || 65)) / 2)}/100
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+              {/* eslint-disable-next-line react/forbid-dom-props */}
               <div 
                 className="h-3 rounded-full bg-blue-500 transition-all duration-300"
                 style={{ width: `${Math.round(((result.dealScore || 95) + (result.ethicalScore || 65)) / 2)}%` }}
@@ -391,6 +395,7 @@ export function ProductAnalysisResults({ result, url }: ProductAnalysisResultsPr
                       </span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      {/* eslint-disable-next-line react/forbid-dom-props */}
                       <div 
                         className={`h-2 rounded-full transition-all duration-300 ${getProgressColorClass(variant.ethicalScore)}`}
                         style={{ width: `${variant.ethicalScore}%` }}

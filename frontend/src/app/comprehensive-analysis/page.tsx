@@ -268,6 +268,7 @@ export default function ComprehensiveAnalysisPage() {
                 </div>
                 
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                  {/* eslint-disable-next-line react/forbid-dom-props */}
                   <div 
                     className="bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 h-3 rounded-full transition-all duration-500"
                     style={{ width: `${overallProgress}%` }}
@@ -304,6 +305,7 @@ export default function ComprehensiveAnalysisPage() {
                         <p className="text-sm text-gray-600 dark:text-gray-300">{step.message}</p>
                         {step.status === 'in-progress' && step.progress !== undefined && (
                           <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mt-2">
+                            {/* eslint-disable-next-line react/forbid-dom-props */}
                             <div 
                               className="bg-blue-500 h-1.5 rounded-full transition-all duration-200"
                               style={{ width: `${step.progress}%` }}

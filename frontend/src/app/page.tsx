@@ -478,6 +478,7 @@ export default function HomePage() {
           {/* Floating Particles */}
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(20)].map((_, i) => (
+              // eslint-disable-next-line react/forbid-dom-props
               <div
                 key={i}
                 className="absolute w-1 h-1 bg-emerald-400/30 rounded-full animate-ping"

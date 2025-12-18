@@ -17,7 +17,9 @@ const ScoreRing: React.FC<ScoreRingProps> = ({ score, size = 'medium', label, co
     color === 'red' ? 'text-red-600' :
     'text-blue-600';
   return (
+    // eslint-disable-next-line react/forbid-dom-props
     <div className="flex flex-col items-center" style={{ width: dim }}>
+      {/* eslint-disable-next-line react/forbid-dom-props */}
       <div className={`rounded-full flex items-center justify-center ${colorClass} font-semibold text-center`} style={{ height: dim, width: dim }}>
         {Math.round(score)}
         <span className="text-xs ml-1">%</span>
@@ -235,6 +237,7 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
+              {/* eslint-disable-next-line react/forbid-dom-props */}
               <div 
                 className="bg-gradient-to-r from-green-400 to-red-400 h-2 rounded-full transition-all"
                 style={{ width: `${features.supplyChainTransparency.riskScore}%` }}

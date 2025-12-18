@@ -185,6 +185,7 @@ export default function AnalysisPage() {
                 </div>
                 
                 <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+                  {/* eslint-disable-next-line react/forbid-dom-props */}
                   <div 
                     className="bg-gradient-to-r from-emerald-500 to-cyan-500 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${overallProgress}%` }}
