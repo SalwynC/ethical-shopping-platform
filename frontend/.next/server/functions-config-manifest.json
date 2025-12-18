@@ -1,1 +1,1 @@
-{"version":1,"functions":{"/api/analyze":{},"/api/system-status":{},"/api/track-analysis":{},"/analysis":{},"/":{},"/privacy":{},"/track-analysis":{}}}
+{"version":1,"functions":{"/api/system-status":{},"/api/track-analysis":{},"/api/analyze":{"maxDuration":300},"/analysis":{},"/comprehensive-analysis":{},"/":{},"/privacy":{},"/reports":{},"/track-analysis":{}}}

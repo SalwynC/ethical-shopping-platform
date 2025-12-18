@@ -3,8 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 // Force dynamic API with real-time processing
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
+export const maxDuration = 300;
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+// Get backend URL from environment or use fallback
+function getBackendUrl() {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 
+                     process.env.BACKEND_URL || 
+                     'https://ethical-shopping-platform-backend.vercel.app';
+  return backendUrl.replace(/\/$/, ''); // Remove trailing slash
+}
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -16,15 +23,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'URL is required' }, { status: 400 });
     }
 
-    console.log(` Forwarding analysis request to backend: ${url}`);
+    const backendUrl = getBackendUrl();
+    console.log(`🔄 Forwarding analysis request to backend: ${backendUrl}/api/analyze for URL: ${url}`);
 
-    // Call the real backend on port 4000
-    const backendResponse = await fetch(`${BACKEND_URL}/api/analyze`, {
+    // Call the real backend
+    const backendResponse = await fetch(`${backendUrl}/api/analyze`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ url }),
+      // Add timeout
+      signal: AbortSignal.timeout(290000), // 290 seconds
     });
 
     if (!backendResponse.ok) {
