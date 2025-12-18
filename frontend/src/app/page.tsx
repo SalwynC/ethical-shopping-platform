@@ -479,14 +479,13 @@ export default function HomePage() {
           {/* Floating Particles */}
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(20)].map((_, i) => (
-              // eslint-disable-next-line react/forbid-dom-props
               <div
                 key={i}
                 className="absolute w-1 h-1 bg-emerald-400/30 rounded-full animate-ping"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
+                  '--left': `${Math.random() * 100}%`,
+                  '--top': `${Math.random() * 100}%`,
+                } as React.CSSProperties}
               />
             ))}
           </div>
@@ -643,9 +642,6 @@ export default function HomePage() {
                                 ? 'border-emerald-300 bg-emerald-50/30 dark:bg-emerald-900/20 focus:border-emerald-500' 
                                 : 'border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500'
                           }`}
-                          style={{
-                            textOverflow: 'ellipsis'
-                          }}
                           animate={{
                             boxShadow: isTyping 
                               ? '0 0 20px rgba(16, 185, 129, 0.3)'

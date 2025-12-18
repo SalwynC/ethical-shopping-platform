@@ -271,7 +271,7 @@ export default function ComprehensiveAnalysisPage() {
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                   <div 
                     className="bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 h-3 rounded-full transition-all duration-500"
-                    style={{ width: `${overallProgress}%` }}
+                    style={{ width: `${overallProgress}%` } as React.CSSProperties}
                   ></div>
                 </div>
                 
@@ -307,7 +307,7 @@ export default function ComprehensiveAnalysisPage() {
                           <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mt-2 overflow-hidden">
                             <div 
                               className="bg-blue-500 h-1.5 rounded-full transition-all duration-200"
-                              style={{ width: `${step.progress}%` }}
+                              style={{ width: `${step.progress}%` } as React.CSSProperties}
                             ></div>
                           </div>
                         )}
