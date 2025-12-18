@@ -23,9 +23,15 @@ let AIService = AIService_1 = class AIService {
     constructor() {
         this.logger = new common_1.Logger(AIService_1.name);
         const geminiKey = process.env.GOOGLE_AI_API_KEY;
-        this.hasValidGeminiKey = geminiKey && geminiKey !== 'your_free_gemini_api_key_here' && geminiKey.length > 20;
+        this.hasValidGeminiKey =
+            geminiKey &&
+                geminiKey !== 'your_free_gemini_api_key_here' &&
+                geminiKey.length > 20;
         const openaiKey = process.env.OPENAI_API_KEY;
-        this.hasValidOpenAIKey = openaiKey && openaiKey !== 'your_openai_api_key_here' && openaiKey.length > 20;
+        this.hasValidOpenAIKey =
+            openaiKey &&
+                openaiKey !== 'your_openai_api_key_here' &&
+                openaiKey.length > 20;
         if (this.hasValidGeminiKey) {
             this.genAI = new generative_ai_1.GoogleGenerativeAI(geminiKey);
             this.logger.log('✅ Google Gemini AI initialized successfully');
@@ -292,14 +298,14 @@ Respond with ONLY valid JSON, no additional text.`;
     }
     getPlatformContext(platform) {
         const contexts = {
-            'Amazon': '(Global marketplace with extensive seller network)',
-            'Flipkart': '(India\'s leading e-commerce platform)',
-            'Myntra': '(Fashion and lifestyle platform)',
-            'Ajio': '(Reliance fashion platform)',
-            'eBay': '(Auction and marketplace platform)',
-            'Walmart': '(Retail giant with online presence)',
-            'Target': '(US retail chain)',
-            'Alibaba': '(B2B global trade platform)',
+            Amazon: '(Global marketplace with extensive seller network)',
+            Flipkart: "(India's leading e-commerce platform)",
+            Myntra: '(Fashion and lifestyle platform)',
+            Ajio: '(Reliance fashion platform)',
+            eBay: '(Auction and marketplace platform)',
+            Walmart: '(Retail giant with online presence)',
+            Target: '(US retail chain)',
+            Alibaba: '(B2B global trade platform)',
         };
         return contexts[platform] || '(Online marketplace)';
     }
@@ -311,19 +317,26 @@ Respond with ONLY valid JSON, no additional text.`;
             priceAnalysis: {
                 marketPosition: ((_a = aiResponse.priceAnalysis) === null || _a === void 0 ? void 0 : _a.marketPosition) || 'average',
                 priceHistory: ((_b = aiResponse.priceAnalysis) === null || _b === void 0 ? void 0 : _b.priceHistory) || 'stable',
-                recommendation: ((_c = aiResponse.priceAnalysis) === null || _c === void 0 ? void 0 : _c.recommendation) || 'Monitor price trends before purchasing',
+                recommendation: ((_c = aiResponse.priceAnalysis) === null || _c === void 0 ? void 0 : _c.recommendation) ||
+                    'Monitor price trends before purchasing',
                 confidence: Math.max(0, Math.min(100, ((_d = aiResponse.priceAnalysis) === null || _d === void 0 ? void 0 : _d.confidence) || 70)),
             },
             insights: {
-                keyStrengths: ((_e = aiResponse.insights) === null || _e === void 0 ? void 0 : _e.keyStrengths) || ['Product available for analysis'],
+                keyStrengths: ((_e = aiResponse.insights) === null || _e === void 0 ? void 0 : _e.keyStrengths) || [
+                    'Product available for analysis',
+                ],
                 concerns: ((_f = aiResponse.insights) === null || _f === void 0 ? void 0 : _f.concerns) || ['Limited data available'],
                 bestTime: ((_g = aiResponse.insights) === null || _g === void 0 ? void 0 : _g.bestTime) || 'When you need the product',
-                recommendation: ((_h = aiResponse.insights) === null || _h === void 0 ? void 0 : _h.recommendation) || 'Consider your specific needs and budget',
+                recommendation: ((_h = aiResponse.insights) === null || _h === void 0 ? void 0 : _h.recommendation) ||
+                    'Consider your specific needs and budget',
             },
             sustainability: {
                 score: Math.max(0, Math.min(100, ((_j = aiResponse.sustainability) === null || _j === void 0 ? void 0 : _j.score) || 50)),
-                factors: ((_k = aiResponse.sustainability) === null || _k === void 0 ? void 0 : _k.factors) || ['General sustainability considerations'],
-                impact: ((_l = aiResponse.sustainability) === null || _l === void 0 ? void 0 : _l.impact) || 'Environmental impact assessment in progress',
+                factors: ((_k = aiResponse.sustainability) === null || _k === void 0 ? void 0 : _k.factors) || [
+                    'General sustainability considerations',
+                ],
+                impact: ((_l = aiResponse.sustainability) === null || _l === void 0 ? void 0 : _l.impact) ||
+                    'Environmental impact assessment in progress',
             },
             alternatives: aiResponse.alternatives || [],
             aiModel: 'gemini-adaptive',
@@ -335,8 +348,11 @@ Respond with ONLY valid JSON, no additional text.`;
     }
     getFallbackAnalysis(productData) {
         let dealScore = 50;
-        if (productData.originalPrice && productData.price < productData.originalPrice) {
-            const discountPercent = ((productData.originalPrice - productData.price) / productData.originalPrice) * 100;
+        if (productData.originalPrice &&
+            productData.price < productData.originalPrice) {
+            const discountPercent = ((productData.originalPrice - productData.price) /
+                productData.originalPrice) *
+                100;
             if (discountPercent >= 40)
                 dealScore += 35;
             else if (discountPercent >= 25)
@@ -373,8 +389,25 @@ Respond with ONLY valid JSON, no additional text.`;
         }
         let ethicalScore = 55;
         if (productData.brand) {
-            const trustedBrands = ['Apple', 'Samsung', 'Sony', 'Dell', 'Lenovo', 'HP', 'Bosch', 'Philips', 'Panasonic', 'LG'];
-            const ethicalBrands = ['Patagonia', 'Allbirds', 'Veja', 'Warby Parker', 'Seventh Generation'];
+            const trustedBrands = [
+                'Apple',
+                'Samsung',
+                'Sony',
+                'Dell',
+                'Lenovo',
+                'HP',
+                'Bosch',
+                'Philips',
+                'Panasonic',
+                'LG',
+            ];
+            const ethicalBrands = [
+                'Patagonia',
+                'Allbirds',
+                'Veja',
+                'Warby Parker',
+                'Seventh Generation',
+            ];
             if (ethicalBrands.includes(productData.brand)) {
                 ethicalScore += 30;
             }
@@ -398,20 +431,20 @@ Respond with ONLY valid JSON, no additional text.`;
                 marketPosition: this.inferMarketPosition(productData),
                 priceHistory: 'stable',
                 recommendation: this.generatePriceRecommendation(productData, dealScore),
-                confidence: 65
+                confidence: 65,
             },
             insights: {
                 keyStrengths: this.generateStrengths(productData),
                 concerns: this.generateConcerns(productData),
                 bestTime: this.generateBestTime(productData),
-                recommendation: this.generateOverallRecommendation(dealScore, ethicalScore)
+                recommendation: this.generateOverallRecommendation(dealScore, ethicalScore),
             },
             sustainability: {
                 score: Math.min(100, ethicalScore + 10),
                 factors: this.generateSustainabilityFactors(productData),
-                impact: this.generateEnvironmentalImpact(productData)
+                impact: this.generateEnvironmentalImpact(productData),
             },
-            alternatives: this.generateFallbackAlternatives(productData)
+            alternatives: this.generateFallbackAlternatives(productData),
         };
     }
     inferMarketPosition(productData) {
@@ -431,8 +464,11 @@ Respond with ONLY valid JSON, no additional text.`;
         if (productData.reviewCount && productData.reviewCount > 50) {
             strengths.push(`Well-reviewed product (${productData.reviewCount} reviews)`);
         }
-        if (productData.originalPrice && productData.price < productData.originalPrice) {
-            const discount = Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100);
+        if (productData.originalPrice &&
+            productData.price < productData.originalPrice) {
+            const discount = Math.round(((productData.originalPrice - productData.price) /
+                productData.originalPrice) *
+                100);
             strengths.push(`Currently discounted by ${discount}%`);
         }
         if (productData.brand && productData.brand !== 'Unknown') {
@@ -450,20 +486,20 @@ Respond with ONLY valid JSON, no additional text.`;
                 title: `Similar ${productData.category || 'Product'} - Budget Option`,
                 price: Math.round(basePrice * 0.7),
                 score: 75,
-                reason: 'Lower price with good basic features'
+                reason: 'Lower price with good basic features',
             },
             {
                 title: `Premium ${productData.category || 'Product'} Alternative`,
                 price: Math.round(basePrice * 1.3),
                 score: 85,
-                reason: 'Higher quality with additional features'
+                reason: 'Higher quality with additional features',
             },
             {
                 title: `Eco-friendly ${productData.category || 'Product'}`,
                 price: Math.round(basePrice * 1.1),
                 score: 80,
-                reason: 'Sustainable option with environmental benefits'
-            }
+                reason: 'Sustainable option with environmental benefits',
+            },
         ];
     }
     clampScore(score) {
@@ -488,7 +524,8 @@ Respond with ONLY valid JSON, no additional text.`;
             if (hasDiscount) {
                 prediction = currentPrice * 1.05;
                 confidence = 60;
-                reasoning = 'Currently discounted - price may increase after sale period';
+                reasoning =
+                    'Currently discounted - price may increase after sale period';
             }
             else {
                 prediction = currentPrice * (0.95 + Math.random() * 0.1);
@@ -498,7 +535,7 @@ Respond with ONLY valid JSON, no additional text.`;
                 nextWeek: Math.round(prediction * 100) / 100,
                 nextMonth: Math.round(prediction * (0.98 + Math.random() * 0.04) * 100) / 100,
                 confidence,
-                reasoning
+                reasoning,
             };
         }
         catch (error) {
@@ -507,7 +544,7 @@ Respond with ONLY valid JSON, no additional text.`;
                 nextWeek: productData.price,
                 nextMonth: productData.price,
                 confidence: 30,
-                reasoning: 'Unable to generate accurate prediction'
+                reasoning: 'Unable to generate accurate prediction',
             };
         }
     }
@@ -588,8 +625,11 @@ Respond with ONLY valid JSON, no additional text.`;
         if (productData.category) {
             factors.push(`Category: ${productData.category}`);
         }
-        if (productData.originalPrice && productData.price < productData.originalPrice) {
-            const discount = Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100);
+        if (productData.originalPrice &&
+            productData.price < productData.originalPrice) {
+            const discount = Math.round(((productData.originalPrice - productData.price) /
+                productData.originalPrice) *
+                100);
             factors.push(`Discount available: ${discount}%`);
         }
         if (productData.reviewCount && productData.reviewCount > 1000) {
@@ -600,10 +640,12 @@ Respond with ONLY valid JSON, no additional text.`;
     }
     generateEnvironmentalImpact(productData) {
         const factors = [];
-        if (productData.category && productData.category.toLowerCase().includes('electronics')) {
+        if (productData.category &&
+            productData.category.toLowerCase().includes('electronics')) {
             factors.push('Electronics - Check for e-waste recycling programs');
         }
-        if (productData.category && productData.category.toLowerCase().includes('fashion')) {
+        if (productData.category &&
+            productData.category.toLowerCase().includes('fashion')) {
             factors.push('Fashion item - Look for sustainable materials and production practices');
         }
         if (productData.brand) {

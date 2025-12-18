@@ -57,7 +57,9 @@ let AppController = AppController_1 = class AppController {
             }
             this.logger.log(`🔍 Starting analysis for: ${body.url}`);
             let productData;
-            if (body.productData && body.productData.title && body.productData.price) {
+            if (body.productData &&
+                body.productData.title &&
+                body.productData.price) {
                 this.logger.log(`📱 Using data from browser extension`);
                 productData = {
                     title: body.productData.title,
@@ -112,7 +114,11 @@ let AppController = AppController_1 = class AppController {
                     action: this.getRecommendationAction(aiAnalysis.dealScore, priceRank),
                     confidence: Math.round(trustScore.dataReliability),
                     reasoning: this.getRecommendationReasoning(aiAnalysis.dealScore, priceRank, isGoodDeal),
-                    urgency: aiAnalysis.dealScore > 85 ? 'high' : aiAnalysis.dealScore > 70 ? 'medium' : 'low',
+                    urgency: aiAnalysis.dealScore > 85
+                        ? 'high'
+                        : aiAnalysis.dealScore > 70
+                            ? 'medium'
+                            : 'low',
                 },
                 priceTrend: {
                     current: productData.price,
@@ -121,8 +127,11 @@ let AppController = AppController_1 = class AppController {
                     highestRecent: productData.originalPrice || productData.price * 1.2,
                     marketAverage: productData.price * 1.1,
                     predictedNextWeek: productData.price * (0.95 + Math.random() * 0.1),
-                    discountPercent: productData.originalPrice ?
-                        Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100) : 0,
+                    discountPercent: productData.originalPrice
+                        ? Math.round(((productData.originalPrice - productData.price) /
+                            productData.originalPrice) *
+                            100)
+                        : 0,
                     currency: productData.currency,
                     pricePerformance: aiAnalysis.priceAnalysis.marketPosition,
                     marketTrend: aiAnalysis.priceAnalysis.priceHistory,
@@ -134,13 +143,15 @@ let AppController = AppController_1 = class AppController {
                 },
                 priceAnalysis: {
                     isGoodDeal,
-                    savingsAmount: productData.originalPrice ? productData.originalPrice - productData.price : 0,
+                    savingsAmount: productData.originalPrice
+                        ? productData.originalPrice - productData.price
+                        : 0,
                     priceRank,
                     marketComparison: this.getMarketComparison(priceRank, productData.price),
                     bestTimeDescription: this.getBestTimeDescription(aiAnalysis.dealScore, priceRank),
                     certaintyLevel: dataCertainty,
                 },
-                alternatives: aiAnalysis.alternatives.map(alt => ({
+                alternatives: aiAnalysis.alternatives.map((alt) => ({
                     title: alt.title,
                     price: alt.price,
                     url: `#alternative-${alt.title.toLowerCase().replace(/\s+/g, '-')}`,
@@ -153,7 +164,11 @@ let AppController = AppController_1 = class AppController {
                     pros: aiAnalysis.insights.keyStrengths,
                     cons: aiAnalysis.insights.concerns,
                     warnings: this.generateWarnings(trustScore, aiAnalysis),
-                    bestFor: [aiAnalysis.insights.bestTime, 'Verified buyers', 'Price-conscious shoppers'],
+                    bestFor: [
+                        aiAnalysis.insights.bestTime,
+                        'Verified buyers',
+                        'Price-conscious shoppers',
+                    ],
                 },
                 sustainability: {
                     brandRating: Math.round(aiAnalysis.sustainability.score * 10) / 10,
@@ -240,7 +255,10 @@ let AppController = AppController_1 = class AppController {
                     honestAssessment: 'Unable to analyze this product due to data access limitations. This could be due to anti-bot protection or product unavailability.',
                     pros: ['Product URL provided'],
                     cons: ['Data scraping failed', 'Limited analysis possible'],
-                    warnings: ['Manual verification strongly recommended', 'Price and availability uncertain'],
+                    warnings: [
+                        'Manual verification strongly recommended',
+                        'Price and availability uncertain',
+                    ],
                     bestFor: ['Manual verification recommended'],
                 },
                 trustScore: {
@@ -321,12 +339,16 @@ let AppController = AppController_1 = class AppController {
         return {
             url: body.url,
             predictions: Array.from({ length: days }, (_, i) => ({
-                date: new Date(Date.now() + i * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                date: new Date(Date.now() + i * 24 * 60 * 60 * 1000)
+                    .toISOString()
+                    .split('T')[0],
                 predictedPrice: Math.random() * 1000 + 500,
                 confidence: Math.random() * 40 + 60,
             })),
             recommendation: Math.random() > 0.5 ? 'wait' : 'buy_now',
-            bestTimeToBy: new Date(Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            bestTimeToBy: new Date(Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split('T')[0],
         };
     }
     async getAlternatives(category) {
@@ -352,7 +374,7 @@ let AppController = AppController_1 = class AppController {
         if (!this.prismaService.isMongoDBConnected()) {
             const rules = this.prismaService.getFallbackRules();
             return {
-                ethicalRules: rules.map(rule => ({
+                ethicalRules: rules.map((rule) => ({
                     name: rule.name,
                     category: rule.category,
                     weight: rule.weight,
@@ -366,7 +388,7 @@ let AppController = AppController_1 = class AppController {
                 orderBy: { weight: 'desc' },
             });
             return {
-                ethicalRules: rules.map(rule => ({
+                ethicalRules: rules.map((rule) => ({
                     name: rule.name,
                     category: rule.category,
                     weight: rule.weight,
@@ -377,7 +399,7 @@ let AppController = AppController_1 = class AppController {
         catch (error) {
             const rules = this.prismaService.getFallbackRules();
             return {
-                ethicalRules: rules.map(rule => ({
+                ethicalRules: rules.map((rule) => ({
                     name: rule.name,
                     category: rule.category,
                     weight: rule.weight,
@@ -423,10 +445,14 @@ let AppController = AppController_1 = class AppController {
         return {
             totalAnalyses: analyticsData.totalAnalyzes,
             recentTrends: {
-                avgDealScore: recentAnalyses.length > 0 ?
-                    recentAnalyses.reduce((sum, a) => sum + a.dealScore, 0) / recentAnalyses.length : 0,
-                avgEthicalScore: recentAnalyses.length > 0 ?
-                    recentAnalyses.reduce((sum, a) => sum + a.ethicalScore, 0) / recentAnalyses.length : 0,
+                avgDealScore: recentAnalyses.length > 0
+                    ? recentAnalyses.reduce((sum, a) => sum + a.dealScore, 0) /
+                        recentAnalyses.length
+                    : 0,
+                avgEthicalScore: recentAnalyses.length > 0
+                    ? recentAnalyses.reduce((sum, a) => sum + a.ethicalScore, 0) /
+                        recentAnalyses.length
+                    : 0,
                 platformDistribution: this.calculateDistribution(recentAnalyses, 'platform'),
             },
             insights: {
@@ -445,7 +471,9 @@ let AppController = AppController_1 = class AppController {
     calculatePriceRank(currentPrice, originalPrice) {
         if (!currentPrice || currentPrice <= 0)
             return 'average';
-        const discountPercent = originalPrice ? ((originalPrice - currentPrice) / originalPrice) * 100 : 0;
+        const discountPercent = originalPrice
+            ? ((originalPrice - currentPrice) / originalPrice) * 100
+            : 0;
         if (discountPercent >= 30)
             return 'lowest';
         if (discountPercent >= 15)
@@ -461,14 +489,18 @@ let AppController = AppController_1 = class AppController {
         let reliability = 50;
         if (productData.price > 0)
             reliability += 25;
-        if (productData.originalPrice && productData.originalPrice > productData.price)
+        if (productData.originalPrice &&
+            productData.originalPrice > productData.price)
             reliability += 15;
         if (productData.rating && productData.rating > 0)
             reliability += 10;
         if (productData.reviewCount && productData.reviewCount > 10)
             reliability += 10;
-        const sourceConfidence = ((_a = productData.title) === null || _a === void 0 ? void 0 : _a.includes('Apple')) ? 85 :
-            ((_b = productData.title) === null || _b === void 0 ? void 0 : _b.includes('Samsung')) ? 80 : 70;
+        const sourceConfidence = ((_a = productData.title) === null || _a === void 0 ? void 0 : _a.includes('Apple'))
+            ? 85
+            : ((_b = productData.title) === null || _b === void 0 ? void 0 : _b.includes('Samsung'))
+                ? 80
+                : 70;
         const overallScore = (reliability + sourceConfidence) / 2;
         const overallTrust = overallScore >= 80 ? 'high' : overallScore >= 60 ? 'medium' : 'low';
         return {
@@ -483,9 +515,9 @@ let AppController = AppController_1 = class AppController {
             return 'High confidence: Real-time data from verified sources with comprehensive product information.';
         }
         else if (trustLevel === 'medium') {
-            return hasReliableData ?
-                'Medium confidence: Good data quality but limited historical information available.' :
-                'Medium confidence: Basic product data available, some details estimated.';
+            return hasReliableData
+                ? 'Medium confidence: Good data quality but limited historical information available.'
+                : 'Medium confidence: Basic product data available, some details estimated.';
         }
         else {
             return 'Low confidence: Limited data available. Recommendations based on general market analysis.';
@@ -511,7 +543,8 @@ let AppController = AppController_1 = class AppController {
         return 'wait';
     }
     getRecommendationAction(dealScore, priceRank) {
-        if (dealScore >= 85 && (priceRank === 'lowest' || priceRank === 'below_average')) {
+        if (dealScore >= 85 &&
+            (priceRank === 'lowest' || priceRank === 'below_average')) {
             return 'BUY NOW - Excellent deal detected!';
         }
         else if (dealScore >= 70) {
@@ -556,8 +589,8 @@ let AppController = AppController_1 = class AppController {
         return history;
     }
     generateCompetitorPrices(currentPrice, platform) {
-        const competitors = ['amazon', 'flipkart', 'myntra', 'ebay'].filter(p => p !== platform);
-        return competitors.slice(0, 3).map(comp => ({
+        const competitors = ['amazon', 'flipkart', 'myntra', 'ebay'].filter((p) => p !== platform);
+        return competitors.slice(0, 3).map((comp) => ({
             platform: comp,
             price: Math.round(currentPrice * (0.95 + Math.random() * 0.1)),
             confidence: Math.round(70 + Math.random() * 25),
@@ -566,12 +599,18 @@ let AppController = AppController_1 = class AppController {
     getMarketComparison(priceRank, price) {
         const formatPrice = (p) => `₹${p.toLocaleString('en-IN')}`;
         switch (priceRank) {
-            case 'lowest': return `Excellent price - ${formatPrice(price)} is the lowest we've tracked`;
-            case 'below_average': return `Good price - ${formatPrice(price)} is below market average`;
-            case 'average': return `Fair price - ${formatPrice(price)} is around market average`;
-            case 'above_average': return `High price - ${formatPrice(price)} is above market average`;
-            case 'highest': return `Premium price - ${formatPrice(price)} is at the higher end`;
-            default: return `Price: ${formatPrice(price)}`;
+            case 'lowest':
+                return `Excellent price - ${formatPrice(price)} is the lowest we've tracked`;
+            case 'below_average':
+                return `Good price - ${formatPrice(price)} is below market average`;
+            case 'average':
+                return `Fair price - ${formatPrice(price)} is around market average`;
+            case 'above_average':
+                return `High price - ${formatPrice(price)} is above market average`;
+            case 'highest':
+                return `Premium price - ${formatPrice(price)} is at the higher end`;
+            default:
+                return `Price: ${formatPrice(price)}`;
         }
     }
     getBestTimeDescription(dealScore, priceRank) {
@@ -629,7 +668,7 @@ let AppController = AppController_1 = class AppController {
             { name: 'paytm', patterns: ['paytmmall.'] },
         ];
         for (const platform of platforms) {
-            if (platform.patterns.some(pattern => domain.includes(pattern))) {
+            if (platform.patterns.some((pattern) => domain.includes(pattern))) {
                 return platform.name;
             }
         }
@@ -642,7 +681,7 @@ let AppController = AppController_1 = class AppController {
                 /\/dp\/([A-Z0-9]+)/i,
                 /\/p\/([a-z0-9\-]+)/i,
                 /\/(\d+)$/,
-                /\/([^\/]+)$/
+                /\/([^\/]+)$/,
             ];
             for (const pattern of patterns) {
                 const match = urlPath.match(pattern);
@@ -693,8 +732,10 @@ let AppController = AppController_1 = class AppController {
             confidence: 82,
         });
         alternatives.sort((a, b) => {
-            const valueA = ((currentPrice - a.price) / currentPrice) * 100 + (a.ethicalScore - currentScore);
-            const valueB = ((currentPrice - b.price) / currentPrice) * 100 + (b.ethicalScore - currentScore);
+            const valueA = ((currentPrice - a.price) / currentPrice) * 100 +
+                (a.ethicalScore - currentScore);
+            const valueB = ((currentPrice - b.price) / currentPrice) * 100 +
+                (b.ethicalScore - currentScore);
             return valueB - valueA;
         });
         return alternatives;
@@ -704,18 +745,18 @@ let AppController = AppController_1 = class AppController {
             {
                 rule: 'Brand Sustainability',
                 contribution: aiAnalysis.sustainability.score - 50,
-                reason: `Brand has a sustainability rating of ${aiAnalysis.sustainability.score}/100`
+                reason: `Brand has a sustainability rating of ${aiAnalysis.sustainability.score}/100`,
             },
             {
                 rule: 'Environmental Impact',
                 contribution: aiAnalysis.sustainability.score > 70 ? 15 : -10,
-                reason: aiAnalysis.sustainability.impact
+                reason: aiAnalysis.sustainability.impact,
             },
             {
                 rule: 'Market Ethics',
                 contribution: aiAnalysis.ethicalScore > 70 ? 20 : -15,
-                reason: `Overall market ethical practices assessment`
-            }
+                reason: `Overall market ethical practices assessment`,
+            },
         ];
     }
     async logAnalysis(url, platform, dealScore, ethicalScore) {
@@ -723,8 +764,14 @@ let AppController = AppController_1 = class AppController {
             analyticsData.totalAnalyzes++;
             const currentPlatformCount = analyticsData.platformStats.get(platform) || 0;
             analyticsData.platformStats.set(platform, currentPlatformCount + 1);
-            analyticsData.avgDealScore = (analyticsData.avgDealScore * (analyticsData.totalAnalyzes - 1) + dealScore) / analyticsData.totalAnalyzes;
-            analyticsData.avgEthicalScore = (analyticsData.avgEthicalScore * (analyticsData.totalAnalyzes - 1) + ethicalScore) / analyticsData.totalAnalyzes;
+            analyticsData.avgDealScore =
+                (analyticsData.avgDealScore * (analyticsData.totalAnalyzes - 1) +
+                    dealScore) /
+                    analyticsData.totalAnalyzes;
+            analyticsData.avgEthicalScore =
+                (analyticsData.avgEthicalScore * (analyticsData.totalAnalyzes - 1) +
+                    ethicalScore) /
+                    analyticsData.totalAnalyzes;
             analyticsData.recentAnalyzes.push({
                 url,
                 platform,
@@ -743,7 +790,7 @@ let AppController = AppController_1 = class AppController {
     }
     calculateDistribution(data, field) {
         const distribution = {};
-        data.forEach(item => {
+        data.forEach((item) => {
             const value = item[field];
             distribution[value] = (distribution[value] || 0) + 1;
         });
@@ -760,7 +807,7 @@ let AppController = AppController_1 = class AppController {
     convertToEthicalRules(aiAnalysis) {
         return aiAnalysis.sustainability.factors.map((factor, index) => ({
             rule: factor,
-            contribution: aiAnalysis.sustainability.score - (index * 5),
+            contribution: aiAnalysis.sustainability.score - index * 5,
             reason: `Based on sustainability assessment: ${factor}`,
         }));
     }

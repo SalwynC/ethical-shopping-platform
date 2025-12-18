@@ -25,8 +25,8 @@ import { ReviewCheckerService } from './services/review-checker.service';
     // ============================================
     // ACTIVE SERVICES - 3-TIER SCRAPING SYSTEM
     // ============================================
-    HtmlScraperService,      // Priority 1: Direct HTML scraping with Cheerio
-    AIScraperService,        // Priority 2: AI extraction (Gemini)
+    HtmlScraperService, // Priority 1: Direct HTML scraping with Cheerio
+    AIScraperService, // Priority 2: AI extraction (Gemini)
     // Internal Database fallback for common products
     InternalProductDbService,
     // Analytics & Recommendations

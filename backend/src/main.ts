@@ -23,7 +23,7 @@ async function bootstrap() {
     const port = process.env.PORT ? Number(process.env.PORT) : 4000;
     await app.listen(port);
     console.log(`🚀 Backend server running on http://localhost:${port}`);
-    
+
     // Keep process alive
     process.on('SIGTERM', () => {
       console.log('SIGTERM signal received');
@@ -49,4 +49,3 @@ process.on('uncaughtException', (error) => {
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled rejection at:', promise, 'reason:', reason);
 });
-

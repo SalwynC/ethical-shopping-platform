@@ -14,7 +14,7 @@ let RealDataService = RealDataService_1 = class RealDataService {
         this.logger = new common_1.Logger(RealDataService_1.name);
         this.productDatabase = {
             'amazon.in': {
-                'B0CHX1W1XY': {
+                B0CHX1W1XY: {
                     title: 'Apple iPhone 15 (128 GB) - Black',
                     price: 79900,
                     originalPrice: 89900,
@@ -26,7 +26,7 @@ let RealDataService = RealDataService_1 = class RealDataService {
                     availability: 'In Stock',
                     imageUrl: 'https://m.media-amazon.com/images/I/71xb2xkN5qL._SL1500_.jpg',
                 },
-                'B09G9FPHY6': {
+                B09G9FPHY6: {
                     title: 'Apple iPhone 13 (128GB) - Blue',
                     price: 59900,
                     originalPrice: 69900,
@@ -37,10 +37,10 @@ let RealDataService = RealDataService_1 = class RealDataService {
                     category: 'Electronics',
                     availability: 'In Stock',
                     imageUrl: 'https://m.media-amazon.com/images/I/71ZOtVdaGXL._SL1500_.jpg',
-                }
+                },
             },
             'flipkart.com': {
-                'default': {
+                default: {
                     title: 'OnePlus 12R 5G (Cool Blue, 8GB RAM, 128GB Storage)',
                     price: 39999,
                     originalPrice: 45999,
@@ -51,8 +51,8 @@ let RealDataService = RealDataService_1 = class RealDataService {
                     category: 'Electronics',
                     availability: 'In Stock',
                     imageUrl: 'https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/5/y/8/-original-imah2fjd5n6kqfjb.jpeg',
-                }
-            }
+                },
+            },
         };
     }
     async getRealProductData(url, platform) {
@@ -103,7 +103,7 @@ let RealDataService = RealDataService_1 = class RealDataService {
     generateRealisticData(url, platform, productId) {
         var _a;
         const domain = this.detectDomain(url);
-        let baseData = ((_a = this.productDatabase[domain]) === null || _a === void 0 ? void 0 : _a['default']) || {
+        const baseData = ((_a = this.productDatabase[domain]) === null || _a === void 0 ? void 0 : _a['default']) || {
             title: 'Product Not Found',
             price: 25999,
             currency: 'INR',
@@ -111,7 +111,7 @@ let RealDataService = RealDataService_1 = class RealDataService {
             reviewCount: 1200,
             brand: 'Unknown',
             category: 'Electronics',
-            availability: 'In Stock'
+            availability: 'In Stock',
         };
         let title = baseData.title;
         if (url.includes('iphone') || url.includes('apple')) {
@@ -141,12 +141,24 @@ let RealDataService = RealDataService_1 = class RealDataService {
             reviewCount: this.randomBetween(100, 15000),
             brand: this.extractBrandFromUrl(url),
             category: 'Electronics',
-            availability: this.randomChoice(['In Stock', 'Only 2 left', 'Limited Stock']),
-            productId: productId
+            availability: this.randomChoice([
+                'In Stock',
+                'Only 2 left',
+                'Limited Stock',
+            ]),
+            productId: productId,
         };
     }
     extractBrandFromUrl(url) {
-        const brands = ['Apple', 'Samsung', 'OnePlus', 'Xiaomi', 'Vivo', 'Oppo', 'Realme'];
+        const brands = [
+            'Apple',
+            'Samsung',
+            'OnePlus',
+            'Xiaomi',
+            'Vivo',
+            'Oppo',
+            'Realme',
+        ];
         const urlLower = url.toLowerCase();
         for (const brand of brands) {
             if (urlLower.includes(brand.toLowerCase())) {

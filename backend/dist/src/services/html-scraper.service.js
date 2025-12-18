@@ -57,14 +57,14 @@ let HtmlScraperService = HtmlScraperService_1 = class HtmlScraperService {
             const response = await axios_1.default.get(url, {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
                     'Accept-Language': 'en-US,en;q=0.9',
                     'Accept-Encoding': 'gzip, deflate, br',
                     'Sec-Fetch-Dest': 'document',
                     'Sec-Fetch-Mode': 'navigate',
                     'Sec-Fetch-Site': 'none',
                     'Cache-Control': 'max-age=0',
-                    'Connection': 'keep-alive',
+                    Connection: 'keep-alive',
                     'Upgrade-Insecure-Requests': '1',
                 },
                 timeout: 15000,
@@ -269,7 +269,10 @@ let HtmlScraperService = HtmlScraperService_1 = class HtmlScraperService {
             '.stars-rating',
         ];
         for (const selector of selectors) {
-            let text = $(selector).text() || $(selector).attr('content') || $(selector).attr('aria-label') || '';
+            let text = $(selector).text() ||
+                $(selector).attr('content') ||
+                $(selector).attr('aria-label') ||
+                '';
             text = text.trim();
             const ratingMatch = text.match(/([0-9]+\.?[0-9]*)\s*(?:out of|star|,)/i);
             if (ratingMatch) {
@@ -344,7 +347,10 @@ let HtmlScraperService = HtmlScraperService_1 = class HtmlScraperService {
         ];
         for (const selector of selectors) {
             $(selector).each((_, el) => {
-                const src = $(el).attr('content') || $(el).attr('src') || $(el).attr('data-src') || '';
+                const src = $(el).attr('content') ||
+                    $(el).attr('src') ||
+                    $(el).attr('data-src') ||
+                    '';
                 if (src && src.startsWith('http')) {
                     images.push(src);
                 }
@@ -439,12 +445,14 @@ let HtmlScraperService = HtmlScraperService_1 = class HtmlScraperService {
     extractTitleFromUrl(url) {
         try {
             const urlObj = new URL(url);
-            const pathSegments = urlObj.pathname.split('/').filter(s => s.length > 3);
+            const pathSegments = urlObj.pathname
+                .split('/')
+                .filter((s) => s.length > 3);
             if (pathSegments.length > 0) {
                 const titleSegment = pathSegments[pathSegments.length - 1];
                 const title = titleSegment
                     .replace(/[-_]/g, ' ')
-                    .replace(/\b\w/g, c => c.toUpperCase())
+                    .replace(/\b\w/g, (c) => c.toUpperCase())
                     .trim();
                 if (title.length > 5) {
                     return title;

@@ -3,6 +3,7 @@
   "rules": {
     "react/forbid-dom-props": "off",
     "@next/next/no-img-element": "off",
-    "jsx-a11y/alt-text": "off"
+    "jsx-a11y/alt-text": "off",
+    "react/style-prop-object": "off"
   }
 }

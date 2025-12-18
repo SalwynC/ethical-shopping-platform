@@ -31,7 +31,9 @@ export class ReviewCheckerService {
 
     // Flag 1: Suspicious rating patterns
     if (rating === 5 && reviewCount < 10) {
-      flags.push('⚠️ Perfect rating with few reviews - might be new or manipulated');
+      flags.push(
+        '⚠️ Perfect rating with few reviews - might be new or manipulated',
+      );
       trustScore -= 20;
     }
 
@@ -101,7 +103,12 @@ export class ReviewCheckerService {
     }
 
     // Flag 10: Optimal review sweet spot
-    if (reviewCount >= 100 && reviewCount <= 5000 && rating >= 3.8 && rating <= 4.6) {
+    if (
+      reviewCount >= 100 &&
+      reviewCount <= 5000 &&
+      rating >= 3.8 &&
+      rating <= 4.6
+    ) {
       flags.push('✅ Ideal review metrics - high confidence in authenticity');
       trustScore += 20;
       quality += 20;
@@ -126,7 +133,7 @@ export class ReviewCheckerService {
     else sentiment = 'Neutral';
 
     // Generate recommendation
-    let recommendation = this.generateRecommendation(
+    const recommendation = this.generateRecommendation(
       trustLevel,
       rating,
       reviewCount,

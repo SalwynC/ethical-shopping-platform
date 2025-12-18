@@ -458,7 +458,7 @@ export default function HomePage() {
   return (
     <>
       <LiveBackground />
-      <div style={{ position: 'relative', zIndex: 10, minHeight: '100vh' }}>
+      <div className="relative z-10 min-h-screen">
         <AppHeader />
         <LiveStatusIndicator />
         
@@ -471,8 +471,8 @@ export default function HomePage() {
           {/* Animated Mesh Background */}
           <div className="absolute inset-0 opacity-30">
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-cyan-500/10 animate-pulse"></div>
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl animate-bounce" style={{animationDuration: '6s'}}></div>
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl animate-bounce" style={{animationDuration: '8s', animationDelay: '2s'}}></div>
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl animate-bounce [animation-duration:6s]"></div>
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl animate-bounce [animation-duration:8s] [animation-delay:2s]"></div>
           </div>
           
           {/* Floating Particles */}
@@ -484,8 +484,6 @@ export default function HomePage() {
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${3 + Math.random() * 4}s`
                 }}
               />
             ))}
@@ -867,14 +865,14 @@ export default function HomePage() {
         <section className="relative py-24 bg-gradient-to-b from-gray-50 via-white to-gray-100 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
           {/* Enhanced Animated Background Elements */}
           <div className="absolute inset-0">
-            <div className="absolute top-10 left-10 w-40 h-40 bg-gradient-to-br from-emerald-400/10 to-emerald-600/5 rounded-full blur-3xl animate-pulse" style={{animationDuration: '4s'}}></div>
-            <div className="absolute bottom-10 right-10 w-48 h-48 bg-gradient-to-br from-cyan-400/10 to-cyan-600/5 rounded-full blur-3xl animate-pulse" style={{animationDuration: '6s', animationDelay: '1s'}}></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-400/8 to-purple-600/3 rounded-full blur-3xl animate-pulse" style={{animationDuration: '8s', animationDelay: '2s'}}></div>
+            <div className="absolute top-10 left-10 w-40 h-40 bg-gradient-to-br from-emerald-400/10 to-emerald-600/5 rounded-full blur-3xl animate-pulse [animation-duration:4s]"></div>
+            <div className="absolute bottom-10 right-10 w-48 h-48 bg-gradient-to-br from-cyan-400/10 to-cyan-600/5 rounded-full blur-3xl animate-pulse [animation-duration:6s] [animation-delay:1s]"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-400/8 to-purple-600/3 rounded-full blur-3xl animate-pulse [animation-duration:8s] [animation-delay:2s]"></div>
             
             {/* Additional decorative elements for light mode */}
-            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-emerald-400 rounded-full animate-ping opacity-60" style={{animationDelay: '0s'}}></div>
-            <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-blue-400 rounded-full animate-ping opacity-40" style={{animationDelay: '2s'}}></div>
-            <div className="absolute top-1/2 right-1/3 w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping opacity-50" style={{animationDelay: '4s'}}></div>
+            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-emerald-400 rounded-full animate-ping opacity-60 [animation-delay:0s]"></div>
+            <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-blue-400 rounded-full animate-ping opacity-40 [animation-delay:2s]"></div>
+            <div className="absolute top-1/2 right-1/3 w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping opacity-50 [animation-delay:4s]"></div>
           </div>
           
           <div className="relative max-w-6xl mx-auto px-6">

@@ -8,7 +8,7 @@ export class RealDataService {
   // Database of real product information for reliable demo data
   private productDatabase = {
     'amazon.in': {
-      'B0CHX1W1XY': {
+      B0CHX1W1XY: {
         title: 'Apple iPhone 15 (128 GB) - Black',
         price: 79900,
         originalPrice: 89900,
@@ -18,9 +18,10 @@ export class RealDataService {
         brand: 'Apple',
         category: 'Electronics',
         availability: 'In Stock',
-        imageUrl: 'https://m.media-amazon.com/images/I/71xb2xkN5qL._SL1500_.jpg',
+        imageUrl:
+          'https://m.media-amazon.com/images/I/71xb2xkN5qL._SL1500_.jpg',
       },
-      'B09G9FPHY6': {
+      B09G9FPHY6: {
         title: 'Apple iPhone 13 (128GB) - Blue',
         price: 59900,
         originalPrice: 69900,
@@ -30,11 +31,12 @@ export class RealDataService {
         brand: 'Apple',
         category: 'Electronics',
         availability: 'In Stock',
-        imageUrl: 'https://m.media-amazon.com/images/I/71ZOtVdaGXL._SL1500_.jpg',
-      }
+        imageUrl:
+          'https://m.media-amazon.com/images/I/71ZOtVdaGXL._SL1500_.jpg',
+      },
     },
     'flipkart.com': {
-      'default': {
+      default: {
         title: 'OnePlus 12R 5G (Cool Blue, 8GB RAM, 128GB Storage)',
         price: 39999,
         originalPrice: 45999,
@@ -44,31 +46,34 @@ export class RealDataService {
         brand: 'OnePlus',
         category: 'Electronics',
         availability: 'In Stock',
-        imageUrl: 'https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/5/y/8/-original-imah2fjd5n6kqfjb.jpeg',
-      }
-    }
+        imageUrl:
+          'https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/5/y/8/-original-imah2fjd5n6kqfjb.jpeg',
+      },
+    },
   };
 
-  async getRealProductData(url: string, platform: string): Promise<ProductData | null> {
+  async getRealProductData(
+    url: string,
+    platform: string,
+  ): Promise<ProductData | null> {
     this.logger.log(`🔍 Getting real data for: ${url}`);
-    
+
     try {
       // Extract product ID from URL
       const productId = this.extractProductId(url, platform);
-      
+
       // Check our reliable database first
       const platformData = this.productDatabase[this.detectDomain(url)];
       if (platformData && platformData[productId]) {
         this.logger.log(`✅ Found real data for ${productId}`);
         return {
           ...platformData[productId],
-          productId: productId
+          productId: productId,
         };
       }
-      
+
       // Generate realistic data based on URL analysis
       return this.generateRealisticData(url, platform, productId);
-      
     } catch (error) {
       this.logger.warn(`Failed to get real data: ${error.message}`);
       return null;
@@ -101,11 +106,15 @@ export class RealDataService {
     }
   }
 
-  private generateRealisticData(url: string, platform: string, productId: string): ProductData {
+  private generateRealisticData(
+    url: string,
+    platform: string,
+    productId: string,
+  ): ProductData {
     const domain = this.detectDomain(url);
-    
+
     // Use default data and modify based on URL
-    let baseData = this.productDatabase[domain]?.['default'] || {
+    const baseData = this.productDatabase[domain]?.['default'] || {
       title: 'Product Not Found',
       price: 25999,
       currency: 'INR',
@@ -113,7 +122,7 @@ export class RealDataService {
       reviewCount: 1200,
       brand: 'Unknown',
       category: 'Electronics',
-      availability: 'In Stock'
+      availability: 'In Stock',
     };
 
     // Intelligent title generation based on URL patterns
@@ -143,15 +152,27 @@ export class RealDataService {
       reviewCount: this.randomBetween(100, 15000),
       brand: this.extractBrandFromUrl(url),
       category: 'Electronics',
-      availability: this.randomChoice(['In Stock', 'Only 2 left', 'Limited Stock']),
-      productId: productId
+      availability: this.randomChoice([
+        'In Stock',
+        'Only 2 left',
+        'Limited Stock',
+      ]),
+      productId: productId,
     };
   }
 
   private extractBrandFromUrl(url: string): string {
-    const brands = ['Apple', 'Samsung', 'OnePlus', 'Xiaomi', 'Vivo', 'Oppo', 'Realme'];
+    const brands = [
+      'Apple',
+      'Samsung',
+      'OnePlus',
+      'Xiaomi',
+      'Vivo',
+      'Oppo',
+      'Realme',
+    ];
     const urlLower = url.toLowerCase();
-    
+
     for (const brand of brands) {
       if (urlLower.includes(brand.toLowerCase())) {
         return brand;

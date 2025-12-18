@@ -30,13 +30,19 @@ export class AIScraperService {
   constructor() {
     // Check Gemini AI key
     const geminiKey = process.env.GOOGLE_AI_API_KEY;
-    this.hasGeminiKey = geminiKey && geminiKey !== 'your_free_gemini_api_key_here' && geminiKey.length > 20;
-    
+    this.hasGeminiKey =
+      geminiKey &&
+      geminiKey !== 'your_free_gemini_api_key_here' &&
+      geminiKey.length > 20;
+
     // Check ChatGPT/OpenAI key
     const openaiKey = process.env.OPENAI_API_KEY;
-    this.hasChatGPTKey = openaiKey && openaiKey !== 'your_openai_api_key_here' && openaiKey.length > 20;
+    this.hasChatGPTKey =
+      openaiKey &&
+      openaiKey !== 'your_openai_api_key_here' &&
+      openaiKey.length > 20;
     this.chatGPTKey = openaiKey || '';
-    
+
     // Determine which AI to use (ChatGPT preferred if both available)
     if (this.hasChatGPTKey) {
       this.aiProvider = 'chatgpt';
@@ -51,28 +57,34 @@ export class AIScraperService {
     }
   }
 
-  async extractProductDataFromUrl(url: string): Promise<RealProductData | null> {
+  async extractProductDataFromUrl(
+    url: string,
+  ): Promise<RealProductData | null> {
     if (this.aiProvider === 'none') {
       this.logger.warn('No API key - cannot use AI scraping');
       return null;
     }
 
     try {
-      this.logger.log(`🤖 Using ${this.aiProvider.toUpperCase()} AI to extract product data from: ${url}`);
+      this.logger.log(
+        `🤖 Using ${this.aiProvider.toUpperCase()} AI to extract product data from: ${url}`,
+      );
 
       // Step 1: Fetch the raw HTML (even if JavaScript-rendered, we get some metadata)
       const headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        Accept:
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
       };
 
       let htmlContent = '';
       try {
-        const response = await axios.get(url, { 
-          headers, 
+        const response = await axios.get(url, {
+          headers,
           timeout: 10000,
-          maxRedirects: 5 
+          maxRedirects: 5,
         });
         htmlContent = response.data.substring(0, 50000); // Get first 50KB
         this.logger.log(`📄 Fetched ${htmlContent.length} characters of HTML`);
@@ -127,27 +139,30 @@ Extract NOW - return ONLY the JSON object:`;
               messages: [
                 {
                   role: 'system',
-                  content: 'You are a precise web scraping assistant. Return only valid JSON with no markdown formatting.'
+                  content:
+                    'You are a precise web scraping assistant. Return only valid JSON with no markdown formatting.',
                 },
                 {
                   role: 'user',
-                  content: prompt
-                }
+                  content: prompt,
+                },
               ],
               temperature: 0.1,
-              max_tokens: 1000
+              max_tokens: 1000,
             },
             {
               headers: {
-                'Authorization': `Bearer ${this.chatGPTKey}`,
-                'Content-Type': 'application/json'
+                Authorization: `Bearer ${this.chatGPTKey}`,
+                'Content-Type': 'application/json',
               },
-              timeout: 15000
-            }
+              timeout: 15000,
+            },
           );
 
           aiResponse = response.data.choices[0].message.content.trim();
-          this.logger.log(`🤖 ChatGPT Response received: ${aiResponse.substring(0, 100)}...`);
+          this.logger.log(
+            `🤖 ChatGPT Response received: ${aiResponse.substring(0, 100)}...`,
+          );
         } catch (chatgptError) {
           this.logger.error(`❌ ChatGPT API failed: ${chatgptError.message}`);
           throw new Error(`ChatGPT extraction failed: ${chatgptError.message}`);
@@ -156,8 +171,12 @@ Extract NOW - return ONLY the JSON object:`;
         this.logger.log('🤖 Using Gemini AI for extraction...');
         // Try models in order of preference
         let model: any;
-        const modelNames = ['gemini-1.5-flash', 'gemini-pro', 'gemini-pro-vision'];
-        
+        const modelNames = [
+          'gemini-1.5-flash',
+          'gemini-pro',
+          'gemini-pro-vision',
+        ];
+
         for (const modelName of modelNames) {
           try {
             model = this.genAI.getGenerativeModel({ model: modelName });
@@ -166,17 +185,21 @@ Extract NOW - return ONLY the JSON object:`;
             // Try next model
           }
         }
-        
+
         if (!model) {
           model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
         }
         const result = await model.generateContent(prompt);
         aiResponse = result.response.text().trim();
-        this.logger.log(`🤖 Gemini Response received: ${aiResponse.substring(0, 100)}...`);
+        this.logger.log(
+          `🤖 Gemini Response received: ${aiResponse.substring(0, 100)}...`,
+        );
       } else {
-        throw new Error('No AI provider available - please add OPENAI_API_KEY or GOOGLE_AI_API_KEY to .env');
+        throw new Error(
+          'No AI provider available - please add OPENAI_API_KEY or GOOGLE_AI_API_KEY to .env',
+        );
       }
-      
+
       this.logger.log(`🤖 AI Response: ${aiResponse.substring(0, 200)}...`);
 
       // Parse AI response
@@ -187,11 +210,15 @@ Extract NOW - return ONLY the JSON object:`;
           .replace(/```json\n?/g, '')
           .replace(/```\n?/g, '')
           .trim();
-        
+
         productData = JSON.parse(cleanedResponse);
-        
+
         // Validate extracted data
-        if (!productData.title || productData.title === 'null' || productData.title.length < 3) {
+        if (
+          !productData.title ||
+          productData.title === 'null' ||
+          productData.title.length < 3
+        ) {
           this.logger.warn('❌ AI extraction failed - invalid title');
           return null;
         }
@@ -201,29 +228,35 @@ Extract NOW - return ONLY the JSON object:`;
           return null;
         }
 
-        this.logger.log(`✅ AI extracted: ${productData.title} - ₹${productData.price} (confidence: ${productData.confidence}%)`);
+        this.logger.log(
+          `✅ AI extracted: ${productData.title} - ₹${productData.price} (confidence: ${productData.confidence}%)`,
+        );
 
         // Return structured data
         return {
           title: productData.title,
           price: parseFloat(productData.price),
-          originalPrice: productData.originalPrice ? parseFloat(productData.originalPrice) : undefined,
+          originalPrice: productData.originalPrice
+            ? parseFloat(productData.originalPrice)
+            : undefined,
           currency: productData.currency || 'INR',
           brand: productData.brand || undefined,
           category: productData.category || undefined,
-          rating: productData.rating ? parseFloat(productData.rating) : undefined,
-          reviewCount: productData.reviewCount ? parseInt(productData.reviewCount) : undefined,
+          rating: productData.rating
+            ? parseFloat(productData.rating)
+            : undefined,
+          reviewCount: productData.reviewCount
+            ? parseInt(productData.reviewCount)
+            : undefined,
           availability: productData.availability || 'unknown',
           description: productData.description || undefined,
           imageUrl: this.extractImageFromHtml(htmlContent),
         };
-
       } catch (parseError) {
         this.logger.error(`Failed to parse AI response: ${parseError.message}`);
         this.logger.error(`Raw response: ${aiResponse}`);
         return null;
       }
-
     } catch (error) {
       this.logger.error(`❌ AI scraping failed: ${error.message}`);
       return null;
@@ -235,16 +268,21 @@ Extract NOW - return ONLY the JSON object:`;
 
     try {
       // Look for common image patterns
-      const ogImageMatch = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]+)"/i);
+      const ogImageMatch = html.match(
+        /<meta[^>]*property="og:image"[^>]*content="([^"]+)"/i,
+      );
       if (ogImageMatch) return ogImageMatch[1];
 
-      const twitterImageMatch = html.match(/<meta[^>]*name="twitter:image"[^>]*content="([^"]+)"/i);
+      const twitterImageMatch = html.match(
+        /<meta[^>]*name="twitter:image"[^>]*content="([^"]+)"/i,
+      );
       if (twitterImageMatch) return twitterImageMatch[1];
 
       // Look for large product images
-      const imgMatch = html.match(/<img[^>]*src="([^"]*product[^"]*\.(jpg|jpeg|png|webp)[^"]*)"/i);
+      const imgMatch = html.match(
+        /<img[^>]*src="([^"]*product[^"]*\.(jpg|jpeg|png|webp)[^"]*)"/i,
+      );
       if (imgMatch) return imgMatch[1];
-
     } catch (error) {
       this.logger.warn(`Image extraction failed: ${error.message}`);
     }

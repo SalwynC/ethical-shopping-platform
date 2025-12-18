@@ -73,7 +73,10 @@ let ReviewCheckerService = ReviewCheckerService_1 = class ReviewCheckerService {
             trustScore -= 30;
             quality -= 40;
         }
-        if (reviewCount >= 100 && reviewCount <= 5000 && rating >= 3.8 && rating <= 4.6) {
+        if (reviewCount >= 100 &&
+            reviewCount <= 5000 &&
+            rating >= 3.8 &&
+            rating <= 4.6) {
             flags.push('✅ Ideal review metrics - high confidence in authenticity');
             trustScore += 20;
             quality += 20;
@@ -98,7 +101,7 @@ let ReviewCheckerService = ReviewCheckerService_1 = class ReviewCheckerService {
             sentiment = 'Mixed';
         else
             sentiment = 'Neutral';
-        let recommendation = this.generateRecommendation(trustLevel, rating, reviewCount, flags);
+        const recommendation = this.generateRecommendation(trustLevel, rating, reviewCount, flags);
         return {
             score: Math.round(trustScore),
             trustLevel,

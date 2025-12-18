@@ -124,7 +124,7 @@ export default function AnalysisPage() {
     >
       {/* subtle background */}
       <div 
-        className="absolute inset-0 bg-gradient-radial from-white/10 via-transparent to-transparent pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.09) 0%, transparent 55%)",
         }}

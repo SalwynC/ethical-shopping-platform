@@ -19,7 +19,7 @@ const AnalysisHistorySchema = new mongoose_1.Schema({
         quality: { type: String, required: true },
         badge: { type: String, required: true },
         flags: [{ type: String }],
-        recommendation: { type: String, required: true }
+        recommendation: { type: String, required: true },
     },
     alternatives: [{ type: mongoose_1.Schema.Types.Mixed }],
     priceComparison: {
@@ -27,16 +27,16 @@ const AnalysisHistorySchema = new mongoose_1.Schema({
         averagePrice: { type: Number },
         lowestPrice: { type: Number },
         highestPrice: { type: Number },
-        recommendation: { type: String }
+        recommendation: { type: String },
     },
     sustainability: {
         score: { type: Number },
         concerns: [{ type: String }],
-        badges: [{ type: String }]
+        badges: [{ type: String }],
     },
     analyzedAt: { type: Date, default: Date.now, index: true },
     userAgent: { type: String },
-    ipAddress: { type: String }
+    ipAddress: { type: String },
 });
 AnalysisHistorySchema.index({ analyzedAt: -1 });
 AnalysisHistorySchema.index({ productUrl: 1, analyzedAt: -1 });

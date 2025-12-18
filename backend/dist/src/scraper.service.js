@@ -60,7 +60,10 @@ let ScraperService = ScraperService_1 = class ScraperService {
         this.logger = new common_1.Logger(ScraperService_1.name);
         this.requestDelay = 1000;
         const apiKey = process.env.GOOGLE_AI_API_KEY;
-        this.hasValidApiKey = apiKey && apiKey !== 'your_free_gemini_api_key_here' && apiKey.length > 20;
+        this.hasValidApiKey =
+            apiKey &&
+                apiKey !== 'your_free_gemini_api_key_here' &&
+                apiKey.length > 20;
         if (this.hasValidApiKey) {
             this.genAI = new generative_ai_1.GoogleGenerativeAI(apiKey);
         }
@@ -73,7 +76,7 @@ let ScraperService = ScraperService_1 = class ScraperService {
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0',
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
         ];
     }
     async scrapeProduct(url, retryCount = 0) {
@@ -222,13 +225,16 @@ let ScraperService = ScraperService_1 = class ScraperService {
             '.a-color-price',
             '.price',
             '[data-automation-id="price"]',
-            '.a-text-strike .a-offscreen'
+            '.a-text-strike .a-offscreen',
         ];
         let price = 0;
         for (const selector of priceSelectors) {
             const priceElement = $(selector).first();
             if (priceElement.length > 0) {
-                const priceText = priceElement.text().replace(/[^0-9.,]/g, '').replace(',', '');
+                const priceText = priceElement
+                    .text()
+                    .replace(/[^0-9.,]/g, '')
+                    .replace(',', '');
                 const parsedPrice = parseFloat(priceText);
                 if (!isNaN(parsedPrice) && parsedPrice > 0) {
                     price = parsedPrice;
@@ -250,13 +256,31 @@ let ScraperService = ScraperService_1 = class ScraperService {
                 }
             }
         }
-        const originalPriceText = $('.a-price.a-text-price .a-offscreen').text().replace(/[^0-9.]/g, '') ||
-            $('.a-text-strike').text().replace(/[^0-9.]/g, '') ||
-            $('#listPriceValue').text().replace(/[^0-9.]/g, '');
-        const rating = parseFloat(((_a = $('.a-icon-alt').first().text().match(/[\d.]+/)) === null || _a === void 0 ? void 0 : _a[0]) ||
-            ((_b = $('[data-hook="average-star-rating"]').text().match(/[\d.]+/)) === null || _b === void 0 ? void 0 : _b[0]) || '0');
-        const reviewCount = parseInt($('.a-link-normal').find('span').text().replace(/[^0-9]/g, '') ||
-            $('[data-hook="total-review-count"]').text().replace(/[^0-9]/g, '') || '0');
+        const originalPriceText = $('.a-price.a-text-price .a-offscreen')
+            .text()
+            .replace(/[^0-9.]/g, '') ||
+            $('.a-text-strike')
+                .text()
+                .replace(/[^0-9.]/g, '') ||
+            $('#listPriceValue')
+                .text()
+                .replace(/[^0-9.]/g, '');
+        const rating = parseFloat(((_a = $('.a-icon-alt')
+            .first()
+            .text()
+            .match(/[\d.]+/)) === null || _a === void 0 ? void 0 : _a[0]) ||
+            ((_b = $('[data-hook="average-star-rating"]')
+                .text()
+                .match(/[\d.]+/)) === null || _b === void 0 ? void 0 : _b[0]) ||
+            '0');
+        const reviewCount = parseInt($('.a-link-normal')
+            .find('span')
+            .text()
+            .replace(/[^0-9]/g, '') ||
+            $('[data-hook="total-review-count"]')
+                .text()
+                .replace(/[^0-9]/g, '') ||
+            '0');
         const availability = $('#availability span').text().trim() ||
             $('.availability').text().trim() ||
             $('#deliveryBlockMessage').text().trim() ||
@@ -265,9 +289,18 @@ let ScraperService = ScraperService_1 = class ScraperService {
             $('.a-dynamic-image').first().attr('src') ||
             $('img[data-a-image-name="landingImage"]').attr('src') ||
             $('#main-image img').attr('src');
-        const description = $('.feature-bullets ul li').map((_, el) => $(el).text().trim()).get().join('. ') ||
-            $('#feature-bullets ul li').map((_, el) => $(el).text().trim()).get().join('. ');
-        const brand = $('#bylineInfo').text().trim().replace(/^Brand:\s*/i, '') ||
+        const description = $('.feature-bullets ul li')
+            .map((_, el) => $(el).text().trim())
+            .get()
+            .join('. ') ||
+            $('#feature-bullets ul li')
+                .map((_, el) => $(el).text().trim())
+                .get()
+                .join('. ');
+        const brand = $('#bylineInfo')
+            .text()
+            .trim()
+            .replace(/^Brand:\s*/i, '') ||
             $('.a-row .a-size-base').first().text().trim() ||
             $('[data-feature-name="bylineInfo"]').text().trim() ||
             'Unknown';
@@ -290,11 +323,13 @@ let ScraperService = ScraperService_1 = class ScraperService {
             description,
             brand,
             category: $('#nav-subnav').text().trim() || 'Unknown',
-            features: description ? description.split('. ').filter(f => f.length > 10) : [],
+            features: description
+                ? description.split('. ').filter((f) => f.length > 10)
+                : [],
             reviews,
             specifications,
             seller,
-            warranty
+            warranty,
         };
     }
     async scrapeFlipkart($, url) {
@@ -305,27 +340,44 @@ let ScraperService = ScraperService_1 = class ScraperService {
             $('h1').first().text().trim() ||
             $('._1h65Xx').text().trim();
         const priceSelectors = [
-            '._30jeq3._16Jk6d', '._25b18c', '._3qGVVD', '._1_WHN1'
+            '._30jeq3._16Jk6d',
+            '._25b18c',
+            '._3qGVVD',
+            '._1_WHN1',
         ];
         let priceText = '';
         for (const selector of priceSelectors) {
-            const price = $(selector).text().replace(/[^0-9.]/g, '');
+            const price = $(selector)
+                .text()
+                .replace(/[^0-9.]/g, '');
             if (price) {
                 priceText = price;
                 break;
             }
         }
-        const originalPriceText = $('._3I9_wc._2p6lqe').text().replace(/[^0-9.]/g, '') ||
-            $('._3auQ3N').text().replace(/[^0-9.]/g, '') ||
-            $('._14MKbH').text().replace(/[^0-9.]/g, '');
+        const originalPriceText = $('._3I9_wc._2p6lqe')
+            .text()
+            .replace(/[^0-9.]/g, '') ||
+            $('._3auQ3N')
+                .text()
+                .replace(/[^0-9.]/g, '') ||
+            $('._14MKbH')
+                .text()
+                .replace(/[^0-9.]/g, '');
         const rating = parseFloat($('._3LWZlK').text() ||
             $('._3n5AXx').text() ||
-            ((_a = $('[id*="rating"]').text().match(/[\d.]+/)) === null || _a === void 0 ? void 0 : _a[0]) || '0');
-        const reviewCount = parseInt($('._2_R_DZ').text().replace(/[^0-9]/g, '') ||
-            $('._13vcmD').text().replace(/[^0-9]/g, '') || '0');
-        const availability = $('._16FRp0').text().trim() ||
-            $('._1fGeJ5').text().trim() ||
-            'In Stock';
+            ((_a = $('[id*="rating"]')
+                .text()
+                .match(/[\d.]+/)) === null || _a === void 0 ? void 0 : _a[0]) ||
+            '0');
+        const reviewCount = parseInt($('._2_R_DZ')
+            .text()
+            .replace(/[^0-9]/g, '') ||
+            $('._13vcmD')
+                .text()
+                .replace(/[^0-9]/g, '') ||
+            '0');
+        const availability = $('._16FRp0').text().trim() || $('._1fGeJ5').text().trim() || 'In Stock';
         const imageUrl = $('._396cs4').attr('src') ||
             $('._2r_T1I').attr('src') ||
             $('._2amPTt img').attr('src') ||
@@ -334,10 +386,11 @@ let ScraperService = ScraperService_1 = class ScraperService {
             $('._2b4mcD').text().trim() ||
             $('._3j-qDV').text().trim() ||
             'Unknown';
-        const description = $('._1AN87F').map((_, el) => $(el).text().trim()).get().join('. ') ||
-            $('._3WHvuP').text().trim();
-        const seller = $('._5gtYXR').text().trim() ||
-            $('._1fGeJ5._1KWZFN').text().trim();
+        const description = $('._1AN87F')
+            .map((_, el) => $(el).text().trim())
+            .get()
+            .join('. ') || $('._3WHvuP').text().trim();
+        const seller = $('._5gtYXR').text().trim() || $('._1fGeJ5._1KWZFN').text().trim();
         const reviews = await this.extractReviews($, 'flipkart');
         const specifications = this.extractSpecifications($, 'flipkart');
         return {
@@ -353,17 +406,22 @@ let ScraperService = ScraperService_1 = class ScraperService {
             description,
             brand,
             category: $('._1HmYoV').text().trim() || 'Unknown',
-            features: description ? description.split('. ').filter(f => f.length > 10) : [],
+            features: description
+                ? description.split('. ').filter((f) => f.length > 10)
+                : [],
             reviews,
             specifications,
-            seller
+            seller,
         };
     }
     async scrapeMyntra($, url) {
-        const title = $('.pdp-product-name').text().trim() ||
-            $('h1').first().text().trim();
-        const priceText = $('.pdp-price strong').text().replace(/[^0-9.]/g, '') ||
-            $('.price').text().replace(/[^0-9.]/g, '');
+        const title = $('.pdp-product-name').text().trim() || $('h1').first().text().trim();
+        const priceText = $('.pdp-price strong')
+            .text()
+            .replace(/[^0-9.]/g, '') ||
+            $('.price')
+                .text()
+                .replace(/[^0-9.]/g, '');
         const imageUrl = $('.image-grid-image').first().attr('src');
         return {
             title: title || 'Myntra Product',
@@ -377,10 +435,13 @@ let ScraperService = ScraperService_1 = class ScraperService {
         };
     }
     async scrapeAjio($, url) {
-        const title = $('.prod-name').text().trim() ||
-            $('h1').first().text().trim();
-        const priceText = $('.prod-sp').text().replace(/[^0-9.]/g, '') ||
-            $('.price').text().replace(/[^0-9.]/g, '');
+        const title = $('.prod-name').text().trim() || $('h1').first().text().trim();
+        const priceText = $('.prod-sp')
+            .text()
+            .replace(/[^0-9.]/g, '') ||
+            $('.price')
+                .text()
+                .replace(/[^0-9.]/g, '');
         return {
             title: title || 'Ajio Product',
             price: parseFloat(priceText) || 0,
@@ -401,7 +462,7 @@ let ScraperService = ScraperService_1 = class ScraperService {
             '.item-title',
             '.product-heading',
             '[class*="title"]',
-            '[class*="name"]'
+            '[class*="name"]',
         ];
         let title = '';
         for (const selector of titleSelectors) {
@@ -425,13 +486,16 @@ let ScraperService = ScraperService_1 = class ScraperService {
             '[id*="price"]',
             '.money',
             '.currency',
-            '.cost-value'
+            '.cost-value',
         ];
         let price = 0;
         for (const selector of priceSelectors) {
             const priceElement = $(selector).first();
             if (priceElement.length > 0) {
-                const priceText = priceElement.text().replace(/[^0-9.,]/g, '').replace(',', '');
+                const priceText = priceElement
+                    .text()
+                    .replace(/[^0-9.,]/g, '')
+                    .replace(',', '');
                 const parsedPrice = parseFloat(priceText);
                 if (!isNaN(parsedPrice) && parsedPrice > 0) {
                     price = parsedPrice;
@@ -439,7 +503,12 @@ let ScraperService = ScraperService_1 = class ScraperService {
                 }
             }
         }
-        const brandSelectors = ['.brand', '.manufacturer', '[data-testid*="brand"]', '.product-brand'];
+        const brandSelectors = [
+            '.brand',
+            '.manufacturer',
+            '[data-testid*="brand"]',
+            '.product-brand',
+        ];
         let brand = 'Unknown';
         for (const selector of brandSelectors) {
             const brandElement = $(selector).first().text().trim();
@@ -467,7 +536,7 @@ let ScraperService = ScraperService_1 = class ScraperService {
     }
     async enhanceWithAI(productData, $) {
         try {
-            const model = this.genAI.getGenerativeModel({ model: "gemini-pro" });
+            const model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
             const pageText = $('body').text().slice(0, 2000);
             const prompt = `
         Analyze this e-commerce product data and page content to enhance missing information:
@@ -541,11 +610,17 @@ let ScraperService = ScraperService_1 = class ScraperService {
             return 'Electronics';
         if (text.includes('phone') || text.includes('mobile'))
             return 'Electronics';
-        if (text.includes('tv') || text.includes('television') || text.includes('monitor'))
+        if (text.includes('tv') ||
+            text.includes('television') ||
+            text.includes('monitor'))
             return 'Electronics';
-        if (text.includes('shirt') || text.includes('trouser') || text.includes('dress'))
+        if (text.includes('shirt') ||
+            text.includes('trouser') ||
+            text.includes('dress'))
             return 'Clothing';
-        if (text.includes('shoe') || text.includes('sneaker') || text.includes('boot'))
+        if (text.includes('shoe') ||
+            text.includes('sneaker') ||
+            text.includes('boot'))
             return 'Footwear';
         if (text.includes('watch') || text.includes('jewelry'))
             return 'Accessories';
@@ -564,16 +639,16 @@ let ScraperService = ScraperService_1 = class ScraperService {
         const userAgent = this.userAgents[Math.floor(Math.random() * this.userAgents.length)];
         const baseHeaders = {
             'User-Agent': userAgent,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.9,hi;q=0.8',
             'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
+            Connection: 'keep-alive',
             'Upgrade-Insecure-Requests': '1',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
             'Sec-Fetch-Site': 'none',
             'Sec-Fetch-User': '?1',
-            'Cache-Control': 'max-age=0'
+            'Cache-Control': 'max-age=0',
         };
         switch (platform.toLowerCase()) {
             case 'amazon':
@@ -608,30 +683,48 @@ let ScraperService = ScraperService_1 = class ScraperService {
     }
     isBlocked(html, $) {
         const blockingIndicators = [
-            'blocked', 'captcha', 'robot', 'automation', 'bot detection',
-            'access denied', 'please try again', 'something went wrong',
-            'unusual traffic', 'verify you are human'
+            'blocked',
+            'captcha',
+            'robot',
+            'automation',
+            'bot detection',
+            'access denied',
+            'please try again',
+            'something went wrong',
+            'unusual traffic',
+            'verify you are human',
         ];
         const pageText = $('body').text().toLowerCase();
         const titleText = $('title').text().toLowerCase();
         const htmlLower = html.toLowerCase();
-        return blockingIndicators.some(indicator => pageText.includes(indicator) ||
+        return (blockingIndicators.some((indicator) => pageText.includes(indicator) ||
             titleText.includes(indicator) ||
-            htmlLower.includes(indicator)) || pageText.length < 1000;
+            htmlLower.includes(indicator)) || pageText.length < 1000);
     }
     async delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
     async extractReviews($, platform) {
         const reviews = [];
         try {
             switch (platform.toLowerCase()) {
                 case 'amazon':
-                    $('[data-hook="review"]').slice(0, 5).each((_, element) => {
+                    $('[data-hook="review"]')
+                        .slice(0, 5)
+                        .each((_, element) => {
                         var _a;
-                        const rating = parseFloat(((_a = $(element).find('[data-hook="review-star-rating"]').text().match(/[\d.]+/)) === null || _a === void 0 ? void 0 : _a[0]) || '0');
-                        const text = $(element).find('[data-hook="review-body"] span').text().trim();
-                        const date = $(element).find('[data-hook="review-date"]').text().trim();
+                        const rating = parseFloat(((_a = $(element)
+                            .find('[data-hook="review-star-rating"]')
+                            .text()
+                            .match(/[\d.]+/)) === null || _a === void 0 ? void 0 : _a[0]) || '0');
+                        const text = $(element)
+                            .find('[data-hook="review-body"] span')
+                            .text()
+                            .trim();
+                        const date = $(element)
+                            .find('[data-hook="review-date"]')
+                            .text()
+                            .trim();
                         const verified = $(element).find('[data-hook="avp-badge"]').length > 0;
                         if (text) {
                             reviews.push({ rating, text, date, verified });
@@ -639,7 +732,9 @@ let ScraperService = ScraperService_1 = class ScraperService {
                     });
                     break;
                 case 'flipkart':
-                    $('._16PBlm').slice(0, 5).each((_, element) => {
+                    $('._16PBlm')
+                        .slice(0, 5)
+                        .each((_, element) => {
                         const rating = parseFloat($(element).find('._3LWZlK').text() || '0');
                         const text = $(element).find('.t-ZTKy').text().trim();
                         if (text) {

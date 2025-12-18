@@ -1,5 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InternalProductDbService, Product } from './internal-product-db.service';
+import {
+  InternalProductDbService,
+  Product,
+} from './internal-product-db.service';
 
 export interface Alternative {
   product: Product;
@@ -22,7 +25,7 @@ export class AlternativesEngineService {
    */
   getSmartAlternatives(
     productId: string,
-    originalProduct?: Partial<Product>
+    originalProduct?: Partial<Product>,
   ): Alternative[] {
     // Get product from DB or use provided
     let product = this.productDb.getProductById(productId);
@@ -36,7 +39,9 @@ export class AlternativesEngineService {
     }
 
     const alternatives = this.findAlternatives(product);
-    return alternatives.sort((a, b) => b.improvementScore - a.improvementScore).slice(0, 5);
+    return alternatives
+      .sort((a, b) => b.improvementScore - a.improvementScore)
+      .slice(0, 5);
   }
 
   /**
@@ -56,7 +61,8 @@ export class AlternativesEngineService {
       const priceRatio = alt.price / product.price;
       const ranking = this.calculateRanking(improvement, priceRatio);
 
-      if (improvement > 0) { // Only positive improvements
+      if (improvement > 0) {
+        // Only positive improvements
         alternatives.push({
           product: alt,
           reason: this.generateReason(product, alt, improvement),
@@ -83,12 +89,18 @@ export class AlternativesEngineService {
 
     // Ethical score improvement (max +30)
     if (alternative.ethicalScore > current.ethicalScore) {
-      improvement += Math.min(30, (alternative.ethicalScore - current.ethicalScore) * 0.5);
+      improvement += Math.min(
+        30,
+        (alternative.ethicalScore - current.ethicalScore) * 0.5,
+      );
     }
 
     // Sustainability score improvement (max +30)
     if (alternative.sustainabilityScore > current.sustainabilityScore) {
-      improvement += Math.min(30, (alternative.sustainabilityScore - current.sustainabilityScore) * 0.5);
+      improvement += Math.min(
+        30,
+        (alternative.sustainabilityScore - current.sustainabilityScore) * 0.5,
+      );
     }
 
     // Price efficiency (max +20)
@@ -112,7 +124,10 @@ export class AlternativesEngineService {
   /**
    * Calculate ranking (1-5 stars)
    */
-  private calculateRanking(improvementScore: number, priceRatio: number): number {
+  private calculateRanking(
+    improvementScore: number,
+    priceRatio: number,
+  ): number {
     let stars = 3; // Base 3 stars
 
     if (improvementScore > 50) stars += 1;
@@ -127,38 +142,57 @@ export class AlternativesEngineService {
   /**
    * Generate reason for alternative
    */
-  private generateReason(current: Product, alternative: Product, improvement: number): string {
+  private generateReason(
+    current: Product,
+    alternative: Product,
+    improvement: number,
+  ): string {
     const reasons: string[] = [];
 
     if (alternative.rating > current.rating + 0.2) {
-      reasons.push(`Better rated (${alternative.rating}/5 vs ${current.rating}/5)`);
+      reasons.push(
+        `Better rated (${alternative.rating}/5 vs ${current.rating}/5)`,
+      );
     }
 
     if (alternative.ethicalScore > current.ethicalScore + 10) {
-      reasons.push(`More ethical (+${alternative.ethicalScore - current.ethicalScore} points)`);
+      reasons.push(
+        `More ethical (+${alternative.ethicalScore - current.ethicalScore} points)`,
+      );
     }
 
     if (alternative.sustainabilityScore > current.sustainabilityScore + 10) {
-      reasons.push(`More sustainable (+${alternative.sustainabilityScore - current.sustainabilityScore} points)`);
+      reasons.push(
+        `More sustainable (+${alternative.sustainabilityScore - current.sustainabilityScore} points)`,
+      );
     }
 
     if (alternative.price < current.price * 0.9) {
-      const savings = Math.round(((current.price - alternative.price) / current.price) * 100);
+      const savings = Math.round(
+        ((current.price - alternative.price) / current.price) * 100,
+      );
       reasons.push(`Save ${savings}% on price`);
     }
 
     if (alternative.reviews > current.reviews * 2) {
-      reasons.push(`More customer reviews (${alternative.reviews.toLocaleString()})`);
+      reasons.push(
+        `More customer reviews (${alternative.reviews.toLocaleString()})`,
+      );
     }
 
     // Add more features insight
     if (alternative.features.length > current.features.length) {
-      const extraFeatures = alternative.features.length - current.features.length;
-      reasons.push(`${extraFeatures} additional feature${extraFeatures > 1 ? 's' : ''}`);
+      const extraFeatures =
+        alternative.features.length - current.features.length;
+      reasons.push(
+        `${extraFeatures} additional feature${extraFeatures > 1 ? 's' : ''}`,
+      );
     }
 
     if (reasons.length === 0) {
-      reasons.push(`Overall better value (${Math.round(improvement)}% improvement)`);
+      reasons.push(
+        `Overall better value (${Math.round(improvement)}% improvement)`,
+      );
     }
 
     return reasons.slice(0, 2).join(' & ');
@@ -179,7 +213,8 @@ export class AlternativesEngineService {
       if (alt.category !== product.category) continue;
 
       // Focus on sustainability
-      const sustainabilityGain = alt.sustainabilityScore - product.sustainabilityScore;
+      const sustainabilityGain =
+        alt.sustainabilityScore - product.sustainabilityScore;
       const ethicsGain = alt.ethicalScore - product.ethicalScore;
       const combinedGain = sustainabilityGain * 0.6 + ethicsGain * 0.4;
 
@@ -217,7 +252,8 @@ export class AlternativesEngineService {
 
       const savings = product.price - alt.price;
       const qualityRatio = alt.rating / (product.rating || 1);
-      const improvement = (savings / product.price) * 50 + (qualityRatio - 1) * 20;
+      const improvement =
+        (savings / product.price) * 50 + (qualityRatio - 1) * 20;
 
       if (improvement > 10) {
         budgetAlternatives.push({
@@ -277,7 +313,7 @@ export class AlternativesEngineService {
   getAlternativesInPriceRange(
     productId: string,
     minPrice: number,
-    maxPrice: number
+    maxPrice: number,
   ): Alternative[] {
     const product = this.productDb.getProductById(productId);
     if (!product) return [];

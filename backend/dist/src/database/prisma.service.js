@@ -63,8 +63,8 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                             weight: 0.3,
                             criteria: {
                                 factors: ['fair_wages', 'worker_rights', 'safety_standards'],
-                                thresholds: { excellent: 90, good: 70, average: 50 }
-                            }
+                                thresholds: { excellent: 90, good: 70, average: 50 },
+                            },
                         },
                         {
                             name: 'Environmental Impact',
@@ -72,9 +72,13 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                             description: 'Environmental sustainability and carbon footprint',
                             weight: 0.25,
                             criteria: {
-                                factors: ['carbon_footprint', 'renewable_energy', 'waste_management'],
-                                thresholds: { excellent: 85, good: 65, average: 45 }
-                            }
+                                factors: [
+                                    'carbon_footprint',
+                                    'renewable_energy',
+                                    'waste_management',
+                                ],
+                                thresholds: { excellent: 85, good: 65, average: 45 },
+                            },
                         },
                         {
                             name: 'Supply Chain Transparency',
@@ -83,8 +87,8 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                             weight: 0.2,
                             criteria: {
                                 factors: ['supplier_disclosure', 'traceability', 'auditing'],
-                                thresholds: { excellent: 80, good: 60, average: 40 }
-                            }
+                                thresholds: { excellent: 80, good: 60, average: 40 },
+                            },
                         },
                         {
                             name: 'Community Impact',
@@ -92,9 +96,13 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                             description: 'Positive impact on local communities',
                             weight: 0.15,
                             criteria: {
-                                factors: ['local_sourcing', 'community_programs', 'economic_impact'],
-                                thresholds: { excellent: 75, good: 55, average: 35 }
-                            }
+                                factors: [
+                                    'local_sourcing',
+                                    'community_programs',
+                                    'economic_impact',
+                                ],
+                                thresholds: { excellent: 75, good: 55, average: 35 },
+                            },
                         },
                         {
                             name: 'Corporate Governance',
@@ -102,14 +110,18 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                             description: 'Ethical business practices and governance',
                             weight: 0.1,
                             criteria: {
-                                factors: ['transparency', 'ethics_code', 'stakeholder_engagement'],
-                                thresholds: { excellent: 85, good: 65, average: 45 }
-                            }
-                        }
+                                factors: [
+                                    'transparency',
+                                    'ethics_code',
+                                    'stakeholder_engagement',
+                                ],
+                                thresholds: { excellent: 85, good: 65, average: 45 },
+                            },
+                        },
                     ];
                     for (const rule of ethicsRules) {
                         await this.ethicsRule.create({
-                            data: rule
+                            data: rule,
                         });
                     }
                     this.logger.log(`✅ Seeded ${ethicsRules.length} ethics rules`);
@@ -160,9 +172,9 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                 category: 'governance',
                 description: 'Ethical business practices and governance',
                 weight: 0.1,
-            }
+            },
         ];
-        ethicsRules.forEach(rule => {
+        ethicsRules.forEach((rule) => {
             this.fallbackData.rules.set(rule.id, rule);
         });
         this.logger.log(`✅ Initialized ${ethicsRules.length} ethics rules in memory`);
@@ -196,7 +208,7 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
         }
         try {
             let product = await this.product.findUnique({
-                where: { url }
+                where: { url },
             });
             if (!product) {
                 product = await this.product.create({
@@ -216,7 +228,7 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                         availability: productData.availability || 'unknown',
                         imageUrl: productData.imageUrl,
                         features: productData.features || null,
-                    }
+                    },
                 });
                 this.logger.log(`📦 Created new product in MongoDB: ${product.title}`);
             }
@@ -230,7 +242,7 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                         reviewCount: productData.reviewCount || product.reviewCount,
                         availability: productData.availability || product.availability,
                         updatedAt: new Date(),
-                    }
+                    },
                 });
                 this.logger.log(`🔄 Updated existing product in MongoDB: ${product.title}`);
             }
@@ -282,7 +294,7 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                     ethicalSourcing: analysisData.ethicalSourcing || 60,
                     aiModel: analysisData.aiModel || 'gemini-pro',
                     processingTime: analysisData.processingTime || 0,
-                }
+                },
             });
             if (analysisData.alternatives && analysisData.alternatives.length > 0) {
                 for (const alt of analysisData.alternatives) {
@@ -296,7 +308,7 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                             rationale: alt.rationale || alt.reason,
                             confidence: alt.confidence || 75,
                             platform: alt.platform || 'unknown',
-                        }
+                        },
                     });
                 }
             }
@@ -320,7 +332,7 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                     price,
                     currency,
                     source,
-                }
+                },
             });
         }
         catch (error) {
@@ -335,9 +347,9 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                 orderBy: { createdAt: 'desc' },
                 include: {
                     product: {
-                        select: { platform: true }
-                    }
-                }
+                        select: { platform: true },
+                    },
+                },
             });
             const platformStats = recentAnalyses.reduce((acc, analysis) => {
                 const platform = analysis.product.platform;
@@ -345,10 +357,12 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
                 return acc;
             }, {});
             const avgDealScore = recentAnalyses.length > 0
-                ? recentAnalyses.reduce((sum, a) => sum + a.dealScore, 0) / recentAnalyses.length
+                ? recentAnalyses.reduce((sum, a) => sum + a.dealScore, 0) /
+                    recentAnalyses.length
                 : 0;
             const avgEthicalScore = recentAnalyses.length > 0
-                ? recentAnalyses.reduce((sum, a) => sum + a.ethicalScore, 0) / recentAnalyses.length
+                ? recentAnalyses.reduce((sum, a) => sum + a.ethicalScore, 0) /
+                    recentAnalyses.length
                 : 0;
             return {
                 totalAnalyses,

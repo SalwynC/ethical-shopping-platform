@@ -48,8 +48,11 @@ export class ScraperService {
   constructor() {
     // Initialize Google AI with proper error handling
     const apiKey = process.env.GOOGLE_AI_API_KEY;
-    this.hasValidApiKey = apiKey && apiKey !== 'your_free_gemini_api_key_here' && apiKey.length > 20;
-    
+    this.hasValidApiKey =
+      apiKey &&
+      apiKey !== 'your_free_gemini_api_key_here' &&
+      apiKey.length > 20;
+
     if (this.hasValidApiKey) {
       this.genAI = new GoogleGenerativeAI(apiKey);
     }
@@ -58,7 +61,7 @@ export class ScraperService {
     this.realDataService = new RealDataService();
     this.aiScraperService = new AIScraperService();
     this.htmlScraperService = new HtmlScraperService();
-    
+
     // Initialize advanced scraping capabilities
     this.sessionCookies = new Map();
     this.userAgents = [
@@ -66,25 +69,31 @@ export class ScraperService {
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0',
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15',
-      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
     ];
   }
 
-  async scrapeProduct(url: string, retryCount: number = 0): Promise<ProductData> {
+  async scrapeProduct(
+    url: string,
+    retryCount: number = 0,
+  ): Promise<ProductData> {
     this.logger.log(`🔍 Advanced scraping from: ${url}`);
-    
+
     try {
       // ==================================================
       // PRIORITY 1: DIRECT HTML SCRAPING (MOST RELIABLE)
       // ==================================================
       this.logger.log('🌐 Step 1: Attempting DIRECT HTML scraping...');
       try {
-        const scrapedData = await this.htmlScraperService.scrapeProductPage(url);
-        
+        const scrapedData =
+          await this.htmlScraperService.scrapeProductPage(url);
+
         // Check if we got meaningful data
         if (scrapedData.title && scrapedData.price && scrapedData.price > 0) {
-          this.logger.log(`✅ HTML SCRAPING SUCCESS: ${scrapedData.title} - ${scrapedData.currency} ${scrapedData.price}`);
-          
+          this.logger.log(
+            `✅ HTML SCRAPING SUCCESS: ${scrapedData.title} - ${scrapedData.currency} ${scrapedData.price}`,
+          );
+
           return {
             title: scrapedData.title,
             price: scrapedData.price,
@@ -102,8 +111,10 @@ export class ScraperService {
             specifications: scrapedData.specifications,
           };
         }
-        
-        this.logger.warn('⚠️ HTML scraping returned incomplete data, trying AI methods...');
+
+        this.logger.warn(
+          '⚠️ HTML scraping returned incomplete data, trying AI methods...',
+        );
       } catch (htmlError) {
         this.logger.warn(`⚠️ HTML scraping failed: ${htmlError.message}`);
       }
@@ -113,11 +124,14 @@ export class ScraperService {
       // ==================================================
       if (this.hasValidApiKey && retryCount === 0) {
         this.logger.log('🤖 Step 2: Attempting AI-powered extraction...');
-        const aiData = await this.aiScraperService.extractProductDataFromUrl(url);
-        
+        const aiData =
+          await this.aiScraperService.extractProductDataFromUrl(url);
+
         if (aiData && aiData.title && aiData.price > 0) {
-          this.logger.log(`✅ AI extraction successful: ${aiData.title} - ₹${aiData.price}`);
-          
+          this.logger.log(
+            `✅ AI extraction successful: ${aiData.title} - ₹${aiData.price}`,
+          );
+
           // Convert to ProductData format
           return {
             title: aiData.title,
@@ -136,7 +150,9 @@ export class ScraperService {
             specifications: aiData.specifications || {},
           };
         } else {
-          this.logger.warn('⚠️ AI extraction returned incomplete data, trying fallback methods...');
+          this.logger.warn(
+            '⚠️ AI extraction returned incomplete data, trying fallback methods...',
+          );
         }
       }
 
@@ -148,22 +164,26 @@ export class ScraperService {
       if (retryCount > 0) {
         await this.delay(this.requestDelay * Math.pow(2, retryCount));
       }
-      
+
       const headers = this.generateRealisticHeaders(url);
       const platform = this.detectPlatform(url);
-      
+
       // Make the request with enhanced configuration
       const response = await this.makeEnhancedRequest(url, headers, platform);
       const $ = cheerio.load(response.data);
-      
+
       // Check if we got blocked (common blocking indicators)
       if (this.isBlocked(response.data, $)) {
-        this.logger.warn('🚫 Bot detection encountered, implementing evasion...');
-        
+        this.logger.warn(
+          '🚫 Bot detection encountered, implementing evasion...',
+        );
+
         if (retryCount < 3) {
           return this.scrapeProduct(url, retryCount + 1);
         } else {
-          throw new Error('Maximum retry attempts reached - site blocking detected');
+          throw new Error(
+            'Maximum retry attempts reached - site blocking detected',
+          );
         }
       }
 
@@ -187,42 +207,54 @@ export class ScraperService {
       }
 
       // Check if scraping was successful (has meaningful data)
-      const hasGoodData = productData.title && 
-                         productData.title !== 'Amazon Product' && 
-                         productData.title !== 'Flipkart Product' && 
-                         productData.title !== 'Product' &&
-                         productData.price > 0;
+      const hasGoodData =
+        productData.title &&
+        productData.title !== 'Amazon Product' &&
+        productData.title !== 'Flipkart Product' &&
+        productData.title !== 'Product' &&
+        productData.price > 0;
 
       if (!hasGoodData) {
-        this.logger.warn('⚠️ Scraping returned poor data, trying real data service...');
-        const realData = await this.realDataService.getRealProductData(url, platform);
-        
+        this.logger.warn(
+          '⚠️ Scraping returned poor data, trying real data service...',
+        );
+        const realData = await this.realDataService.getRealProductData(
+          url,
+          platform,
+        );
+
         if (realData) {
           this.logger.log(`✅ Using real data: ${realData.title}`);
           productData = realData;
         }
       }
-      
+
       if (this.hasValidApiKey) {
         productData = await this.enhanceWithAI(productData, $);
       }
-      
-      this.logger.log(`✅ Final product data: ${productData.title} - ${productData.currency} ${productData.price}`);
-      return productData;
 
+      this.logger.log(
+        `✅ Final product data: ${productData.title} - ${productData.currency} ${productData.price}`,
+      );
+      return productData;
     } catch (error) {
       this.logger.error(`❌ Scraping failed: ${error.message}`);
-      
+
       // Try real data service as fallback
-      this.logger.log('🔄 Attempting to get real data from fallback service...');
+      this.logger.log(
+        '🔄 Attempting to get real data from fallback service...',
+      );
       const platform = this.detectPlatform(url);
-      const realData = await this.realDataService.getRealProductData(url, platform);
-      
+      const realData = await this.realDataService.getRealProductData(
+        url,
+        platform,
+      );
+
       if (realData) {
         this.logger.log(`✅ Got real fallback data: ${realData.title}`);
         return realData;
       }
-      
+
       // Final fallback
       return {
         title: 'Product Analysis Failed',
@@ -238,15 +270,16 @@ export class ScraperService {
 
   private async scrapeAmazon($: any, url: string): Promise<ProductData> {
     this.logger.log('🏪 Extracting Amazon product data...');
-    
-    const title = $('#productTitle').text().trim() || 
-                  $('.product-title').text().trim() ||
-                  $('h1').first().text().trim();
-    
+
+    const title =
+      $('#productTitle').text().trim() ||
+      $('.product-title').text().trim() ||
+      $('h1').first().text().trim();
+
     // Enhanced price extraction with multiple selectors
     const priceSelectors = [
-      '.a-price-whole', 
-      '.a-price .a-offscreen', 
+      '.a-price-whole',
+      '.a-price .a-offscreen',
       '.a-price-range .a-price .a-offscreen',
       '.a-price.a-text-price .a-offscreen',
       '.a-price-symbol + .a-price-whole',
@@ -255,70 +288,116 @@ export class ScraperService {
       '.a-color-price',
       '.price',
       '[data-automation-id="price"]',
-      '.a-text-strike .a-offscreen'
+      '.a-text-strike .a-offscreen',
     ];
-    
+
     let price = 0;
     for (const selector of priceSelectors) {
       const priceElement = $(selector).first();
       if (priceElement.length > 0) {
-        const priceText = priceElement.text().replace(/[^0-9.,]/g, '').replace(',', '');
+        const priceText = priceElement
+          .text()
+          .replace(/[^0-9.,]/g, '')
+          .replace(',', '');
         const parsedPrice = parseFloat(priceText);
         if (!isNaN(parsedPrice) && parsedPrice > 0) {
           price = parsedPrice;
-          this.logger.log(`💰 Found price using selector: ${selector} = ₹${price}`);
+          this.logger.log(
+            `💰 Found price using selector: ${selector} = ₹${price}`,
+          );
           break;
         }
       }
     }
-    
+
     // If no price found, try more aggressive extraction
     if (price === 0) {
       const allText = $('body').text();
-      const priceMatches = allText.match(/₹\s*[\d,]+(?:\.\d{2})?/g) || 
-                          allText.match(/Rs\.\s*[\d,]+(?:\.\d{2})?/g) ||
-                          allText.match(/\$\s*[\d,]+(?:\.\d{2})?/g);
+      const priceMatches =
+        allText.match(/₹\s*[\d,]+(?:\.\d{2})?/g) ||
+        allText.match(/Rs\.\s*[\d,]+(?:\.\d{2})?/g) ||
+        allText.match(/\$\s*[\d,]+(?:\.\d{2})?/g);
       if (priceMatches && priceMatches.length > 0) {
-        const extractedPrice = parseFloat(priceMatches[0].replace(/[^0-9.]/g, ''));
+        const extractedPrice = parseFloat(
+          priceMatches[0].replace(/[^0-9.]/g, ''),
+        );
         if (!isNaN(extractedPrice)) {
           price = extractedPrice;
           this.logger.log(`💰 Extracted price from text: ₹${price}`);
         }
       }
     }
-    
-    const originalPriceText = $('.a-price.a-text-price .a-offscreen').text().replace(/[^0-9.]/g, '') ||
-                              $('.a-text-strike').text().replace(/[^0-9.]/g, '') ||
-                              $('#listPriceValue').text().replace(/[^0-9.]/g, '');
 
-    const rating = parseFloat($('.a-icon-alt').first().text().match(/[\d.]+/)?.[0] || 
-                             $('[data-hook="average-star-rating"]').text().match(/[\d.]+/)?.[0] || '0');
-    const reviewCount = parseInt($('.a-link-normal').find('span').text().replace(/[^0-9]/g, '') || 
-                               $('[data-hook="total-review-count"]').text().replace(/[^0-9]/g, '') || '0');
-    
-    const availability = $('#availability span').text().trim() || 
-                        $('.availability').text().trim() ||
-                        $('#deliveryBlockMessage').text().trim() ||
-                        'In Stock';
+    const originalPriceText =
+      $('.a-price.a-text-price .a-offscreen')
+        .text()
+        .replace(/[^0-9.]/g, '') ||
+      $('.a-text-strike')
+        .text()
+        .replace(/[^0-9.]/g, '') ||
+      $('#listPriceValue')
+        .text()
+        .replace(/[^0-9.]/g, '');
 
-    const imageUrl = $('#landingImage').attr('src') || 
-                     $('.a-dynamic-image').first().attr('src') ||
-                     $('img[data-a-image-name="landingImage"]').attr('src') ||
-                     $('#main-image img').attr('src');
+    const rating = parseFloat(
+      $('.a-icon-alt')
+        .first()
+        .text()
+        .match(/[\d.]+/)?.[0] ||
+        $('[data-hook="average-star-rating"]')
+          .text()
+          .match(/[\d.]+/)?.[0] ||
+        '0',
+    );
+    const reviewCount = parseInt(
+      $('.a-link-normal')
+        .find('span')
+        .text()
+        .replace(/[^0-9]/g, '') ||
+        $('[data-hook="total-review-count"]')
+          .text()
+          .replace(/[^0-9]/g, '') ||
+        '0',
+    );
 
-    const description = $('.feature-bullets ul li').map((_, el) => $(el).text().trim()).get().join('. ') ||
-                       $('#feature-bullets ul li').map((_, el) => $(el).text().trim()).get().join('. ');
+    const availability =
+      $('#availability span').text().trim() ||
+      $('.availability').text().trim() ||
+      $('#deliveryBlockMessage').text().trim() ||
+      'In Stock';
 
-    const brand = $('#bylineInfo').text().trim().replace(/^Brand:\s*/i, '') ||
-                  $('.a-row .a-size-base').first().text().trim() ||
-                  $('[data-feature-name="bylineInfo"]').text().trim() ||
-                  'Unknown';
+    const imageUrl =
+      $('#landingImage').attr('src') ||
+      $('.a-dynamic-image').first().attr('src') ||
+      $('img[data-a-image-name="landingImage"]').attr('src') ||
+      $('#main-image img').attr('src');
 
-    const seller = $('#sellerProfileTriggerId').text().trim() ||
-                   $('.a-size-small.a-color-secondary').text().trim();
+    const description =
+      $('.feature-bullets ul li')
+        .map((_, el) => $(el).text().trim())
+        .get()
+        .join('. ') ||
+      $('#feature-bullets ul li')
+        .map((_, el) => $(el).text().trim())
+        .get()
+        .join('. ');
 
-    const warranty = $('.a-row:contains("Warranty")').text().trim() ||
-                     $('[data-feature-name="warranty"]').text().trim();
+    const brand =
+      $('#bylineInfo')
+        .text()
+        .trim()
+        .replace(/^Brand:\s*/i, '') ||
+      $('.a-row .a-size-base').first().text().trim() ||
+      $('[data-feature-name="bylineInfo"]').text().trim() ||
+      'Unknown';
+
+    const seller =
+      $('#sellerProfileTriggerId').text().trim() ||
+      $('.a-size-small.a-color-secondary').text().trim();
+
+    const warranty =
+      $('.a-row:contains("Warranty")').text().trim() ||
+      $('[data-feature-name="warranty"]').text().trim();
 
     // Extract comprehensive product data
     const reviews = await this.extractReviews($, 'amazon');
@@ -337,65 +416,96 @@ export class ScraperService {
       description,
       brand,
       category: $('#nav-subnav').text().trim() || 'Unknown',
-      features: description ? description.split('. ').filter(f => f.length > 10) : [],
+      features: description
+        ? description.split('. ').filter((f) => f.length > 10)
+        : [],
       reviews,
       specifications,
       seller,
-      warranty
+      warranty,
     };
   }
 
   private async scrapeFlipkart($: any, url: string): Promise<ProductData> {
     this.logger.log('🛒 Extracting Flipkart product data...');
-    
-    const title = $('.B_NuCI').text().trim() || 
-                  $('._35KyD6').text().trim() ||
-                  $('h1').first().text().trim() ||
-                  $('._1h65Xx').text().trim();
-    
+
+    const title =
+      $('.B_NuCI').text().trim() ||
+      $('._35KyD6').text().trim() ||
+      $('h1').first().text().trim() ||
+      $('._1h65Xx').text().trim();
+
     // Enhanced price extraction for Flipkart
     const priceSelectors = [
-      '._30jeq3._16Jk6d', '._25b18c', '._3qGVVD', '._1_WHN1'
+      '._30jeq3._16Jk6d',
+      '._25b18c',
+      '._3qGVVD',
+      '._1_WHN1',
     ];
-    
+
     let priceText = '';
     for (const selector of priceSelectors) {
-      const price = $(selector).text().replace(/[^0-9.]/g, '');
+      const price = $(selector)
+        .text()
+        .replace(/[^0-9.]/g, '');
       if (price) {
         priceText = price;
         break;
       }
     }
-    
-    const originalPriceText = $('._3I9_wc._2p6lqe').text().replace(/[^0-9.]/g, '') ||
-                              $('._3auQ3N').text().replace(/[^0-9.]/g, '') ||
-                              $('._14MKbH').text().replace(/[^0-9.]/g, '');
 
-    const rating = parseFloat($('._3LWZlK').text() || 
-                             $('._3n5AXx').text() ||
-                             $('[id*="rating"]').text().match(/[\d.]+/)?.[0] || '0');
-    const reviewCount = parseInt($('._2_R_DZ').text().replace(/[^0-9]/g, '') || 
-                               $('._13vcmD').text().replace(/[^0-9]/g, '') || '0');
+    const originalPriceText =
+      $('._3I9_wc._2p6lqe')
+        .text()
+        .replace(/[^0-9.]/g, '') ||
+      $('._3auQ3N')
+        .text()
+        .replace(/[^0-9.]/g, '') ||
+      $('._14MKbH')
+        .text()
+        .replace(/[^0-9.]/g, '');
 
-    const availability = $('._16FRp0').text().trim() ||
-                        $('._1fGeJ5').text().trim() ||
-                        'In Stock';
+    const rating = parseFloat(
+      $('._3LWZlK').text() ||
+        $('._3n5AXx').text() ||
+        $('[id*="rating"]')
+          .text()
+          .match(/[\d.]+/)?.[0] ||
+        '0',
+    );
+    const reviewCount = parseInt(
+      $('._2_R_DZ')
+        .text()
+        .replace(/[^0-9]/g, '') ||
+        $('._13vcmD')
+          .text()
+          .replace(/[^0-9]/g, '') ||
+        '0',
+    );
 
-    const imageUrl = $('._396cs4').attr('src') || 
-                     $('._2r_T1I').attr('src') ||
-                     $('._2amPTt img').attr('src') ||
-                     $('._312R1Y img').attr('src');
+    const availability =
+      $('._16FRp0').text().trim() || $('._1fGeJ5').text().trim() || 'In Stock';
 
-    const brand = $('._1nrv9j').text().trim() ||
-                  $('._2b4mcD').text().trim() ||
-                  $('._3j-qDV').text().trim() ||
-                  'Unknown';
+    const imageUrl =
+      $('._396cs4').attr('src') ||
+      $('._2r_T1I').attr('src') ||
+      $('._2amPTt img').attr('src') ||
+      $('._312R1Y img').attr('src');
 
-    const description = $('._1AN87F').map((_, el) => $(el).text().trim()).get().join('. ') ||
-                       $('._3WHvuP').text().trim();
+    const brand =
+      $('._1nrv9j').text().trim() ||
+      $('._2b4mcD').text().trim() ||
+      $('._3j-qDV').text().trim() ||
+      'Unknown';
 
-    const seller = $('._5gtYXR').text().trim() ||
-                   $('._1fGeJ5._1KWZFN').text().trim();
+    const description =
+      $('._1AN87F')
+        .map((_, el) => $(el).text().trim())
+        .get()
+        .join('. ') || $('._3WHvuP').text().trim();
+
+    const seller =
+      $('._5gtYXR').text().trim() || $('._1fGeJ5._1KWZFN').text().trim();
 
     // Extract comprehensive product data
     const reviews = await this.extractReviews($, 'flipkart');
@@ -414,19 +524,26 @@ export class ScraperService {
       description,
       brand,
       category: $('._1HmYoV').text().trim() || 'Unknown',
-      features: description ? description.split('. ').filter(f => f.length > 10) : [],
+      features: description
+        ? description.split('. ').filter((f) => f.length > 10)
+        : [],
       reviews,
       specifications,
-      seller
+      seller,
     };
   }
 
   private async scrapeMyntra($: any, url: string): Promise<ProductData> {
-    const title = $('.pdp-product-name').text().trim() || 
-                  $('h1').first().text().trim();
-    
-    const priceText = $('.pdp-price strong').text().replace(/[^0-9.]/g, '') ||
-                      $('.price').text().replace(/[^0-9.]/g, '');
+    const title =
+      $('.pdp-product-name').text().trim() || $('h1').first().text().trim();
+
+    const priceText =
+      $('.pdp-price strong')
+        .text()
+        .replace(/[^0-9.]/g, '') ||
+      $('.price')
+        .text()
+        .replace(/[^0-9.]/g, '');
 
     const imageUrl = $('.image-grid-image').first().attr('src');
 
@@ -443,11 +560,16 @@ export class ScraperService {
   }
 
   private async scrapeAjio($: any, url: string): Promise<ProductData> {
-    const title = $('.prod-name').text().trim() || 
-                  $('h1').first().text().trim();
-    
-    const priceText = $('.prod-sp').text().replace(/[^0-9.]/g, '') ||
-                      $('.price').text().replace(/[^0-9.]/g, '');
+    const title =
+      $('.prod-name').text().trim() || $('h1').first().text().trim();
+
+    const priceText =
+      $('.prod-sp')
+        .text()
+        .replace(/[^0-9.]/g, '') ||
+      $('.price')
+        .text()
+        .replace(/[^0-9.]/g, '');
 
     return {
       title: title || 'Ajio Product',
@@ -471,9 +593,9 @@ export class ScraperService {
       '.item-title',
       '.product-heading',
       '[class*="title"]',
-      '[class*="name"]'
+      '[class*="name"]',
     ];
-    
+
     let title = '';
     for (const selector of titleSelectors) {
       const titleElement = $(selector).first().text().trim();
@@ -498,14 +620,17 @@ export class ScraperService {
       '[id*="price"]',
       '.money',
       '.currency',
-      '.cost-value'
+      '.cost-value',
     ];
-    
+
     let price = 0;
     for (const selector of priceSelectors) {
       const priceElement = $(selector).first();
       if (priceElement.length > 0) {
-        const priceText = priceElement.text().replace(/[^0-9.,]/g, '').replace(',', '');
+        const priceText = priceElement
+          .text()
+          .replace(/[^0-9.,]/g, '')
+          .replace(',', '');
         const parsedPrice = parseFloat(priceText);
         if (!isNaN(parsedPrice) && parsedPrice > 0) {
           price = parsedPrice;
@@ -513,9 +638,14 @@ export class ScraperService {
         }
       }
     }
-    
+
     // Try to extract brand
-    const brandSelectors = ['.brand', '.manufacturer', '[data-testid*="brand"]', '.product-brand'];
+    const brandSelectors = [
+      '.brand',
+      '.manufacturer',
+      '[data-testid*="brand"]',
+      '.product-brand',
+    ];
     let brand = 'Unknown';
     for (const selector of brandSelectors) {
       const brandElement = $(selector).first().text().trim();
@@ -542,10 +672,13 @@ export class ScraperService {
     };
   }
 
-  private async enhanceWithAI(productData: ProductData, $: any): Promise<ProductData> {
+  private async enhanceWithAI(
+    productData: ProductData,
+    $: any,
+  ): Promise<ProductData> {
     try {
-      const model = this.genAI.getGenerativeModel({ model: "gemini-pro" });
-      
+      const model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
+
       const pageText = $('body').text().slice(0, 2000); // Limit text for AI analysis
       const prompt = `
         Analyze this e-commerce product data and page content to enhance missing information:
@@ -567,12 +700,12 @@ export class ScraperService {
 
       const result = await model.generateContent(prompt);
       const response = result.response.text();
-      
+
       try {
         const enhanced = JSON.parse(response);
         return {
           ...productData,
-          ...enhanced
+          ...enhanced,
         };
       } catch (parseError) {
         this.logger.warn('AI enhancement parsing failed, using original data');
@@ -586,7 +719,7 @@ export class ScraperService {
 
   private detectPlatform(url: string): string {
     const domain = new URL(url).hostname.toLowerCase();
-    
+
     if (domain.includes('amazon')) return 'amazon';
     if (domain.includes('flipkart')) return 'flipkart';
     if (domain.includes('myntra')) return 'myntra';
@@ -594,17 +727,17 @@ export class ScraperService {
     if (domain.includes('ebay')) return 'ebay';
     if (domain.includes('walmart')) return 'walmart';
     if (domain.includes('nykaa')) return 'nykaa';
-    
+
     return 'generic';
   }
 
   private extractProductId(url: string): string {
     // Extract product ID from various URL patterns
     const patterns = [
-      /\/dp\/([A-Z0-9]{10})/i,  // Amazon
-      /\/p\/([^?]+)/i,          // Flipkart
-      /\/([0-9]+)/i,            // Generic numeric ID
-      /product\/([^\/\?]+)/i,   // Generic product path
+      /\/dp\/([A-Z0-9]{10})/i, // Amazon
+      /\/p\/([^?]+)/i, // Flipkart
+      /\/([0-9]+)/i, // Generic numeric ID
+      /product\/([^\/\?]+)/i, // Generic product path
     ];
 
     for (const pattern of patterns) {
@@ -617,38 +750,58 @@ export class ScraperService {
 
   private detectCategory(url: string, title: string): string {
     const text = (url + ' ' + title).toLowerCase();
-    
-    if (text.includes('laptop') || text.includes('computer')) return 'Electronics';
+
+    if (text.includes('laptop') || text.includes('computer'))
+      return 'Electronics';
     if (text.includes('phone') || text.includes('mobile')) return 'Electronics';
-    if (text.includes('tv') || text.includes('television') || text.includes('monitor')) return 'Electronics';
-    if (text.includes('shirt') || text.includes('trouser') || text.includes('dress')) return 'Clothing';
-    if (text.includes('shoe') || text.includes('sneaker') || text.includes('boot')) return 'Footwear';
-    if (text.includes('watch') || text.includes('jewelry')) return 'Accessories';
+    if (
+      text.includes('tv') ||
+      text.includes('television') ||
+      text.includes('monitor')
+    )
+      return 'Electronics';
+    if (
+      text.includes('shirt') ||
+      text.includes('trouser') ||
+      text.includes('dress')
+    )
+      return 'Clothing';
+    if (
+      text.includes('shoe') ||
+      text.includes('sneaker') ||
+      text.includes('boot')
+    )
+      return 'Footwear';
+    if (text.includes('watch') || text.includes('jewelry'))
+      return 'Accessories';
     if (text.includes('book')) return 'Books';
     if (text.includes('toy') || text.includes('game')) return 'Toys & Games';
-    if (text.includes('kitchen') || text.includes('appliance')) return 'Home & Kitchen';
+    if (text.includes('kitchen') || text.includes('appliance'))
+      return 'Home & Kitchen';
     if (text.includes('beauty') || text.includes('cosmetic')) return 'Beauty';
-    
+
     return 'General';
   }
 
   // Advanced scraping helper methods
   private generateRealisticHeaders(url: string): Record<string, string> {
     const platform = this.detectPlatform(url);
-    const userAgent = this.userAgents[Math.floor(Math.random() * this.userAgents.length)];
-    
+    const userAgent =
+      this.userAgents[Math.floor(Math.random() * this.userAgents.length)];
+
     const baseHeaders = {
       'User-Agent': userAgent,
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+      Accept:
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
       'Accept-Language': 'en-US,en;q=0.9,hi;q=0.8',
       'Accept-Encoding': 'gzip, deflate, br',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
       'Upgrade-Insecure-Requests': '1',
       'Sec-Fetch-Dest': 'document',
       'Sec-Fetch-Mode': 'navigate',
       'Sec-Fetch-Site': 'none',
       'Sec-Fetch-User': '?1',
-      'Cache-Control': 'max-age=0'
+      'Cache-Control': 'max-age=0',
     };
 
     // Add platform-specific headers
@@ -656,24 +809,30 @@ export class ScraperService {
       case 'amazon':
         return {
           ...baseHeaders,
-          'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+          'Sec-Ch-Ua':
+            '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
           'Sec-Ch-Ua-Mobile': '?0',
-          'Sec-Ch-Ua-Platform': '"Windows"'
+          'Sec-Ch-Ua-Platform': '"Windows"',
         };
       case 'flipkart':
         return {
           ...baseHeaders,
-          'X-User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 FKUA/website/42/website/Desktop'
+          'X-User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 FKUA/website/42/website/Desktop',
         };
       default:
         return baseHeaders;
     }
   }
 
-  private async makeEnhancedRequest(url: string, headers: Record<string, string>, platform: string) {
+  private async makeEnhancedRequest(
+    url: string,
+    headers: Record<string, string>,
+    platform: string,
+  ) {
     const domain = new URL(url).hostname;
     const sessionId = crypto.randomBytes(16).toString('hex');
-    
+
     // Add session cookies if available
     const cookies = this.sessionCookies.get(domain) || '';
     if (cookies) {
@@ -692,7 +851,7 @@ export class ScraperService {
     await this.delay(Math.random() * 1000 + 500);
 
     const response = await axios.get(url, config);
-    
+
     // Store session cookies for future requests
     const setCookies = response.headers['set-cookie'];
     if (setCookies) {
@@ -704,57 +863,95 @@ export class ScraperService {
 
   private isBlocked(html: string, $: any): boolean {
     const blockingIndicators = [
-      'blocked', 'captcha', 'robot', 'automation', 'bot detection',
-      'access denied', 'please try again', 'something went wrong',
-      'unusual traffic', 'verify you are human'
+      'blocked',
+      'captcha',
+      'robot',
+      'automation',
+      'bot detection',
+      'access denied',
+      'please try again',
+      'something went wrong',
+      'unusual traffic',
+      'verify you are human',
     ];
 
     const pageText = $('body').text().toLowerCase();
     const titleText = $('title').text().toLowerCase();
     const htmlLower = html.toLowerCase();
 
-    return blockingIndicators.some(indicator => 
-      pageText.includes(indicator) || 
-      titleText.includes(indicator) || 
-      htmlLower.includes(indicator)
-    ) || pageText.length < 1000; // Too short content usually indicates blocking
+    return (
+      blockingIndicators.some(
+        (indicator) =>
+          pageText.includes(indicator) ||
+          titleText.includes(indicator) ||
+          htmlLower.includes(indicator),
+      ) || pageText.length < 1000
+    ); // Too short content usually indicates blocking
   }
 
   private async delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // Enhanced product data extraction methods
-  private async extractReviews($: any, platform: string): Promise<Array<{rating: number; text: string; date?: string; verified?: boolean}>> {
-    const reviews: Array<{rating: number; text: string; date?: string; verified?: boolean}> = [];
-    
+  private async extractReviews(
+    $: any,
+    platform: string,
+  ): Promise<
+    Array<{ rating: number; text: string; date?: string; verified?: boolean }>
+  > {
+    const reviews: Array<{
+      rating: number;
+      text: string;
+      date?: string;
+      verified?: boolean;
+    }> = [];
+
     try {
       switch (platform.toLowerCase()) {
         case 'amazon':
-          $('[data-hook="review"]').slice(0, 5).each((_, element) => {
-            const rating = parseFloat($(element).find('[data-hook="review-star-rating"]').text().match(/[\d.]+/)?.[0] || '0');
-            const text = $(element).find('[data-hook="review-body"] span').text().trim();
-            const date = $(element).find('[data-hook="review-date"]').text().trim();
-            const verified = $(element).find('[data-hook="avp-badge"]').length > 0;
-            
-            if (text) {
-              reviews.push({ rating, text, date, verified });
-            }
-          });
+          $('[data-hook="review"]')
+            .slice(0, 5)
+            .each((_, element) => {
+              const rating = parseFloat(
+                $(element)
+                  .find('[data-hook="review-star-rating"]')
+                  .text()
+                  .match(/[\d.]+/)?.[0] || '0',
+              );
+              const text = $(element)
+                .find('[data-hook="review-body"] span')
+                .text()
+                .trim();
+              const date = $(element)
+                .find('[data-hook="review-date"]')
+                .text()
+                .trim();
+              const verified =
+                $(element).find('[data-hook="avp-badge"]').length > 0;
+
+              if (text) {
+                reviews.push({ rating, text, date, verified });
+              }
+            });
           break;
-          
+
         case 'flipkart':
-          $('._16PBlm').slice(0, 5).each((_, element) => {
-            const rating = parseFloat($(element).find('._3LWZlK').text() || '0');
-            const text = $(element).find('.t-ZTKy').text().trim();
-            
-            if (text) {
-              reviews.push({ rating, text });
-            }
-          });
+          $('._16PBlm')
+            .slice(0, 5)
+            .each((_, element) => {
+              const rating = parseFloat(
+                $(element).find('._3LWZlK').text() || '0',
+              );
+              const text = $(element).find('.t-ZTKy').text().trim();
+
+              if (text) {
+                reviews.push({ rating, text });
+              }
+            });
           break;
       }
-      
+
       return reviews;
     } catch (error) {
       this.logger.warn(`Review extraction failed: ${error.message}`);
@@ -762,9 +959,12 @@ export class ScraperService {
     }
   }
 
-  private extractSpecifications($: any, platform: string): Record<string, string> {
+  private extractSpecifications(
+    $: any,
+    platform: string,
+  ): Record<string, string> {
     const specs: Record<string, string> = {};
-    
+
     try {
       switch (platform.toLowerCase()) {
         case 'amazon':
@@ -775,7 +975,7 @@ export class ScraperService {
               specs[parts[0].trim()] = parts[1].trim();
             }
           });
-          
+
           $('#productDetails_techSpec_section_1 tr').each((_, element) => {
             const key = $(element).find('td').first().text().trim();
             const value = $(element).find('td').last().text().trim();
@@ -784,7 +984,7 @@ export class ScraperService {
             }
           });
           break;
-          
+
         case 'flipkart':
           $('._1mXcCf').each((_, element) => {
             const rows = $(element).find('tr');
@@ -798,7 +998,7 @@ export class ScraperService {
           });
           break;
       }
-      
+
       return specs;
     } catch (error) {
       this.logger.warn(`Specification extraction failed: ${error.message}`);

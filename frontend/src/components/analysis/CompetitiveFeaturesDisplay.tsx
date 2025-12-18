@@ -18,7 +18,7 @@ const ScoreRing: React.FC<ScoreRingProps> = ({ score, size = 'medium', label, co
     'text-blue-600';
   return (
     <div className="flex flex-col items-center" style={{ width: dim }}>
-      <div className={`rounded-full flex items-center justify-center ${colorClass} font-semibold`} style={{ height: dim, width: dim }}>
+      <div className={`rounded-full flex items-center justify-center ${colorClass} font-semibold text-center`} style={{ height: dim, width: dim }}>
         {Math.round(score)}
         <span className="text-xs ml-1">%</span>
       </div>
@@ -236,7 +236,7 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-gradient-to-r from-green-400 to-red-400 h-2 rounded-full"
+                className="bg-gradient-to-r from-green-400 to-red-400 h-2 rounded-full transition-all"
                 style={{ width: `${features.supplyChainTransparency.riskScore}%` }}
               ></div>
             </div>

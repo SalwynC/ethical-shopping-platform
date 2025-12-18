@@ -22,63 +22,184 @@ export class SustainabilityAnalyzerService {
   private readonly logger = new Logger(SustainabilityAnalyzerService.name);
 
   // Brand sustainability database
-  private brandScores: Record<string, { base: number; certifications: string[] }> = {
+  private brandScores: Record<
+    string,
+    { base: number; certifications: string[] }
+  > = {
     // High Ethical Brands (80+)
-    'patagonia': { base: 95, certifications: ['B Corp', 'Certified Climate Neutral', 'Fair Trade'] },
-    'organic': { base: 90, certifications: ['USDA Organic', 'Fair Trade'] },
-    'eco': { base: 85, certifications: ['Eco-Label', 'Carbon Neutral'] },
+    patagonia: {
+      base: 95,
+      certifications: ['B Corp', 'Certified Climate Neutral', 'Fair Trade'],
+    },
+    organic: { base: 90, certifications: ['USDA Organic', 'Fair Trade'] },
+    eco: { base: 85, certifications: ['Eco-Label', 'Carbon Neutral'] },
 
     // Good Ethical Brands (70-79)
-    'apple': { base: 75, certifications: ['Carbon Neutral', 'Fair Trade Gold'] },
-    'unilever': { base: 72, certifications: ['Rainforest Alliance', 'FSC Certified'] },
-    'microsoft': { base: 78, certifications: ['Carbon Negative', 'Renewable Energy'] },
-    'google': { base: 77, certifications: ['Carbon Neutral', 'Renewable Energy'] },
+    apple: { base: 75, certifications: ['Carbon Neutral', 'Fair Trade Gold'] },
+    unilever: {
+      base: 72,
+      certifications: ['Rainforest Alliance', 'FSC Certified'],
+    },
+    microsoft: {
+      base: 78,
+      certifications: ['Carbon Negative', 'Renewable Energy'],
+    },
+    google: {
+      base: 77,
+      certifications: ['Carbon Neutral', 'Renewable Energy'],
+    },
 
     // Medium Ethical Brands (60-69)
-    'nike': { base: 68, certifications: ['Fair Trade', 'Responsible Sports'] },
-    'adidas': { base: 67, certifications: ['Responsible Sports', 'Better Cotton'] },
-    'amazon': { base: 65, certifications: ['Climate Pledge', 'Renewable Energy'] },
-    'tesla': { base: 72, certifications: ['Zero Emissions', 'Clean Energy'] },
+    nike: { base: 68, certifications: ['Fair Trade', 'Responsible Sports'] },
+    adidas: {
+      base: 67,
+      certifications: ['Responsible Sports', 'Better Cotton'],
+    },
+    amazon: {
+      base: 65,
+      certifications: ['Climate Pledge', 'Renewable Energy'],
+    },
+    tesla: { base: 72, certifications: ['Zero Emissions', 'Clean Energy'] },
 
     // Need Improvement (50-59)
-    'puma': { base: 58, certifications: ['Better Cotton'] },
+    puma: { base: 58, certifications: ['Better Cotton'] },
     'h&m': { base: 55, certifications: ['Conscious Collection'] },
-    'zara': { base: 52, certifications: [] },
+    zara: { base: 52, certifications: [] },
 
     // Low Ethical Brands (Below 50)
-    'walmart': { base: 48, certifications: [] },
-    'alibaba': { base: 45, certifications: [] },
+    walmart: { base: 48, certifications: [] },
+    alibaba: { base: 45, certifications: [] },
   };
 
   // Category-specific sustainability factors
   private categoryFactors: Record<string, SustainabilityFactor[]> = {
-    'Electronics': [
-      { name: 'Energy Efficiency', score: 0, weight: 25, description: 'Power consumption and efficiency rating' },
-      { name: 'Material Sourcing', score: 0, weight: 20, description: 'Use of recycled and conflict-free materials' },
-      { name: 'Manufacturing', score: 0, weight: 20, description: 'Carbon footprint in production' },
-      { name: 'E-Waste Recycling', score: 0, weight: 20, description: 'Take-back and recycling programs' },
-      { name: 'Packaging', score: 0, weight: 15, description: 'Minimalist, recyclable packaging' },
+    Electronics: [
+      {
+        name: 'Energy Efficiency',
+        score: 0,
+        weight: 25,
+        description: 'Power consumption and efficiency rating',
+      },
+      {
+        name: 'Material Sourcing',
+        score: 0,
+        weight: 20,
+        description: 'Use of recycled and conflict-free materials',
+      },
+      {
+        name: 'Manufacturing',
+        score: 0,
+        weight: 20,
+        description: 'Carbon footprint in production',
+      },
+      {
+        name: 'E-Waste Recycling',
+        score: 0,
+        weight: 20,
+        description: 'Take-back and recycling programs',
+      },
+      {
+        name: 'Packaging',
+        score: 0,
+        weight: 15,
+        description: 'Minimalist, recyclable packaging',
+      },
     ],
-    'Fashion': [
-      { name: 'Labor Practices', score: 0, weight: 25, description: 'Fair wages and worker conditions' },
-      { name: 'Sustainable Materials', score: 0, weight: 25, description: 'Organic cotton, recycled fibers' },
-      { name: 'Water Usage', score: 0, weight: 20, description: 'Water conservation in production' },
-      { name: 'Chemical Safety', score: 0, weight: 15, description: 'Non-toxic dyes and chemicals' },
-      { name: 'Transportation', score: 0, weight: 15, description: 'Local production and shipping' },
+    Fashion: [
+      {
+        name: 'Labor Practices',
+        score: 0,
+        weight: 25,
+        description: 'Fair wages and worker conditions',
+      },
+      {
+        name: 'Sustainable Materials',
+        score: 0,
+        weight: 25,
+        description: 'Organic cotton, recycled fibers',
+      },
+      {
+        name: 'Water Usage',
+        score: 0,
+        weight: 20,
+        description: 'Water conservation in production',
+      },
+      {
+        name: 'Chemical Safety',
+        score: 0,
+        weight: 15,
+        description: 'Non-toxic dyes and chemicals',
+      },
+      {
+        name: 'Transportation',
+        score: 0,
+        weight: 15,
+        description: 'Local production and shipping',
+      },
     ],
-    'Beauty': [
-      { name: 'Natural Ingredients', score: 0, weight: 30, description: 'Percentage of natural vs synthetic' },
-      { name: 'Cruelty-Free', score: 0, weight: 25, description: 'No animal testing' },
-      { name: 'Packaging', score: 0, weight: 20, description: 'Recyclable and plastic-free' },
-      { name: 'Chemical Safety', score: 0, weight: 15, description: 'Non-toxic and hypoallergenic' },
-      { name: 'Fair Trade', score: 0, weight: 10, description: 'Fair trade sourcing' },
+    Beauty: [
+      {
+        name: 'Natural Ingredients',
+        score: 0,
+        weight: 30,
+        description: 'Percentage of natural vs synthetic',
+      },
+      {
+        name: 'Cruelty-Free',
+        score: 0,
+        weight: 25,
+        description: 'No animal testing',
+      },
+      {
+        name: 'Packaging',
+        score: 0,
+        weight: 20,
+        description: 'Recyclable and plastic-free',
+      },
+      {
+        name: 'Chemical Safety',
+        score: 0,
+        weight: 15,
+        description: 'Non-toxic and hypoallergenic',
+      },
+      {
+        name: 'Fair Trade',
+        score: 0,
+        weight: 10,
+        description: 'Fair trade sourcing',
+      },
     ],
-    'Home': [
-      { name: 'Durability', score: 0, weight: 20, description: 'Longevity and repairability' },
-      { name: 'Energy Efficiency', score: 0, weight: 25, description: 'Energy star certification' },
-      { name: 'Materials', score: 0, weight: 20, description: 'Recycled and sustainable materials' },
-      { name: 'Manufacturing', score: 0, weight: 20, description: 'Local production, low waste' },
-      { name: 'End-of-Life', score: 0, weight: 15, description: 'Recyclability at end of life' },
+    Home: [
+      {
+        name: 'Durability',
+        score: 0,
+        weight: 20,
+        description: 'Longevity and repairability',
+      },
+      {
+        name: 'Energy Efficiency',
+        score: 0,
+        weight: 25,
+        description: 'Energy star certification',
+      },
+      {
+        name: 'Materials',
+        score: 0,
+        weight: 20,
+        description: 'Recycled and sustainable materials',
+      },
+      {
+        name: 'Manufacturing',
+        score: 0,
+        weight: 20,
+        description: 'Local production, low waste',
+      },
+      {
+        name: 'End-of-Life',
+        score: 0,
+        weight: 15,
+        description: 'Recyclability at end of life',
+      },
     ],
   };
 
@@ -93,10 +214,15 @@ export class SustainabilityAnalyzerService {
     brand: string,
     category: string,
     price: number,
-    originalPrice?: number
+    originalPrice?: number,
   ): SustainabilityAnalysis {
     const brandInfo = this.getBrandSustainabilityInfo(brand);
-    const factors = this.calculateCategoryFactors(category, brandInfo.base, price, originalPrice);
+    const factors = this.calculateCategoryFactors(
+      category,
+      brandInfo.base,
+      price,
+      originalPrice,
+    );
     const score = this.calculateWeightedScore(factors);
     const grade = this.getGradeFromScore(score);
 
@@ -114,9 +240,12 @@ export class SustainabilityAnalyzerService {
   /**
    * Get brand sustainability information
    */
-  private getBrandSustainabilityInfo(brand: string): { base: number; certifications: string[] } {
+  private getBrandSustainabilityInfo(brand: string): {
+    base: number;
+    certifications: string[];
+  } {
     const brandLower = brand.toLowerCase();
-    
+
     for (const [key, value] of Object.entries(this.brandScores)) {
       if (brandLower.includes(key) || key.includes(brandLower)) {
         return value;
@@ -134,14 +263,20 @@ export class SustainabilityAnalyzerService {
     category: string,
     brandScore: number,
     price: number,
-    originalPrice?: number
+    originalPrice?: number,
   ): SustainabilityFactor[] {
-    const baseFactors = this.categoryFactors[category] || this.categoryFactors['Electronics'];
-    
+    const baseFactors =
+      this.categoryFactors[category] || this.categoryFactors['Electronics'];
+
     // Clone factors and calculate scores
-    return baseFactors.map(factor => ({
+    return baseFactors.map((factor) => ({
       ...factor,
-      score: this.calculateFactorScore(factor.name, brandScore, price, originalPrice),
+      score: this.calculateFactorScore(
+        factor.name,
+        brandScore,
+        price,
+        originalPrice,
+      ),
     }));
   }
 
@@ -152,7 +287,7 @@ export class SustainabilityAnalyzerService {
     factorName: string,
     brandScore: number,
     price: number,
-    originalPrice?: number
+    originalPrice?: number,
   ): number {
     let score = brandScore;
 
@@ -169,7 +304,7 @@ export class SustainabilityAnalyzerService {
     // Factor-specific adjustments
     switch (factorName) {
       case 'Durability':
-        score += (price > 30000) ? 10 : 5; // Expensive items usually more durable
+        score += price > 30000 ? 10 : 5; // Expensive items usually more durable
         break;
       case 'Cruelty-Free':
         score = Math.min(100, score + 15); // Premium boost for explicitly cruelty-free
@@ -190,7 +325,7 @@ export class SustainabilityAnalyzerService {
    */
   private calculateWeightedScore(factors: SustainabilityFactor[]): number {
     const totalWeight = factors.reduce((sum, f) => sum + f.weight, 0);
-    const weightedSum = factors.reduce((sum, f) => sum + (f.score * f.weight), 0);
+    const weightedSum = factors.reduce((sum, f) => sum + f.score * f.weight, 0);
     return weightedSum / totalWeight;
   }
 
@@ -209,7 +344,11 @@ export class SustainabilityAnalyzerService {
   /**
    * Generate impact statement
    */
-  private generateImpactStatement(score: number, grade: string, brand: string): string {
+  private generateImpactStatement(
+    score: number,
+    grade: string,
+    brand: string,
+  ): string {
     if (score >= 90) {
       return `Excellent choice! ${brand} is a sustainability leader. Buying this product supports ethical and environmental practices.`;
     }
@@ -247,9 +386,13 @@ export class SustainabilityAnalyzerService {
   /**
    * Calculate breakeven point (how long until premium sustainable product pays off)
    */
-  private calculateBreakeven(price: number, originalPrice?: number, score?: number): number {
+  private calculateBreakeven(
+    price: number,
+    originalPrice?: number,
+    score?: number,
+  ): number {
     const scoreMultiplier = score ? (score / 100) * 0.5 + 0.5 : 0.75; // 50-100% factor based on score
-    
+
     // More sustainable = shorter breakeven
     const baseDays = Math.max(30, Math.min(1000, (price / 1000) * 100)); // Scale with price
     return Math.round(baseDays * (1 - (scoreMultiplier - 0.5)));
@@ -264,8 +407,12 @@ export class SustainabilityAnalyzerService {
     price1: number,
     brand2: string,
     category2: string,
-    price2: number
-  ): { product1: SustainabilityAnalysis; product2: SustainabilityAnalysis; recommendation: string } {
+    price2: number,
+  ): {
+    product1: SustainabilityAnalysis;
+    product2: SustainabilityAnalysis;
+    recommendation: string;
+  } {
     const analysis1 = this.analyzeSustainability(brand1, category1, price1);
     const analysis2 = this.analyzeSustainability(brand2, category2, price2);
 

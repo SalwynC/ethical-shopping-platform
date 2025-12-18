@@ -16,51 +16,169 @@ let SustainabilityAnalyzerService = SustainabilityAnalyzerService_1 = class Sust
     constructor() {
         this.logger = new common_1.Logger(SustainabilityAnalyzerService_1.name);
         this.brandScores = {
-            'patagonia': { base: 95, certifications: ['B Corp', 'Certified Climate Neutral', 'Fair Trade'] },
-            'organic': { base: 90, certifications: ['USDA Organic', 'Fair Trade'] },
-            'eco': { base: 85, certifications: ['Eco-Label', 'Carbon Neutral'] },
-            'apple': { base: 75, certifications: ['Carbon Neutral', 'Fair Trade Gold'] },
-            'unilever': { base: 72, certifications: ['Rainforest Alliance', 'FSC Certified'] },
-            'microsoft': { base: 78, certifications: ['Carbon Negative', 'Renewable Energy'] },
-            'google': { base: 77, certifications: ['Carbon Neutral', 'Renewable Energy'] },
-            'nike': { base: 68, certifications: ['Fair Trade', 'Responsible Sports'] },
-            'adidas': { base: 67, certifications: ['Responsible Sports', 'Better Cotton'] },
-            'amazon': { base: 65, certifications: ['Climate Pledge', 'Renewable Energy'] },
-            'tesla': { base: 72, certifications: ['Zero Emissions', 'Clean Energy'] },
-            'puma': { base: 58, certifications: ['Better Cotton'] },
+            patagonia: {
+                base: 95,
+                certifications: ['B Corp', 'Certified Climate Neutral', 'Fair Trade'],
+            },
+            organic: { base: 90, certifications: ['USDA Organic', 'Fair Trade'] },
+            eco: { base: 85, certifications: ['Eco-Label', 'Carbon Neutral'] },
+            apple: { base: 75, certifications: ['Carbon Neutral', 'Fair Trade Gold'] },
+            unilever: {
+                base: 72,
+                certifications: ['Rainforest Alliance', 'FSC Certified'],
+            },
+            microsoft: {
+                base: 78,
+                certifications: ['Carbon Negative', 'Renewable Energy'],
+            },
+            google: {
+                base: 77,
+                certifications: ['Carbon Neutral', 'Renewable Energy'],
+            },
+            nike: { base: 68, certifications: ['Fair Trade', 'Responsible Sports'] },
+            adidas: {
+                base: 67,
+                certifications: ['Responsible Sports', 'Better Cotton'],
+            },
+            amazon: {
+                base: 65,
+                certifications: ['Climate Pledge', 'Renewable Energy'],
+            },
+            tesla: { base: 72, certifications: ['Zero Emissions', 'Clean Energy'] },
+            puma: { base: 58, certifications: ['Better Cotton'] },
             'h&m': { base: 55, certifications: ['Conscious Collection'] },
-            'zara': { base: 52, certifications: [] },
-            'walmart': { base: 48, certifications: [] },
-            'alibaba': { base: 45, certifications: [] },
+            zara: { base: 52, certifications: [] },
+            walmart: { base: 48, certifications: [] },
+            alibaba: { base: 45, certifications: [] },
         };
         this.categoryFactors = {
-            'Electronics': [
-                { name: 'Energy Efficiency', score: 0, weight: 25, description: 'Power consumption and efficiency rating' },
-                { name: 'Material Sourcing', score: 0, weight: 20, description: 'Use of recycled and conflict-free materials' },
-                { name: 'Manufacturing', score: 0, weight: 20, description: 'Carbon footprint in production' },
-                { name: 'E-Waste Recycling', score: 0, weight: 20, description: 'Take-back and recycling programs' },
-                { name: 'Packaging', score: 0, weight: 15, description: 'Minimalist, recyclable packaging' },
+            Electronics: [
+                {
+                    name: 'Energy Efficiency',
+                    score: 0,
+                    weight: 25,
+                    description: 'Power consumption and efficiency rating',
+                },
+                {
+                    name: 'Material Sourcing',
+                    score: 0,
+                    weight: 20,
+                    description: 'Use of recycled and conflict-free materials',
+                },
+                {
+                    name: 'Manufacturing',
+                    score: 0,
+                    weight: 20,
+                    description: 'Carbon footprint in production',
+                },
+                {
+                    name: 'E-Waste Recycling',
+                    score: 0,
+                    weight: 20,
+                    description: 'Take-back and recycling programs',
+                },
+                {
+                    name: 'Packaging',
+                    score: 0,
+                    weight: 15,
+                    description: 'Minimalist, recyclable packaging',
+                },
             ],
-            'Fashion': [
-                { name: 'Labor Practices', score: 0, weight: 25, description: 'Fair wages and worker conditions' },
-                { name: 'Sustainable Materials', score: 0, weight: 25, description: 'Organic cotton, recycled fibers' },
-                { name: 'Water Usage', score: 0, weight: 20, description: 'Water conservation in production' },
-                { name: 'Chemical Safety', score: 0, weight: 15, description: 'Non-toxic dyes and chemicals' },
-                { name: 'Transportation', score: 0, weight: 15, description: 'Local production and shipping' },
+            Fashion: [
+                {
+                    name: 'Labor Practices',
+                    score: 0,
+                    weight: 25,
+                    description: 'Fair wages and worker conditions',
+                },
+                {
+                    name: 'Sustainable Materials',
+                    score: 0,
+                    weight: 25,
+                    description: 'Organic cotton, recycled fibers',
+                },
+                {
+                    name: 'Water Usage',
+                    score: 0,
+                    weight: 20,
+                    description: 'Water conservation in production',
+                },
+                {
+                    name: 'Chemical Safety',
+                    score: 0,
+                    weight: 15,
+                    description: 'Non-toxic dyes and chemicals',
+                },
+                {
+                    name: 'Transportation',
+                    score: 0,
+                    weight: 15,
+                    description: 'Local production and shipping',
+                },
             ],
-            'Beauty': [
-                { name: 'Natural Ingredients', score: 0, weight: 30, description: 'Percentage of natural vs synthetic' },
-                { name: 'Cruelty-Free', score: 0, weight: 25, description: 'No animal testing' },
-                { name: 'Packaging', score: 0, weight: 20, description: 'Recyclable and plastic-free' },
-                { name: 'Chemical Safety', score: 0, weight: 15, description: 'Non-toxic and hypoallergenic' },
-                { name: 'Fair Trade', score: 0, weight: 10, description: 'Fair trade sourcing' },
+            Beauty: [
+                {
+                    name: 'Natural Ingredients',
+                    score: 0,
+                    weight: 30,
+                    description: 'Percentage of natural vs synthetic',
+                },
+                {
+                    name: 'Cruelty-Free',
+                    score: 0,
+                    weight: 25,
+                    description: 'No animal testing',
+                },
+                {
+                    name: 'Packaging',
+                    score: 0,
+                    weight: 20,
+                    description: 'Recyclable and plastic-free',
+                },
+                {
+                    name: 'Chemical Safety',
+                    score: 0,
+                    weight: 15,
+                    description: 'Non-toxic and hypoallergenic',
+                },
+                {
+                    name: 'Fair Trade',
+                    score: 0,
+                    weight: 10,
+                    description: 'Fair trade sourcing',
+                },
             ],
-            'Home': [
-                { name: 'Durability', score: 0, weight: 20, description: 'Longevity and repairability' },
-                { name: 'Energy Efficiency', score: 0, weight: 25, description: 'Energy star certification' },
-                { name: 'Materials', score: 0, weight: 20, description: 'Recycled and sustainable materials' },
-                { name: 'Manufacturing', score: 0, weight: 20, description: 'Local production, low waste' },
-                { name: 'End-of-Life', score: 0, weight: 15, description: 'Recyclability at end of life' },
+            Home: [
+                {
+                    name: 'Durability',
+                    score: 0,
+                    weight: 20,
+                    description: 'Longevity and repairability',
+                },
+                {
+                    name: 'Energy Efficiency',
+                    score: 0,
+                    weight: 25,
+                    description: 'Energy star certification',
+                },
+                {
+                    name: 'Materials',
+                    score: 0,
+                    weight: 20,
+                    description: 'Recycled and sustainable materials',
+                },
+                {
+                    name: 'Manufacturing',
+                    score: 0,
+                    weight: 20,
+                    description: 'Local production, low waste',
+                },
+                {
+                    name: 'End-of-Life',
+                    score: 0,
+                    weight: 15,
+                    description: 'Recyclability at end of life',
+                },
             ],
         };
         this.logger.log('🌱 Sustainability Analyzer Service initialized');
@@ -91,7 +209,7 @@ let SustainabilityAnalyzerService = SustainabilityAnalyzerService_1 = class Sust
     }
     calculateCategoryFactors(category, brandScore, price, originalPrice) {
         const baseFactors = this.categoryFactors[category] || this.categoryFactors['Electronics'];
-        return baseFactors.map(factor => (Object.assign(Object.assign({}, factor), { score: this.calculateFactorScore(factor.name, brandScore, price, originalPrice) })));
+        return baseFactors.map((factor) => (Object.assign(Object.assign({}, factor), { score: this.calculateFactorScore(factor.name, brandScore, price, originalPrice) })));
     }
     calculateFactorScore(factorName, brandScore, price, originalPrice) {
         let score = brandScore;
@@ -106,7 +224,7 @@ let SustainabilityAnalyzerService = SustainabilityAnalyzerService_1 = class Sust
         }
         switch (factorName) {
             case 'Durability':
-                score += (price > 30000) ? 10 : 5;
+                score += price > 30000 ? 10 : 5;
                 break;
             case 'Cruelty-Free':
                 score = Math.min(100, score + 15);
@@ -122,7 +240,7 @@ let SustainabilityAnalyzerService = SustainabilityAnalyzerService_1 = class Sust
     }
     calculateWeightedScore(factors) {
         const totalWeight = factors.reduce((sum, f) => sum + f.weight, 0);
-        const weightedSum = factors.reduce((sum, f) => sum + (f.score * f.weight), 0);
+        const weightedSum = factors.reduce((sum, f) => sum + f.score * f.weight, 0);
         return weightedSum / totalWeight;
     }
     getGradeFromScore(score) {

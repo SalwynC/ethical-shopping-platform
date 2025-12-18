@@ -29,7 +29,9 @@ let AlternativesEngineService = AlternativesEngineService_1 = class Alternatives
             return [];
         }
         const alternatives = this.findAlternatives(product);
-        return alternatives.sort((a, b) => b.improvementScore - a.improvementScore).slice(0, 5);
+        return alternatives
+            .sort((a, b) => b.improvementScore - a.improvementScore)
+            .slice(0, 5);
     }
     findAlternatives(product) {
         const allProducts = this.productDb.getAllProducts();

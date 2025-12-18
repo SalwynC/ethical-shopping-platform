@@ -21,9 +21,15 @@ let AIScraperService = AIScraperService_1 = class AIScraperService {
     constructor() {
         this.logger = new common_1.Logger(AIScraperService_1.name);
         const geminiKey = process.env.GOOGLE_AI_API_KEY;
-        this.hasGeminiKey = geminiKey && geminiKey !== 'your_free_gemini_api_key_here' && geminiKey.length > 20;
+        this.hasGeminiKey =
+            geminiKey &&
+                geminiKey !== 'your_free_gemini_api_key_here' &&
+                geminiKey.length > 20;
         const openaiKey = process.env.OPENAI_API_KEY;
-        this.hasChatGPTKey = openaiKey && openaiKey !== 'your_openai_api_key_here' && openaiKey.length > 20;
+        this.hasChatGPTKey =
+            openaiKey &&
+                openaiKey !== 'your_openai_api_key_here' &&
+                openaiKey.length > 20;
         this.chatGPTKey = openaiKey || '';
         if (this.hasChatGPTKey) {
             this.aiProvider = 'chatgpt';
@@ -48,7 +54,7 @@ let AIScraperService = AIScraperService_1 = class AIScraperService {
             this.logger.log(`🤖 Using ${this.aiProvider.toUpperCase()} AI to extract product data from: ${url}`);
             const headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                 'Accept-Language': 'en-US,en;q=0.5',
             };
             let htmlContent = '';
@@ -56,7 +62,7 @@ let AIScraperService = AIScraperService_1 = class AIScraperService {
                 const response = await axios_1.default.get(url, {
                     headers,
                     timeout: 10000,
-                    maxRedirects: 5
+                    maxRedirects: 5,
                 });
                 htmlContent = response.data.substring(0, 50000);
                 this.logger.log(`📄 Fetched ${htmlContent.length} characters of HTML`);
@@ -104,21 +110,21 @@ Extract NOW - return ONLY the JSON object:`;
                         messages: [
                             {
                                 role: 'system',
-                                content: 'You are a precise web scraping assistant. Return only valid JSON with no markdown formatting.'
+                                content: 'You are a precise web scraping assistant. Return only valid JSON with no markdown formatting.',
                             },
                             {
                                 role: 'user',
-                                content: prompt
-                            }
+                                content: prompt,
+                            },
                         ],
                         temperature: 0.1,
-                        max_tokens: 1000
+                        max_tokens: 1000,
                     }, {
                         headers: {
-                            'Authorization': `Bearer ${this.chatGPTKey}`,
-                            'Content-Type': 'application/json'
+                            Authorization: `Bearer ${this.chatGPTKey}`,
+                            'Content-Type': 'application/json',
                         },
-                        timeout: 15000
+                        timeout: 15000,
                     });
                     aiResponse = response.data.choices[0].message.content.trim();
                     this.logger.log(`🤖 ChatGPT Response received: ${aiResponse.substring(0, 100)}...`);
@@ -131,7 +137,11 @@ Extract NOW - return ONLY the JSON object:`;
             else if (this.aiProvider === 'gemini') {
                 this.logger.log('🤖 Using Gemini AI for extraction...');
                 let model;
-                const modelNames = ['gemini-1.5-flash', 'gemini-pro', 'gemini-pro-vision'];
+                const modelNames = [
+                    'gemini-1.5-flash',
+                    'gemini-pro',
+                    'gemini-pro-vision',
+                ];
                 for (const modelName of modelNames) {
                     try {
                         model = this.genAI.getGenerativeModel({ model: modelName });
@@ -158,7 +168,9 @@ Extract NOW - return ONLY the JSON object:`;
                     .replace(/```\n?/g, '')
                     .trim();
                 productData = JSON.parse(cleanedResponse);
-                if (!productData.title || productData.title === 'null' || productData.title.length < 3) {
+                if (!productData.title ||
+                    productData.title === 'null' ||
+                    productData.title.length < 3) {
                     this.logger.warn('❌ AI extraction failed - invalid title');
                     return null;
                 }
@@ -170,12 +182,18 @@ Extract NOW - return ONLY the JSON object:`;
                 return {
                     title: productData.title,
                     price: parseFloat(productData.price),
-                    originalPrice: productData.originalPrice ? parseFloat(productData.originalPrice) : undefined,
+                    originalPrice: productData.originalPrice
+                        ? parseFloat(productData.originalPrice)
+                        : undefined,
                     currency: productData.currency || 'INR',
                     brand: productData.brand || undefined,
                     category: productData.category || undefined,
-                    rating: productData.rating ? parseFloat(productData.rating) : undefined,
-                    reviewCount: productData.reviewCount ? parseInt(productData.reviewCount) : undefined,
+                    rating: productData.rating
+                        ? parseFloat(productData.rating)
+                        : undefined,
+                    reviewCount: productData.reviewCount
+                        ? parseInt(productData.reviewCount)
+                        : undefined,
                     availability: productData.availability || 'unknown',
                     description: productData.description || undefined,
                     imageUrl: this.extractImageFromHtml(htmlContent),

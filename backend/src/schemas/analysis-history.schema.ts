@@ -54,7 +54,7 @@ const AnalysisHistorySchema = new Schema<IAnalysisHistory>({
     quality: { type: String, required: true },
     badge: { type: String, required: true },
     flags: [{ type: String }],
-    recommendation: { type: String, required: true }
+    recommendation: { type: String, required: true },
   },
   alternatives: [{ type: Schema.Types.Mixed }],
   priceComparison: {
@@ -62,16 +62,16 @@ const AnalysisHistorySchema = new Schema<IAnalysisHistory>({
     averagePrice: { type: Number },
     lowestPrice: { type: Number },
     highestPrice: { type: Number },
-    recommendation: { type: String }
+    recommendation: { type: String },
   },
   sustainability: {
     score: { type: Number },
     concerns: [{ type: String }],
-    badges: [{ type: String }]
+    badges: [{ type: String }],
   },
   analyzedAt: { type: Date, default: Date.now, index: true },
   userAgent: { type: String },
-  ipAddress: { type: String }
+  ipAddress: { type: String },
 });
 
 // Create indexes for efficient querying
@@ -79,4 +79,7 @@ AnalysisHistorySchema.index({ analyzedAt: -1 });
 AnalysisHistorySchema.index({ productUrl: 1, analyzedAt: -1 });
 AnalysisHistorySchema.index({ brand: 1, analyzedAt: -1 });
 
-export const AnalysisHistory = model<IAnalysisHistory>('AnalysisHistory', AnalysisHistorySchema);
+export const AnalysisHistory = model<IAnalysisHistory>(
+  'AnalysisHistory',
+  AnalysisHistorySchema,
+);

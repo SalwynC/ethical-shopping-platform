@@ -16,21 +16,22 @@ let PriceComparisonService = PriceComparisonService_1 = class PriceComparisonSer
     constructor() {
         this.logger = new common_1.Logger(PriceComparisonService_1.name);
         this.platformVariations = {
-            'amazon': { priceMultiplier: 1.0, shipping: 0, confidence: 95 },
-            'flipkart': { priceMultiplier: 0.98, shipping: 50, confidence: 92 },
-            'myntra': { priceMultiplier: 1.02, shipping: 0, confidence: 90 },
-            'ajio': { priceMultiplier: 1.05, shipping: 99, confidence: 85 },
-            'ebay': { priceMultiplier: 0.95, shipping: 200, confidence: 88 },
-            'walmart': { priceMultiplier: 1.08, shipping: 100, confidence: 87 },
-            'local_store': { priceMultiplier: 1.15, shipping: 0, confidence: 75 },
+            amazon: { priceMultiplier: 1.0, shipping: 0, confidence: 95 },
+            flipkart: { priceMultiplier: 0.98, shipping: 50, confidence: 92 },
+            myntra: { priceMultiplier: 1.02, shipping: 0, confidence: 90 },
+            ajio: { priceMultiplier: 1.05, shipping: 99, confidence: 85 },
+            ebay: { priceMultiplier: 0.95, shipping: 200, confidence: 88 },
+            walmart: { priceMultiplier: 1.08, shipping: 100, confidence: 87 },
+            local_store: { priceMultiplier: 1.15, shipping: 0, confidence: 75 },
         };
         this.logger.log('💰 Price Comparison Service initialized');
     }
     analyzePriceComparison(productTitle, currentPrice, originalPrice, currentPlatform = 'amazon') {
         const comparisons = this.generatePlatformComparisons(productTitle, currentPrice, currentPlatform);
-        const lowestPrice = Math.min(...comparisons.map(c => c.totalPrice));
-        const highestPrice = Math.max(...comparisons.map(c => c.totalPrice));
-        const averagePrice = comparisons.reduce((sum, c) => sum + c.totalPrice, 0) / comparisons.length;
+        const lowestPrice = Math.min(...comparisons.map((c) => c.totalPrice));
+        const highestPrice = Math.max(...comparisons.map((c) => c.totalPrice));
+        const averagePrice = comparisons.reduce((sum, c) => sum + c.totalPrice, 0) /
+            comparisons.length;
         const bestDeal = comparisons.reduce((best, curr) => curr.totalPrice < best.totalPrice ? curr : best);
         const dealScore = this.calculateDealScore(currentPrice, lowestPrice, averagePrice, originalPrice);
         const savingsOpportunity = lowestPrice < currentPrice ? currentPrice - lowestPrice : 0;
@@ -118,20 +119,23 @@ let PriceComparisonService = PriceComparisonService_1 = class PriceComparisonSer
             return 'Fair price. You could wait for better deals or check alternatives.';
         }
         if (dealScore >= 50) {
-            return 'Average price. Save ₹' + Math.round(lowestPrice - currentPrice) + ' by checking other platforms.';
+            return ('Average price. Save ₹' +
+                Math.round(lowestPrice - currentPrice) +
+                ' by checking other platforms.');
         }
         if (dealScore >= 40) {
             return 'Above average price. Significant savings available elsewhere.';
         }
-        return 'Poor deal. Wait for sales or check competitor prices - savings up to ₹' + Math.round(currentPrice - lowestPrice);
+        return ('Poor deal. Wait for sales or check competitor prices - savings up to ₹' +
+            Math.round(currentPrice - lowestPrice));
     }
     getSeasonalPricing(basePrice, season) {
         const seasonMultiplier = {
-            'spring': 0.95,
-            'summer': 1.05,
-            'monsoon': 0.9,
-            'winter': 1.1,
-            'festivals': 0.75,
+            spring: 0.95,
+            summer: 1.05,
+            monsoon: 0.9,
+            winter: 1.1,
+            festivals: 0.75,
         };
         return Math.round(basePrice * (seasonMultiplier[season] || 1));
     }
@@ -140,11 +144,11 @@ let PriceComparisonService = PriceComparisonService_1 = class PriceComparisonSer
         if (quantity >= 100)
             discount = 0.25;
         else if (quantity >= 50)
-            discount = 0.20;
+            discount = 0.2;
         else if (quantity >= 20)
             discount = 0.15;
         else if (quantity >= 10)
-            discount = 0.10;
+            discount = 0.1;
         else if (quantity >= 5)
             discount = 0.05;
         const discountedPrice = Math.round(unitPrice * (1 - discount));
@@ -159,9 +163,14 @@ let PriceComparisonService = PriceComparisonService_1 = class PriceComparisonSer
     analyzePriceTrend(priceHistory) {
         var _a;
         if (priceHistory.length < 2) {
-            return { trend: 'stable', slope: 0, volatility: 0, prediction: ((_a = priceHistory[0]) === null || _a === void 0 ? void 0 : _a.price) || 0 };
+            return {
+                trend: 'stable',
+                slope: 0,
+                volatility: 0,
+                prediction: ((_a = priceHistory[0]) === null || _a === void 0 ? void 0 : _a.price) || 0,
+            };
         }
-        const prices = priceHistory.map(h => h.price);
+        const prices = priceHistory.map((h) => h.price);
         const n = prices.length;
         const xMean = (n - 1) / 2;
         const yMean = prices.reduce((a, b) => a + b) / n;
@@ -173,7 +182,7 @@ let PriceComparisonService = PriceComparisonService_1 = class PriceComparisonSer
         }
         const slope = numerator / denominator;
         const trend = slope > 5 ? 'rising' : slope < -5 ? 'falling' : 'stable';
-        const deviations = prices.map(p => Math.abs(p - yMean));
+        const deviations = prices.map((p) => Math.abs(p - yMean));
         const volatility = Math.round((Math.max(...deviations) / yMean) * 100);
         const prediction = Math.round(prices[n - 1] + slope);
         return {
@@ -220,7 +229,7 @@ let PriceComparisonService = PriceComparisonService_1 = class PriceComparisonSer
     formatPlatformName(platform) {
         return platform
             .split('_')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
     }
 };

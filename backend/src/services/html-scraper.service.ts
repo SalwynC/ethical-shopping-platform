@@ -30,15 +30,17 @@ export class HtmlScraperService {
       // Step 1: Fetch the actual HTML content with better headers
       const response = await axios.get(url, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+          Accept:
+            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
           'Accept-Language': 'en-US,en;q=0.9',
           'Accept-Encoding': 'gzip, deflate, br',
           'Sec-Fetch-Dest': 'document',
           'Sec-Fetch-Mode': 'navigate',
           'Sec-Fetch-Site': 'none',
           'Cache-Control': 'max-age=0',
-          'Connection': 'keep-alive',
+          Connection: 'keep-alive',
           'Upgrade-Insecure-Requests': '1',
         },
         timeout: 15000,
@@ -47,12 +49,16 @@ export class HtmlScraperService {
       });
 
       if (response.status !== 200) {
-        this.logger.warn(`⚠️  HTTP Status ${response.status} - trying to parse anyway...`);
+        this.logger.warn(
+          `⚠️  HTTP Status ${response.status} - trying to parse anyway...`,
+        );
       }
 
       const html = response.data;
       if (!html || html.length < 500) {
-        throw new Error(`HTML too short (${html.length} bytes) - likely blocked or empty page`);
+        throw new Error(
+          `HTML too short (${html.length} bytes) - likely blocked or empty page`,
+        );
       }
 
       const $ = cheerio.load(html);
@@ -79,23 +85,29 @@ export class HtmlScraperService {
       this.logger.log(`   Title: ${scrapedData.title}`);
       this.logger.log(`   Price: ${scrapedData.currency} ${scrapedData.price}`);
       this.logger.log(`   Brand: ${scrapedData.brand}`);
-      this.logger.log(`   Rating: ${scrapedData.rating}/5 (${scrapedData.reviewCount} reviews)`);
+      this.logger.log(
+        `   Rating: ${scrapedData.rating}/5 (${scrapedData.reviewCount} reviews)`,
+      );
       this.logger.log(`   Availability: ${scrapedData.availability}`);
       this.logger.log(`   Images: ${scrapedData.images.length} found`);
-      this.logger.log(`   Specs: ${Object.keys(scrapedData.specifications).length} found`);
+      this.logger.log(
+        `   Specs: ${Object.keys(scrapedData.specifications).length} found`,
+      );
 
       // Validate we got meaningful data
-      const hasRealData = scrapedData.title && 
-                         scrapedData.title.length > 5 && 
-                         scrapedData.price && 
-                         scrapedData.price > 0;
+      const hasRealData =
+        scrapedData.title &&
+        scrapedData.title.length > 5 &&
+        scrapedData.price &&
+        scrapedData.price > 0;
 
       if (!hasRealData) {
-        this.logger.warn(`⚠️  Extracted data seems incomplete - may need AI fallback`);
+        this.logger.warn(
+          `⚠️  Extracted data seems incomplete - may need AI fallback`,
+        );
       }
 
       return scrapedData;
-
     } catch (error) {
       this.logger.error(`❌ Scraping failed: ${error.message}`);
       this.logger.debug(`Stack: ${error.stack}`);
@@ -121,7 +133,7 @@ export class HtmlScraperService {
 
     for (const selector of selectors) {
       let text = '';
-      
+
       if (selector.startsWith('meta')) {
         text = $(selector).attr('content') || '';
       } else {
@@ -171,7 +183,7 @@ export class HtmlScraperService {
 
     for (const selector of selectors) {
       const elements = $(selector);
-      
+
       if (elements.length > 0) {
         for (let i = 0; i < elements.length; i++) {
           const text = $(elements[i]).text();
@@ -246,7 +258,7 @@ export class HtmlScraperService {
 
     for (const selector of selectors) {
       let text = '';
-      
+
       if (selector.startsWith('meta')) {
         text = $(selector).attr('content') || '';
       } else if (selector.includes('[itemprop')) {
@@ -282,9 +294,13 @@ export class HtmlScraperService {
     ];
 
     for (const selector of selectors) {
-      let text = $(selector).text() || $(selector).attr('content') || $(selector).attr('aria-label') || '';
+      let text =
+        $(selector).text() ||
+        $(selector).attr('content') ||
+        $(selector).attr('aria-label') ||
+        '';
       text = text.trim();
-      
+
       // Try to extract rating from text like "3.5 out of 5" or "3.5 stars"
       const ratingMatch = text.match(/([0-9]+\.?[0-9]*)\s*(?:out of|star|,)/i);
       if (ratingMatch) {
@@ -295,9 +311,12 @@ export class HtmlScraperService {
         }
       }
     }
-    
+
     // Try aria-label from rating container
-    const ariaLabel = $('[role="img"][aria-label*="out of"], [role="img"][aria-label*="star"]').attr('aria-label') || '';
+    const ariaLabel =
+      $(
+        '[role="img"][aria-label*="out of"], [role="img"][aria-label*="star"]',
+      ).attr('aria-label') || '';
     if (ariaLabel) {
       const ratingMatch = ariaLabel.match(/([0-9]+\.?[0-9]*)/);
       if (ratingMatch) {
@@ -325,9 +344,11 @@ export class HtmlScraperService {
 
     for (const selector of selectors) {
       const text = $(selector).text() || $(selector).attr('content') || '';
-      
+
       // Try to extract review count from text like "141 reviews" or "(141)"
-      const countMatch = text.match(/\(?([0-9,]+)\)?\s*(?:review|customer|rating)/i);
+      const countMatch = text.match(
+        /\(?([0-9,]+)\)?\s*(?:review|customer|rating)/i,
+      );
       if (countMatch) {
         const count = parseInt(countMatch[1].replace(/,/g, ''));
         if (count > 0 && count < 10000000) {
@@ -335,7 +356,7 @@ export class HtmlScraperService {
           return count;
         }
       }
-      
+
       // Try direct number extraction
       const directMatch = text.match(/([0-9,]+)/);
       if (directMatch) {
@@ -346,7 +367,7 @@ export class HtmlScraperService {
         }
       }
     }
-    
+
     // Try to find review link with count
     const reviewLink = $('a[href*="review"][class*="a-link"]').text() || '';
     if (reviewLink) {
@@ -373,7 +394,11 @@ export class HtmlScraperService {
 
     for (const selector of selectors) {
       $(selector).each((_, el) => {
-        const src = $(el).attr('content') || $(el).attr('src') || $(el).attr('data-src') || '';
+        const src =
+          $(el).attr('content') ||
+          $(el).attr('src') ||
+          $(el).attr('data-src') ||
+          '';
         if (src && src.startsWith('http')) {
           images.push(src);
         }
@@ -394,7 +419,7 @@ export class HtmlScraperService {
 
     for (const selector of selectors) {
       let text = '';
-      
+
       if (selector.startsWith('meta')) {
         text = $(selector).attr('content') || '';
       } else {
@@ -420,7 +445,7 @@ export class HtmlScraperService {
 
     for (const selector of selectors) {
       const text = $(selector).text().toLowerCase();
-      
+
       if (text.includes('in stock') || text.includes('available')) {
         return 'in_stock';
       }
@@ -434,44 +459,46 @@ export class HtmlScraperService {
 
   private extractSpecifications($: cheerio.CheerioAPI): Record<string, string> {
     const specs: Record<string, string> = {};
-    
+
     // Look for spec tables
-    $('table.specifications tr, .specs-table tr, [class*="spec"] tr').each((_, row) => {
-      const cells = $(row).find('td, th');
-      if (cells.length >= 2) {
-        const key = $(cells[0]).text().trim();
-        const value = $(cells[1]).text().trim();
-        if (key && value) {
-          specs[key] = value;
+    $('table.specifications tr, .specs-table tr, [class*="spec"] tr').each(
+      (_, row) => {
+        const cells = $(row).find('td, th');
+        if (cells.length >= 2) {
+          const key = $(cells[0]).text().trim();
+          const value = $(cells[1]).text().trim();
+          if (key && value) {
+            specs[key] = value;
+          }
         }
-      }
-    });
+      },
+    );
 
     return specs;
   }
 
   private parsePrice(text: string): number | null {
     if (!text) return null;
-    
+
     // Extract numbers with optional commas and decimals
     const priceMatch = text.match(/([0-9,]+(?:\.[0-9]{1,2})?)/);
     if (!priceMatch) return null;
-    
+
     // Remove commas but keep the number
     const cleaned = priceMatch[1].replace(/,/g, '');
     const number = parseFloat(cleaned);
-    
+
     // Validate it's a reasonable price (between 1 and 10,000,000)
     if (isNaN(number) || number <= 0 || number > 10000000) {
       return null;
     }
-    
+
     return number;
   }
 
   private detectCurrency($: cheerio.CheerioAPI, url: string): string {
     const text = $('body').text();
-    
+
     if (text.includes('₹') || text.includes('Rs') || url.includes('.in')) {
       return 'INR';
     }
@@ -484,24 +511,26 @@ export class HtmlScraperService {
     if (text.includes('€')) {
       return 'EUR';
     }
-    
+
     return 'INR'; // Default for India
   }
 
   private extractTitleFromUrl(url: string): string | null {
     try {
       const urlObj = new URL(url);
-      const pathSegments = urlObj.pathname.split('/').filter(s => s.length > 3);
-      
+      const pathSegments = urlObj.pathname
+        .split('/')
+        .filter((s) => s.length > 3);
+
       if (pathSegments.length > 0) {
         // Get the last meaningful segment
         const titleSegment = pathSegments[pathSegments.length - 1];
         // Replace hyphens and underscores with spaces
         const title = titleSegment
           .replace(/[-_]/g, ' ')
-          .replace(/\b\w/g, c => c.toUpperCase())
+          .replace(/\b\w/g, (c) => c.toUpperCase())
           .trim();
-        
+
         if (title.length > 5) {
           return title;
         }
@@ -509,7 +538,7 @@ export class HtmlScraperService {
     } catch (error) {
       // Invalid URL
     }
-    
+
     return null;
   }
 

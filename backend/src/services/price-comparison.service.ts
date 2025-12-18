@@ -30,14 +30,17 @@ export class PriceComparisonService {
   private readonly logger = new Logger(PriceComparisonService.name);
 
   // Platform price variations (realistic market data)
-  private platformVariations: Record<string, { priceMultiplier: number; shipping: number; confidence: number }> = {
-    'amazon': { priceMultiplier: 1.0, shipping: 0, confidence: 95 }, // Reference price
-    'flipkart': { priceMultiplier: 0.98, shipping: 50, confidence: 92 },
-    'myntra': { priceMultiplier: 1.02, shipping: 0, confidence: 90 },
-    'ajio': { priceMultiplier: 1.05, shipping: 99, confidence: 85 },
-    'ebay': { priceMultiplier: 0.95, shipping: 200, confidence: 88 },
-    'walmart': { priceMultiplier: 1.08, shipping: 100, confidence: 87 },
-    'local_store': { priceMultiplier: 1.15, shipping: 0, confidence: 75 },
+  private platformVariations: Record<
+    string,
+    { priceMultiplier: number; shipping: number; confidence: number }
+  > = {
+    amazon: { priceMultiplier: 1.0, shipping: 0, confidence: 95 }, // Reference price
+    flipkart: { priceMultiplier: 0.98, shipping: 50, confidence: 92 },
+    myntra: { priceMultiplier: 1.02, shipping: 0, confidence: 90 },
+    ajio: { priceMultiplier: 1.05, shipping: 99, confidence: 85 },
+    ebay: { priceMultiplier: 0.95, shipping: 200, confidence: 88 },
+    walmart: { priceMultiplier: 1.08, shipping: 100, confidence: 87 },
+    local_store: { priceMultiplier: 1.15, shipping: 0, confidence: 75 },
   };
 
   constructor() {
@@ -51,19 +54,31 @@ export class PriceComparisonService {
     productTitle: string,
     currentPrice: number,
     originalPrice?: number,
-    currentPlatform: string = 'amazon'
+    currentPlatform: string = 'amazon',
   ): PriceAnalysis {
-    const comparisons = this.generatePlatformComparisons(productTitle, currentPrice, currentPlatform);
-    const lowestPrice = Math.min(...comparisons.map(c => c.totalPrice));
-    const highestPrice = Math.max(...comparisons.map(c => c.totalPrice));
-    const averagePrice = comparisons.reduce((sum, c) => sum + c.totalPrice, 0) / comparisons.length;
+    const comparisons = this.generatePlatformComparisons(
+      productTitle,
+      currentPrice,
+      currentPlatform,
+    );
+    const lowestPrice = Math.min(...comparisons.map((c) => c.totalPrice));
+    const highestPrice = Math.max(...comparisons.map((c) => c.totalPrice));
+    const averagePrice =
+      comparisons.reduce((sum, c) => sum + c.totalPrice, 0) /
+      comparisons.length;
 
     const bestDeal = comparisons.reduce((best, curr) =>
-      curr.totalPrice < best.totalPrice ? curr : best
+      curr.totalPrice < best.totalPrice ? curr : best,
     );
 
-    const dealScore = this.calculateDealScore(currentPrice, lowestPrice, averagePrice, originalPrice);
-    const savingsOpportunity = lowestPrice < currentPrice ? currentPrice - lowestPrice : 0;
+    const dealScore = this.calculateDealScore(
+      currentPrice,
+      lowestPrice,
+      averagePrice,
+      originalPrice,
+    );
+    const savingsOpportunity =
+      lowestPrice < currentPrice ? currentPrice - lowestPrice : 0;
 
     return {
       currentPrice,
@@ -74,7 +89,11 @@ export class PriceComparisonService {
       comparisons: comparisons.sort((a, b) => a.totalPrice - b.totalPrice),
       priceHistory: this.generatePriceHistory(currentPrice, originalPrice),
       dealScore,
-      recommendation: this.generatePriceRecommendation(dealScore, currentPrice, lowestPrice),
+      recommendation: this.generatePriceRecommendation(
+        dealScore,
+        currentPrice,
+        lowestPrice,
+      ),
       savingsOpportunity: Math.round(savingsOpportunity),
     };
   }
@@ -85,13 +104,17 @@ export class PriceComparisonService {
   private generatePlatformComparisons(
     productTitle: string,
     basePrice: number,
-    currentPlatform: string
+    currentPlatform: string,
   ): PriceComparison[] {
     const comparisons: PriceComparison[] = [];
 
-    for (const [platform, variation] of Object.entries(this.platformVariations)) {
+    for (const [platform, variation] of Object.entries(
+      this.platformVariations,
+    )) {
       const discount = this.getRandomDiscount(platform);
-      const priceAfterDiscount = Math.round(basePrice * variation.priceMultiplier * (1 - discount / 100));
+      const priceAfterDiscount = Math.round(
+        basePrice * variation.priceMultiplier * (1 - discount / 100),
+      );
       const shippingCost = Math.random() > 0.3 ? 0 : variation.shipping; // 30% chance of shipping cost
 
       comparisons.push({
@@ -113,7 +136,10 @@ export class PriceComparisonService {
   /**
    * Generate realistic price history
    */
-  private generatePriceHistory(currentPrice: number, originalPrice?: number): Array<{ date: string; price: number }> {
+  private generatePriceHistory(
+    currentPrice: number,
+    originalPrice?: number,
+  ): Array<{ date: string; price: number }> {
     const history: Array<{ date: string; price: number }> = [];
     const basePrice = originalPrice || currentPrice * 1.1;
 
@@ -141,7 +167,7 @@ export class PriceComparisonService {
     currentPrice: number,
     lowestPrice: number,
     averagePrice: number,
-    originalPrice?: number
+    originalPrice?: number,
   ): number {
     let score = 50; // Base score
 
@@ -157,7 +183,8 @@ export class PriceComparisonService {
 
     // Discount check
     if (originalPrice && originalPrice > currentPrice) {
-      const discountPercent = ((originalPrice - currentPrice) / originalPrice) * 100;
+      const discountPercent =
+        ((originalPrice - currentPrice) / originalPrice) * 100;
       if (discountPercent > 40) score += 20;
       else if (discountPercent > 20) score += 10;
       else if (discountPercent > 10) score += 5;
@@ -169,7 +196,11 @@ export class PriceComparisonService {
   /**
    * Generate price recommendation
    */
-  private generatePriceRecommendation(dealScore: number, currentPrice: number, lowestPrice: number): string {
+  private generatePriceRecommendation(
+    dealScore: number,
+    currentPrice: number,
+    lowestPrice: number,
+  ): string {
     if (dealScore >= 80) {
       return 'Excellent deal! Buy now - this is the best price.';
     }
@@ -180,24 +211,34 @@ export class PriceComparisonService {
       return 'Fair price. You could wait for better deals or check alternatives.';
     }
     if (dealScore >= 50) {
-      return 'Average price. Save ₹' + Math.round(lowestPrice - currentPrice) + ' by checking other platforms.';
+      return (
+        'Average price. Save ₹' +
+        Math.round(lowestPrice - currentPrice) +
+        ' by checking other platforms.'
+      );
     }
     if (dealScore >= 40) {
       return 'Above average price. Significant savings available elsewhere.';
     }
-    return 'Poor deal. Wait for sales or check competitor prices - savings up to ₹' + Math.round(currentPrice - lowestPrice);
+    return (
+      'Poor deal. Wait for sales or check competitor prices - savings up to ₹' +
+      Math.round(currentPrice - lowestPrice)
+    );
   }
 
   /**
    * Get seasonal pricing adjustments
    */
-  getSeasonalPricing(basePrice: number, season: 'spring' | 'summer' | 'monsoon' | 'winter' | 'festivals'): number {
+  getSeasonalPricing(
+    basePrice: number,
+    season: 'spring' | 'summer' | 'monsoon' | 'winter' | 'festivals',
+  ): number {
     const seasonMultiplier: Record<string, number> = {
-      'spring': 0.95,
-      'summer': 1.05,
-      'monsoon': 0.9,
-      'winter': 1.1,
-      'festivals': 0.75, // Sales during festivals
+      spring: 0.95,
+      summer: 1.05,
+      monsoon: 0.9,
+      winter: 1.1,
+      festivals: 0.75, // Sales during festivals
     };
 
     return Math.round(basePrice * (seasonMultiplier[season] || 1));
@@ -206,13 +247,16 @@ export class PriceComparisonService {
   /**
    * Get bulk pricing discount
    */
-  getBulkPricing(unitPrice: number, quantity: number): { unitPrice: number; totalPrice: number; savings: number } {
+  getBulkPricing(
+    unitPrice: number,
+    quantity: number,
+  ): { unitPrice: number; totalPrice: number; savings: number } {
     let discount = 0;
 
     if (quantity >= 100) discount = 0.25;
-    else if (quantity >= 50) discount = 0.20;
+    else if (quantity >= 50) discount = 0.2;
     else if (quantity >= 20) discount = 0.15;
-    else if (quantity >= 10) discount = 0.10;
+    else if (quantity >= 10) discount = 0.1;
     else if (quantity >= 5) discount = 0.05;
 
     const discountedPrice = Math.round(unitPrice * (1 - discount));
@@ -236,10 +280,15 @@ export class PriceComparisonService {
     prediction: number;
   } {
     if (priceHistory.length < 2) {
-      return { trend: 'stable', slope: 0, volatility: 0, prediction: priceHistory[0]?.price || 0 };
+      return {
+        trend: 'stable',
+        slope: 0,
+        volatility: 0,
+        prediction: priceHistory[0]?.price || 0,
+      };
     }
 
-    const prices = priceHistory.map(h => h.price);
+    const prices = priceHistory.map((h) => h.price);
     const n = prices.length;
 
     // Calculate trend line slope (simple linear regression)
@@ -258,7 +307,7 @@ export class PriceComparisonService {
       slope > 5 ? 'rising' : slope < -5 ? 'falling' : 'stable';
 
     // Calculate volatility
-    const deviations = prices.map(p => Math.abs(p - yMean));
+    const deviations = prices.map((p) => Math.abs(p - yMean));
     const volatility = Math.round((Math.max(...deviations) / yMean) * 100);
 
     // Simple prediction for next day
@@ -293,13 +342,20 @@ export class PriceComparisonService {
 
   // Helper methods
   private getRandomDiscount(platform: string): number {
-    if (platform === 'flipkart') return Math.random() > 0.5 ? Math.floor(Math.random() * 15) : 0;
-    if (platform === 'amazon') return Math.random() > 0.3 ? Math.floor(Math.random() * 20) : 0;
-    if (platform === 'ebay') return Math.random() > 0.4 ? Math.floor(Math.random() * 25) : 0;
+    if (platform === 'flipkart')
+      return Math.random() > 0.5 ? Math.floor(Math.random() * 15) : 0;
+    if (platform === 'amazon')
+      return Math.random() > 0.3 ? Math.floor(Math.random() * 20) : 0;
+    if (platform === 'ebay')
+      return Math.random() > 0.4 ? Math.floor(Math.random() * 25) : 0;
     return 0;
   }
 
-  private getRandomAvailability(): 'In Stock' | 'Limited' | 'Out of Stock' | 'Unknown' {
+  private getRandomAvailability():
+    | 'In Stock'
+    | 'Limited'
+    | 'Out of Stock'
+    | 'Unknown' {
     const rand = Math.random();
     if (rand > 0.7) return 'In Stock';
     if (rand > 0.3) return 'Limited';
@@ -310,7 +366,7 @@ export class PriceComparisonService {
   private formatPlatformName(platform: string): string {
     return platform
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
 }

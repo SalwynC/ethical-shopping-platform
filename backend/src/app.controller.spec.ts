@@ -29,8 +29,16 @@ describe('AppController', () => {
             analyzeProduct: jest.fn().mockResolvedValue({
               dealScore: 75,
               ethicalScore: 80,
-              priceAnalysis: { marketPosition: 'good', priceHistory: 'stable', confidence: 85 },
-              insights: { keyStrengths: ['Good'], concerns: ['None'], bestTime: 'Now' },
+              priceAnalysis: {
+                marketPosition: 'good',
+                priceHistory: 'stable',
+                confidence: 85,
+              },
+              insights: {
+                keyStrengths: ['Good'],
+                concerns: ['None'],
+                bestTime: 'Now',
+              },
               sustainability: { score: 75, factors: ['Good'], impact: 'Low' },
               alternatives: [],
             }),
