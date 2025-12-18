@@ -4,6 +4,8 @@
     "react/forbid-dom-props": "off",
     "@next/next/no-img-element": "off",
     "jsx-a11y/alt-text": "off",
-    "react/style-prop-object": "off"
+    "react/style-prop-object": "off",
+    "@next/next/no-css-tags": "off",
+    "@next/next/inline-script-id": "off"
   }
 }
