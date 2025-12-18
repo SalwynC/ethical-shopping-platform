@@ -25,12 +25,14 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  // Force dynamic rendering for all pages
-  output: 'standalone',
-  // Enable dynamic features
+  // Enable dynamic features for full server-side rendering
   images: {
     domains: ['images.unsplash.com', 'm.media-amazon.com', 'i.ebayimg.com'],
     unoptimized: true,
+  },
+  // Dynamic rendering configuration
+  env: {
+    NEXT_PUBLIC_DYNAMIC_RENDERING: 'true',
   },
 };
 

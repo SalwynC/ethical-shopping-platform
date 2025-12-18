@@ -3,8 +3,14 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "devCommand": "cd frontend && npm run dev",
   "installCommand": "npm install",
-  "framework": null,
+  "framework": "nextjs",
   "outputDirectory": "frontend/.next",
+  "env": {
+    "NEXT_PUBLIC_BACKEND_URL": "@backend-url"
+  },
+  "buildEnv": [
+    "NEXT_PUBLIC_BACKEND_URL"
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",
@@ -21,5 +27,11 @@
         { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/**": {
+      "memory": 3008,
+      "maxDuration": 300
+    }
+  }
 }

@@ -1,6 +1,9 @@
 /* eslint-disable react/forbid-dom-props */
 "use client";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
