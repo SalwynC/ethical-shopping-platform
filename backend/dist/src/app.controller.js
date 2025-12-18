@@ -12,6 +12,7 @@ var AppController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
+const app_service_1 = require("./app.service");
 const scraper_service_1 = require("./scraper.service");
 const ai_service_1 = require("./ai.service");
 const prisma_service_1 = require("./database/prisma.service");
@@ -36,11 +37,20 @@ const analyticsData = {
     recentAnalyzes: [],
 };
 let AppController = AppController_1 = class AppController {
-    constructor(scraperService, aiService, prismaService) {
+    constructor(appService, scraperService, aiService, prismaService) {
+        this.appService = appService;
         this.scraperService = scraperService;
         this.aiService = aiService;
         this.prismaService = prismaService;
         this.logger = new common_1.Logger(AppController_1.name);
+    }
+    async health() {
+        return {
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            version: '1.0.0',
+        };
     }
     async analyze(body) {
         var _a;
@@ -829,6 +839,13 @@ __decorate([
     __metadata("design:type", review_checker_service_1.ReviewCheckerService)
 ], AppController.prototype, "reviewCheckerService", void 0);
 __decorate([
+    (0, common_1.Get)('health'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "health", null);
+__decorate([
     (0, common_1.Post)('analyze'),
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
     (0, common_1.Header)('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS'),
@@ -904,7 +921,8 @@ __decorate([
 ], AppController.prototype, "getAnalyticsInsights", null);
 exports.AppController = AppController = AppController_1 = __decorate([
     (0, common_1.Controller)('api'),
-    __metadata("design:paramtypes", [scraper_service_1.ScraperService,
+    __metadata("design:paramtypes", [app_service_1.AppService,
+        scraper_service_1.ScraperService,
         ai_service_1.AIService,
         prisma_service_1.PrismaService])
 ], AppController);

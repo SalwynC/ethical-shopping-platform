@@ -9,6 +9,7 @@ import {
   Inject,
   Req,
 } from '@nestjs/common';
+import { AppService } from './app.service';
 import { ScraperService, ProductData } from './scraper.service';
 import { AIService, AIAnalysis } from './ai.service';
 import { PrismaService } from './database/prisma.service';
@@ -168,6 +169,7 @@ export class AppController {
   private readonly logger = new Logger(AppController.name);
 
   constructor(
+    private readonly appService: AppService,
     private readonly scraperService: ScraperService,
     private readonly aiService: AIService,
     private readonly prismaService: PrismaService,
@@ -175,6 +177,17 @@ export class AppController {
 
   @Inject()
   private readonly reviewCheckerService: ReviewCheckerService;
+
+  @Get('health')
+  @Header('Access-Control-Allow-Origin', '*')
+  async health() {
+    return {
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      version: '1.0.0',
+    };
+  }
 
   @Post('analyze')
   @Header('Access-Control-Allow-Origin', '*')

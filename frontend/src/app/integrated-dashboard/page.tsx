@@ -4,7 +4,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
   IconSearch, 
@@ -17,7 +17,8 @@ import {
   IconBrain,
   IconTrendingUp,
   IconLeaf,
-  IconShield
+  IconShield,
+  IconServer
 } from "@tabler/icons-react";
 
 interface APIResponse {
@@ -29,10 +30,65 @@ interface APIResponse {
   duration: number;
 }
 
+interface BackendStatus {
+  connected: boolean;
+  healthy: boolean;
+  uptime?: number;
+  message: string;
+  responseTime?: number;
+}
+
 export default function IntegratedDashboardPage() {
   const [productUrl, setProductUrl] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [apiResponses, setApiResponses] = useState<APIResponse[]>([]);
+  const [backendStatus, setBackendStatus] = useState<BackendStatus>({
+    connected: false,
+    healthy: false,
+    message: "Checking backend...",
+  });
+
+  // Check backend health on mount
+  useEffect(() => {
+    const checkBackendHealth = async () => {
+      try {
+        const startTime = Date.now();
+        const response = await fetch("/api/health", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+        });
+        const responseTime = Date.now() - startTime;
+
+        if (response.ok) {
+          const data = await response.json();
+          setBackendStatus({
+            connected: true,
+            healthy: true,
+            uptime: data.uptime,
+            message: "✅ Backend is healthy",
+            responseTime,
+          });
+        } else {
+          setBackendStatus({
+            connected: false,
+            healthy: false,
+            message: `❌ Backend error: ${response.status}`,
+          });
+        }
+      } catch (err) {
+        setBackendStatus({
+          connected: false,
+          healthy: false,
+          message: `❌ Backend unreachable: ${err instanceof Error ? err.message : "Unknown error"}`,
+        });
+      }
+    };
+
+    checkBackendHealth();
+    const interval = setInterval(checkBackendHealth, 30000); // Check every 30s
+    return () => clearInterval(interval);
+  }, []);
 
   const analyzeProduct = async () => {
     if (!productUrl.trim()) {
@@ -103,6 +159,32 @@ export default function IntegratedDashboardPage() {
               See Frontend & Backend Integration in Real-Time
             </p>
           </div>
+
+          {/* Backend Status Card */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-2xl p-6 mb-8"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <IconServer size={24} className={backendStatus.healthy ? "text-green-500" : "text-red-500"} />
+                <div>
+                  <p className="text-sm font-semibold text-gray-300">Backend Status</p>
+                  <p className="text-lg font-bold text-white">{backendStatus.message}</p>
+                  {backendStatus.responseTime && (
+                    <p className="text-xs text-gray-400">Response: {backendStatus.responseTime}ms</p>
+                  )}
+                </div>
+              </div>
+              <motion.div
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className={`w-4 h-4 rounded-full ${backendStatus.healthy ? "bg-green-500" : "bg-red-500"}`}
+              />
+            </div>
+          </motion.div>
 
           {/* Input Section */}
           <div className="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-2xl p-8">
