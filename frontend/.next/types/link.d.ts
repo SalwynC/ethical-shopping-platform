@@ -29,17 +29,17 @@ declare namespace __next_route_internal_types__ {
     S extends `${string}${SearchOrHash}` ? never : S
 
   type StaticRoutes = 
-    | `/api/comprehensive-analysis`
+    | `/`
+    | `/analysis`
     | `/api/analyze`
+    | `/api/comprehensive-analysis`
     | `/api/track-analysis`
     | `/api/system-status`
-    | `/analysis`
     | `/comprehensive-analysis`
+    | `/integrated-dashboard`
     | `/privacy`
-    | `/`
     | `/reports`
     | `/track-analysis`
-    | `/integrated-dashboard`
   type DynamicRoutes<T extends string = string> = never
 
   type RouteImpl<T> = 

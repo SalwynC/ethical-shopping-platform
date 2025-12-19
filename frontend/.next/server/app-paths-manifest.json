@@ -1,15 +1,1 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/comprehensive-analysis/route": "app/api/comprehensive-analysis/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/analyze/route": "app/api/analyze/route.js",
-  "/api/track-analysis/route": "app/api/track-analysis/route.js",
-  "/api/system-status/route": "app/api/system-status/route.js",
-  "/analysis/page": "app/analysis/page.js",
-  "/comprehensive-analysis/page": "app/comprehensive-analysis/page.js",
-  "/privacy/page": "app/privacy/page.js",
-  "/page": "app/page.js",
-  "/reports/page": "app/reports/page.js",
-  "/track-analysis/page": "app/track-analysis/page.js",
-  "/integrated-dashboard/page": "app/integrated-dashboard/page.js"
-}
+{}
