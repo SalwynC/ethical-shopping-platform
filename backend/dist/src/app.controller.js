@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var AppController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
@@ -381,42 +384,15 @@ let AppController = AppController_1 = class AppController {
         return { alternatives: mockAlternatives };
     }
     async getRules() {
-        if (!this.prismaService.isMongoDBConnected()) {
-            const rules = this.prismaService.getFallbackRules();
-            return {
-                ethicalRules: rules.map((rule) => ({
-                    name: rule.name,
-                    category: rule.category,
-                    weight: rule.weight,
-                    description: rule.description,
-                })),
-            };
-        }
-        try {
-            const rules = await this.prismaService.ethicsRule.findMany({
-                where: { active: true },
-                orderBy: { weight: 'desc' },
-            });
-            return {
-                ethicalRules: rules.map((rule) => ({
-                    name: rule.name,
-                    category: rule.category,
-                    weight: rule.weight,
-                    description: rule.description,
-                })),
-            };
-        }
-        catch (error) {
-            const rules = this.prismaService.getFallbackRules();
-            return {
-                ethicalRules: rules.map((rule) => ({
-                    name: rule.name,
-                    category: rule.category,
-                    weight: rule.weight,
-                    description: rule.description,
-                })),
-            };
-        }
+        const rules = this.prismaService.getFallbackRules();
+        return {
+            ethicalRules: rules.map((rule) => ({
+                name: rule.name,
+                category: rule.category,
+                weight: rule.weight,
+                description: rule.description,
+            })),
+        };
     }
     async getHealth() {
         return {
@@ -477,6 +453,28 @@ let AppController = AppController_1 = class AppController {
                 'Mobile analysis has increased 40% this month',
             ],
         };
+    }
+    async listProducts() {
+        try {
+            if (this.prismaService.isMongoDBConnected()) {
+                const products = await this.prismaService.product.findMany({
+                    take: 50,
+                    orderBy: { createdAt: 'desc' },
+                });
+                return { products };
+            }
+        }
+        catch (e) {
+        }
+        try {
+            const fallback = this.prismaService.fallbackData;
+            if (fallback && fallback.products) {
+                return { products: Array.from(fallback.products.values()).slice(-50).reverse() };
+            }
+        }
+        catch (e) {
+        }
+        return { products: [] };
     }
     calculatePriceRank(currentPrice, originalPrice) {
         if (!currentPrice || currentPrice <= 0)
@@ -850,6 +848,7 @@ __decorate([
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
     (0, common_1.Header)('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS'),
     (0, common_1.Header)('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [AnalyzeDto]),
     __metadata("design:returntype", Promise)
@@ -919,6 +918,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "getAnalyticsInsights", null);
+__decorate([
+    (0, common_1.Get)('products'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "listProducts", null);
 exports.AppController = AppController = AppController_1 = __decorate([
     (0, common_1.Controller)('api'),
     __metadata("design:paramtypes", [app_service_1.AppService,
