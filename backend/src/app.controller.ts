@@ -629,45 +629,16 @@ export class AppController {
   @Get('rules')
   @Header('Access-Control-Allow-Origin', '*')
   async getRules() {
-    if (!this.prismaService.isMongoDBConnected()) {
-      // Use fallback data
-      const rules = this.prismaService.getFallbackRules();
-      return {
-        ethicalRules: rules.map((rule) => ({
-          name: rule.name,
-          category: rule.category,
-          weight: rule.weight,
-          description: rule.description,
-        })),
-      };
-    }
-
-    try {
-      const rules = await this.prismaService.ethicsRule.findMany({
-        where: { active: true },
-        orderBy: { weight: 'desc' },
-      });
-
-      return {
-        ethicalRules: rules.map((rule) => ({
-          name: rule.name,
-          category: rule.category,
-          weight: rule.weight,
-          description: rule.description,
-        })),
-      };
-    } catch (error) {
-      // Fallback to in-memory rules
-      const rules = this.prismaService.getFallbackRules();
-      return {
-        ethicalRules: rules.map((rule) => ({
-          name: rule.name,
-          category: rule.category,
-          weight: rule.weight,
-          description: rule.description,
-        })),
-      };
-    }
+    // Use in-memory fallback rules (no EthicsRule table in PostgreSQL schema)
+    const rules = this.prismaService.getFallbackRules();
+    return {
+      ethicalRules: rules.map((rule) => ({
+        name: rule.name,
+        category: rule.category,
+        weight: rule.weight,
+        description: rule.description,
+      })),
+    };
   }
 
   @Get('health')
@@ -748,6 +719,35 @@ export class AppController {
         'Mobile analysis has increased 40% this month',
       ],
     };
+  }
+
+  @Get('products')
+  @Header('Access-Control-Allow-Origin', '*')
+  async listProducts() {
+    // Return recent products from DB if connected, otherwise use in-memory fallback
+    try {
+      if (this.prismaService.isMongoDBConnected()) {
+        const products = await this.prismaService.product.findMany({
+          take: 50,
+          orderBy: { createdAt: 'desc' },
+        });
+        return { products };
+      }
+    } catch (e) {
+      // ignore and fallback
+    }
+
+    // Fallback: return in-memory products if available
+    try {
+      const fallback = (this.prismaService as any).fallbackData;
+      if (fallback && fallback.products) {
+        return { products: Array.from((fallback.products as Map<string, any>).values()).slice(-50).reverse() };
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    return { products: [] };
   }
 
   // Enhanced Price Analysis Helper Methods

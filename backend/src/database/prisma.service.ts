@@ -23,10 +23,8 @@ export class PrismaService
     // Check if DATABASE_URL is properly configured
     const dbUrl = process.env.DATABASE_URL;
     if (!dbUrl || dbUrl.includes('placeholder')) {
-      this.logger.warn('⚠️  MongoDB not configured - using in-memory storage');
-      this.logger.warn(
-        '📖 See MONGODB_SETUP.md for MongoDB setup instructions',
-      );
+      this.logger.warn('⚠️  Database not configured - using in-memory storage');
+      this.logger.warn('📖 See REAL_DATABASE_SETUP.md for PostgreSQL setup');
       this.isConnected = false;
       await this.initializeFallbackData();
       return;
@@ -34,21 +32,13 @@ export class PrismaService
 
     try {
       await this.$connect();
-      this.logger.log('✅ MongoDB connected successfully');
+      this.logger.log('✅ PostgreSQL connected successfully');
       this.isConnected = true;
 
-      // Seed initial data if needed
+      // Seed initial data if needed (no DB writes required)
       await this.seedInitialData();
     } catch (error) {
-      this.logger.warn(
-        '⚠️  MongoDB connection failed - using in-memory storage',
-      );
-      this.logger.warn(
-        '📋 Connection Issue: IP not whitelisted in MongoDB Atlas',
-      );
-      this.logger.warn(
-        '📝 Fix: Go to https://cloud.mongodb.com/ → Network Access → Allow your IP',
-      );
+      this.logger.warn('⚠️  Database connection failed - using in-memory storage');
       this.logger.warn(`Details: ${error.message.substring(0, 100)}`);
       this.isConnected = false;
 
@@ -63,98 +53,8 @@ export class PrismaService
   }
 
   private async seedInitialData() {
-    try {
-      // Check if ethics rules exist
-      try {
-        const rulesCount = await this.ethicsRule.count();
-
-        if (rulesCount === 0) {
-          this.logger.log('🌱 Seeding initial ethics rules...');
-
-          const ethicsRules = [
-            {
-              name: 'Labor Practices',
-              category: 'labor',
-              description: 'Fair labor practices and working conditions',
-              weight: 0.3,
-              criteria: {
-                factors: ['fair_wages', 'worker_rights', 'safety_standards'],
-                thresholds: { excellent: 90, good: 70, average: 50 },
-              },
-            },
-            {
-              name: 'Environmental Impact',
-              category: 'environment',
-              description: 'Environmental sustainability and carbon footprint',
-              weight: 0.25,
-              criteria: {
-                factors: [
-                  'carbon_footprint',
-                  'renewable_energy',
-                  'waste_management',
-                ],
-                thresholds: { excellent: 85, good: 65, average: 45 },
-              },
-            },
-            {
-              name: 'Supply Chain Transparency',
-              category: 'transparency',
-              description: 'Transparency in supply chain and sourcing',
-              weight: 0.2,
-              criteria: {
-                factors: ['supplier_disclosure', 'traceability', 'auditing'],
-                thresholds: { excellent: 80, good: 60, average: 40 },
-              },
-            },
-            {
-              name: 'Community Impact',
-              category: 'community',
-              description: 'Positive impact on local communities',
-              weight: 0.15,
-              criteria: {
-                factors: [
-                  'local_sourcing',
-                  'community_programs',
-                  'economic_impact',
-                ],
-                thresholds: { excellent: 75, good: 55, average: 35 },
-              },
-            },
-            {
-              name: 'Corporate Governance',
-              category: 'governance',
-              description: 'Ethical business practices and governance',
-              weight: 0.1,
-              criteria: {
-                factors: [
-                  'transparency',
-                  'ethics_code',
-                  'stakeholder_engagement',
-                ],
-                thresholds: { excellent: 85, good: 65, average: 45 },
-              },
-            },
-          ];
-
-          for (const rule of ethicsRules) {
-            await this.ethicsRule.create({
-              data: rule,
-            });
-          }
-
-          this.logger.log(`✅ Seeded ${ethicsRules.length} ethics rules`);
-        }
-      } catch (seedError) {
-        this.logger.warn(
-          '⚠️  Could not seed database (will use in-memory fallback)',
-        );
-      }
-    } catch (error) {
-      this.logger.error(
-        '❌ Error seeding data:',
-        error.message.substring(0, 50),
-      );
-    }
+    // No DB seeding required for ethics rules (using in-memory fallback)
+    this.logger.log('ℹ️ Using in-memory ethics rules fallback');
   }
 
   private async initializeFallbackData() {
@@ -240,7 +140,7 @@ export class PrismaService
     }
 
     try {
-      // MongoDB database operations
+      // PostgreSQL database operations
       let product = await this.product.findUnique({
         where: { url },
       });
@@ -262,10 +162,15 @@ export class PrismaService
             reviewCount: productData.reviewCount,
             availability: productData.availability || 'unknown',
             imageUrl: productData.imageUrl,
-            features: productData.features || null,
+            features:
+              typeof productData.features === 'string'
+                ? productData.features
+                : productData.features
+                ? JSON.stringify(productData.features)
+                : null,
           },
         });
-        this.logger.log(`📦 Created new product in MongoDB: ${product.title}`);
+        this.logger.log(`📦 Created new product in PostgreSQL: ${product.title}`);
       } else {
         product = await this.product.update({
           where: { id: product.id },
@@ -279,7 +184,7 @@ export class PrismaService
           },
         });
         this.logger.log(
-          `🔄 Updated existing product in MongoDB: ${product.title}`,
+          `🔄 Updated existing product in PostgreSQL: ${product.title}`,
         );
       }
 
@@ -326,9 +231,15 @@ export class PrismaService
           priceRank: analysisData.priceRank,
           marketComparison: analysisData.marketComparison,
           honestAssessment: analysisData.honestAssessment,
-          pros: analysisData.pros || [],
-          cons: analysisData.cons || [],
-          warnings: analysisData.warnings || [],
+          pros: analysisData.pros
+            ? JSON.stringify(analysisData.pros)
+            : null,
+          cons: analysisData.cons
+            ? JSON.stringify(analysisData.cons)
+            : null,
+          warnings: analysisData.warnings
+            ? JSON.stringify(analysisData.warnings)
+            : null,
           brandRating: analysisData.brandRating || 60,
           environmentalImpact: analysisData.environmentalImpact || 'Unknown',
           ethicalSourcing: analysisData.ethicalSourcing || 60,
@@ -367,7 +278,6 @@ export class PrismaService
     productId: string,
     price: number,
     currency = 'INR',
-    source = 'direct_scrape',
   ) {
     if (!this.isConnected) {
       this.logger.log('ℹ️ Skipping saving price history (no DB connection)');
@@ -380,7 +290,6 @@ export class PrismaService
           productId,
           price,
           currency,
-          source,
         },
       });
     } catch (error) {
@@ -446,7 +355,7 @@ export class PrismaService
     return Array.from(this.fallbackData.rules.values());
   }
 
-  // Check if MongoDB is connected
+  // Check if Database is connected
   isMongoDBConnected() {
     return this.isConnected;
   }

@@ -17,25 +17,25 @@ model Product {
   price         Float
   originalPrice Float?
   currency      String   @default("INR")
-  platform      String   // amazon, flipkart, etc.
-  productId     String   // platform-specific product ID
+  platform      String // amazon, flipkart, etc.
+  productId     String // platform-specific product ID
   brand         String?
   category      String?
   rating        Float?
   reviewCount   Int?
   availability  String   @default("unknown")
   imageUrl      String?
-  features      String?  // JSON array as string
-  scrapedAt     DateTime @default(now()) // When was this product scraped?
-  
+  features      String? // JSON array as string
+  scrapedAt     DateTime @default(now())
+
   // Timestamps
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
-  analyses      Analysis[]
-  priceHistory  PriceHistory[]
-  
+  analyses     Analysis[]
+  priceHistory PriceHistory[]
+
   @@index([platform])
   @@index([brand])
   @@index([createdAt])
@@ -43,58 +43,58 @@ model Product {
 
 // Analysis results table - stores each product analysis
 model Analysis {
-  id               String   @id @default(cuid())
-  productId        String
-  
+  id        String @id @default(cuid())
+  productId String
+
   // Scores
-  dealScore        Float
-  ethicalScore     Float
-  trustScore       Float
-  
+  dealScore    Float
+  ethicalScore Float
+  trustScore   Float
+
   // Analysis results
-  decision         String   // buy_now, wait, avoid, insufficient_data
-  recommendation   String
-  confidence       Float
-  
+  decision       String // buy_now, wait, avoid, insufficient_data
+  recommendation String
+  confidence     Float
+
   // Price analysis
   isGoodDeal       Boolean
   savingsAmount    Float?
-  priceRank        String   // lowest, below_average, average, above_average, highest
+  priceRank        String // lowest, below_average, average, above_average, highest
   marketComparison String
-  
+
   // AI insights
   honestAssessment String
-  pros             String   // JSON array as string
-  cons             String   // JSON array as string
-  warnings         String   // JSON array as string
-  
+  pros             String? // JSON array as string
+  cons             String? // JSON array as string
+  warnings         String? // JSON array as string
+
   // Sustainability
-  brandRating      Float
+  brandRating         Float
   environmentalImpact String
-  ethicalSourcing  Float
-  
+  ethicalSourcing     Float
+
   // Metadata
-  analysisVersion  String   @default("1.0")
-  aiModel          String?  // gemini-pro, gpt-4, etc.
-  processingTime   Int?     // milliseconds
-  
+  analysisVersion String  @default("1.0")
+  aiModel         String? // gemini-pro, gpt-4, etc.
+  processingTime  Int? // milliseconds
+
   // Timestamps
-  createdAt        DateTime @default(now())
-  
+  createdAt DateTime @default(now())
+
   // Relations
-  product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  alternatives     Alternative[]
-  ruleEvaluations  RuleEvaluation[]
-  
+  product         Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  alternatives    Alternative[]
+  ruleEvaluations RuleEvaluation[]
+
   @@index([productId])
   @@index([createdAt])
 }
 
 // Alternative products suggested for each analysis
 model Alternative {
-  id           String   @id @default(cuid())
-  analysisId   String
-  
+  id         String @id @default(cuid())
+  analysisId String
+
   title        String
   url          String
   price        Float?
@@ -102,97 +102,46 @@ model Alternative {
   rationale    String
   confidence   Float
   platform     String
-  
+
   // Relations
-  analysis     Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
-  
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
   @@index([analysisId])
 }
 
 // Price history tracking
 model PriceHistory {
-  id        String   @id @default(cuid())
+  id        String @id @default(cuid())
   productId String
-  
-  price     Float
-  currency  String
-  
+
+  price    Float
+  currency String
+
   // Timestamp when price was recorded
   recordedAt DateTime @default(now())
-  
+
   // Relations
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
   @@index([productId])
   @@index([recordedAt])
 }
 
 // Rules evaluation results
 model RuleEvaluation {
-  id           String   @id @default(cuid())
-  analysisId   String
-  
-  ruleId       String
-  ruleName     String
-  
-  contribution Float   // How much this rule contributed to ethical score
+  id         String @id @default(cuid())
+  analysisId String
+
+  ruleId   String
+  ruleName String
+
+  contribution Float // How much this rule contributed to ethical score
   reason       String
   passed       Boolean
-  
+
   // Relations
-  analysis     Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
-  
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
   @@index([analysisId])
   @@index([ruleId])
-}
-  
-  createdAt    DateTime @default(now())
-  
-  @@index([analysisId])
-}
-  
-  @@map("consents")
-}
-
-// System analytics and metrics
-model Analytics {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  
-  // Analysis metrics
-  totalAnalyses     Int      @default(0)
-  successfulAnalyses Int     @default(0)
-  failedAnalyses    Int      @default(0)
-  
-  // Platform metrics
-  platformStats     Json     // { "amazon": 150, "flipkart": 75, ... }
-  avgDealScore      Float?
-  avgEthicalScore   Float?
-  
-  // Performance metrics
-  avgProcessingTime Int?     // milliseconds
-  
-  // Date for daily aggregation
-  date             DateTime
-  createdAt        DateTime @default(now())
-  
-  @@map("analytics")
-}
-
-// Cached external API responses
-model ApiCache {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  cacheKey     String
-  
-  // Cache data
-  response     Json
-  ttl          Int      // Time to live in seconds
-  
-  // Metadata
-  apiProvider  String   // gemini, openai, etc.
-  requestHash  String   // hash of request parameters
-  
-  createdAt    DateTime @default(now())
-  expiresAt    DateTime
-  
-  @@map("api_cache")
 }
