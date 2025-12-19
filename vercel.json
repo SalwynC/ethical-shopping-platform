@@ -5,7 +5,8 @@
   "installCommand": "npm install --workspaces",
   "env": {
     "NEXT_PUBLIC_BACKEND_URL": "https://ethical-shopping-platform-backend.vercel.app",
-    "BACKEND_URL": "https://ethical-shopping-platform-backend.vercel.app"
+    "BACKEND_URL": "https://ethical-shopping-platform-backend.vercel.app",
+    "GOOGLE_AI_API_KEY": "AIzaSyC6wJhXILe3tpXl9UXN1VgfXmZHUgNKk_U"
   },
   "rewrites": [
     {

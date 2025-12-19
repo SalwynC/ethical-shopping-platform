@@ -7,6 +7,7 @@
     { "src": "/(.*)", "dest": "api/index.ts" }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "GOOGLE_AI_API_KEY": "AIzaSyC6wJhXILe3tpXl9UXN1VgfXmZHUgNKk_U"
   }
 }
