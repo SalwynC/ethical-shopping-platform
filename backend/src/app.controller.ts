@@ -196,7 +196,7 @@ export class AppController {
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, Content-Length, X-Requested-With',
   )
-  async analyze(body: AnalyzeDto): Promise<AnalysisResult> {
+  async analyze(@Body() body: AnalyzeDto): Promise<AnalysisResult> {
     const startTime = Date.now();
 
     try {
