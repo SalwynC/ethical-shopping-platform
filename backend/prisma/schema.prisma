@@ -1,16 +1,16 @@
-// Ethical Shopping Platform Database Schema - MongoDB
+// Ethical Shopping Platform Database Schema - PostgreSQL (Supabase)
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// Products collection - stores scraped product information
+// Products table - stores scraped product information
 model Product {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String   @id @default(cuid())
   url           String   @unique
   title         String
   description   String?
@@ -25,23 +25,26 @@ model Product {
   reviewCount   Int?
   availability  String   @default("unknown")
   imageUrl      String?
-  features      Json?    // JSON array of features
+  features      String?  // JSON array as string
+  scrapedAt     DateTime @default(now()) // When was this product scraped?
   
   // Timestamps
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   
-  // Relations (MongoDB doesn't enforce relations, but we keep for Prisma)
+  // Relations
   analyses      Analysis[]
   priceHistory  PriceHistory[]
   
-  @@map("products")
+  @@index([platform])
+  @@index([brand])
+  @@index([createdAt])
 }
 
-// Analysis results - stores each product analysis
+// Analysis results table - stores each product analysis
 model Analysis {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
-  productId        String   @db.ObjectId
+  id               String   @id @default(cuid())
+  productId        String
   
   // Scores
   dealScore        Float
@@ -61,9 +64,9 @@ model Analysis {
   
   // AI insights
   honestAssessment String
-  pros             Json     // JSON array
-  cons             Json     // JSON array
-  warnings         Json     // JSON array
+  pros             String   // JSON array as string
+  cons             String   // JSON array as string
+  warnings         String   // JSON array as string
   
   // Sustainability
   brandRating      Float
@@ -78,18 +81,19 @@ model Analysis {
   // Timestamps
   createdAt        DateTime @default(now())
   
-  // Relations (MongoDB references)
-  product          Product  @relation(fields: [productId], references: [id])
+  // Relations
+  product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   alternatives     Alternative[]
   ruleEvaluations  RuleEvaluation[]
   
-  @@map("analyses")
+  @@index([productId])
+  @@index([createdAt])
 }
 
 // Alternative products suggested for each analysis
 model Alternative {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  analysisId   String   @db.ObjectId
+  id           String   @id @default(cuid())
+  analysisId   String
   
   title        String
   url          String
@@ -99,91 +103,53 @@ model Alternative {
   confidence   Float
   platform     String
   
-  createdAt    DateTime @default(now())
-  
   // Relations
-  analysis     Analysis @relation(fields: [analysisId], references: [id])
+  analysis     Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
   
-  @@map("alternatives")
-}
-
-// Ethics rules catalog
-model EthicsRule {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  category     String   // sustainability, labor, environment, etc.
-  description  String
-  weight       Float    // 0.0 to 1.0
-  active       Boolean  @default(true)
-  
-  // Rule logic
-  criteria     Json     // JSON object defining evaluation criteria
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
-  // Relations
-  evaluations  RuleEvaluation[]
-  
-  @@map("ethics_rules")
-}
-
-// Individual rule evaluations for each analysis
-model RuleEvaluation {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  analysisId   String   @db.ObjectId
-  ruleId       String   @db.ObjectId
-  
-  score        Float    // 0-100
-  contribution Float    // weighted contribution to overall ethical score
-  explanation  String
-  confidence   Float
-  
-  createdAt    DateTime @default(now())
-  
-  // Relations
-  analysis     Analysis    @relation(fields: [analysisId], references: [id])
-  rule         EthicsRule  @relation(fields: [ruleId], references: [id])
-  
-  @@map("rule_evaluations")
+  @@index([analysisId])
 }
 
 // Price history tracking
 model PriceHistory {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  productId String   @db.ObjectId
+  id        String   @id @default(cuid())
+  productId String
   
   price     Float
-  currency  String   @default("INR")
-  source    String   // direct_scrape, api, manual
+  currency  String
   
-  createdAt DateTime @default(now())
+  // Timestamp when price was recorded
+  recordedAt DateTime @default(now())
   
   // Relations
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   
-  @@map("price_history")
+  @@index([productId])
+  @@index([recordedAt])
 }
 
-// User consent and privacy management
-model Consent {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId           String?  // optional - for anonymous users
-  sessionId        String   // browser session ID
+// Rules evaluation results
+model RuleEvaluation {
+  id           String   @id @default(cuid())
+  analysisId   String
   
-  // Consent details
-  analyticsConsent Boolean  @default(false)
-  functionalConsent Boolean @default(true)
-  marketingConsent Boolean  @default(false)
+  ruleId       String
+  ruleName     String
   
-  // Legal compliance
-  consentVersion   String
-  ipAddress        String?
-  userAgent        String?
+  contribution Float   // How much this rule contributed to ethical score
+  reason       String
+  passed       Boolean
   
-  // Timestamps
-  consentDate      DateTime @default(now())
-  withdrawnDate    DateTime?
+  // Relations
+  analysis     Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  
+  @@index([analysisId])
+  @@index([ruleId])
+}
+  
+  createdAt    DateTime @default(now())
+  
+  @@index([analysisId])
+}
   
   @@map("consents")
 }
