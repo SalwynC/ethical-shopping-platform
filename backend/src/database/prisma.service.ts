@@ -11,6 +11,10 @@ export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
+  // Ensure TypeScript recognizes PrismaClient runtime methods
+  declare $connect: () => Promise<void>;
+  declare $disconnect: () => Promise<void>;
+
   private readonly logger = new Logger(PrismaService.name);
   private isConnected = false;
   private fallbackData = {
