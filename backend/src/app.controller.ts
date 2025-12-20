@@ -206,6 +206,9 @@ export class AppController {
         throw new Error('Request body must be a valid JSON object');
       }
 
+      // Support both 'url' and 'productUrl' field names
+      body.url = body.url || body.productUrl;
+
       // Validate URL first
       if (!body.url || typeof body.url !== 'string') {
         this.logger.error('Missing or invalid URL in request body', { body });

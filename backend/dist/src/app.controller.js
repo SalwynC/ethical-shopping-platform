@@ -63,6 +63,7 @@ let AppController = AppController_1 = class AppController {
                 this.logger.error('Invalid request body', body);
                 throw new Error('Request body must be a valid JSON object');
             }
+            body.url = body.url || body.productUrl;
             if (!body.url || typeof body.url !== 'string') {
                 this.logger.error('Missing or invalid URL in request body', { body });
                 throw new Error('Valid URL is required');
