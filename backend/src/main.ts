@@ -2,9 +2,18 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
+import * as path from 'path';
+import * as fs from 'fs';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from .env.local (backend folder)
+const envLocalPath = path.join(process.cwd(), '.env.local');
+if (fs.existsSync(envLocalPath)) {
+  console.log(`Loading .env.local from: ${envLocalPath}`);
+  dotenv.config({ path: envLocalPath });
+} else {
+  console.log(`✓ .env.local not found at ${envLocalPath}, checking other locations...`);
+  dotenv.config();
+}
 
 async function bootstrap() {
   try {

@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var AppController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
@@ -52,11 +55,16 @@ let AppController = AppController_1 = class AppController {
             version: '1.0.0',
         };
     }
-    async analyze(body) {
+    async analyze(body = {}) {
         var _a;
         const startTime = Date.now();
         try {
+            if (!body || typeof body !== 'object') {
+                this.logger.error('Invalid request body', body);
+                throw new Error('Request body must be a valid JSON object');
+            }
             if (!body.url || typeof body.url !== 'string') {
+                this.logger.error('Missing or invalid URL in request body', { body });
                 throw new Error('Valid URL is required');
             }
             try {
@@ -882,8 +890,9 @@ __decorate([
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
     (0, common_1.Header)('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS'),
     (0, common_1.Header)('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [AnalyzeDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "analyze", null);
 __decorate([

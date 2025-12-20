@@ -26,6 +26,8 @@ export class PrismaService
   async onModuleInit() {
     // Check if DATABASE_URL is properly configured
     const dbUrl = process.env.DATABASE_URL;
+    this.logger.log(`🔍 DATABASE_URL present: ${!!dbUrl}`);
+    
     if (!dbUrl || dbUrl.includes('placeholder')) {
       this.logger.warn('⚠️  Database not configured - using in-memory storage');
       this.logger.warn('📖 See REAL_DATABASE_SETUP.md for PostgreSQL setup');
@@ -35,6 +37,7 @@ export class PrismaService
     }
 
     try {
+      this.logger.log('🔗 Attempting to connect to PostgreSQL...');
       await this.$connect();
       this.logger.log('✅ PostgreSQL connected successfully');
       this.isConnected = true;
@@ -43,7 +46,7 @@ export class PrismaService
       await this.seedInitialData();
     } catch (error) {
       this.logger.warn('⚠️  Database connection failed - using in-memory storage');
-      this.logger.warn(`Details: ${error.message.substring(0, 100)}`);
+      this.logger.warn(`Details: ${error?.message?.substring(0, 100) || 'Unknown error'}`);
       this.isConnected = false;
 
       // Initialize fallback data

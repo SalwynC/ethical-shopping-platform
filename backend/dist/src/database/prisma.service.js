@@ -22,7 +22,9 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
         };
     }
     async onModuleInit() {
+        var _a;
         const dbUrl = process.env.DATABASE_URL;
+        this.logger.log(`🔍 DATABASE_URL present: ${!!dbUrl}`);
         if (!dbUrl || dbUrl.includes('placeholder')) {
             this.logger.warn('⚠️  Database not configured - using in-memory storage');
             this.logger.warn('📖 See REAL_DATABASE_SETUP.md for PostgreSQL setup');
@@ -31,6 +33,7 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
             return;
         }
         try {
+            this.logger.log('🔗 Attempting to connect to PostgreSQL...');
             await this.$connect();
             this.logger.log('✅ PostgreSQL connected successfully');
             this.isConnected = true;
@@ -38,7 +41,7 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
         }
         catch (error) {
             this.logger.warn('⚠️  Database connection failed - using in-memory storage');
-            this.logger.warn(`Details: ${error.message.substring(0, 100)}`);
+            this.logger.warn(`Details: ${((_a = error === null || error === void 0 ? void 0 : error.message) === null || _a === void 0 ? void 0 : _a.substring(0, 100)) || 'Unknown error'}`);
             this.isConnected = false;
             await this.initializeFallbackData();
         }

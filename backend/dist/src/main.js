@@ -37,7 +37,17 @@ const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const dotenv = __importStar(require("dotenv"));
-dotenv.config();
+const path = __importStar(require("path"));
+const fs = __importStar(require("fs"));
+const envLocalPath = path.join(process.cwd(), '.env.local');
+if (fs.existsSync(envLocalPath)) {
+    console.log(`Loading .env.local from: ${envLocalPath}`);
+    dotenv.config({ path: envLocalPath });
+}
+else {
+    console.log(`✓ .env.local not found at ${envLocalPath}, checking other locations...`);
+    dotenv.config();
+}
 async function bootstrap() {
     try {
         const app = await core_1.NestFactory.create(app_module_1.AppModule);

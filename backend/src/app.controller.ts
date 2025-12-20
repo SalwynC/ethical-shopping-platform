@@ -196,12 +196,19 @@ export class AppController {
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, Content-Length, X-Requested-With',
   )
-  async analyze(body: AnalyzeDto): Promise<AnalysisResult> {
+  async analyze(@Body() body: any = {}): Promise<AnalysisResult> {
     const startTime = Date.now();
 
     try {
+      // Ensure body is valid
+      if (!body || typeof body !== 'object') {
+        this.logger.error('Invalid request body', body);
+        throw new Error('Request body must be a valid JSON object');
+      }
+
       // Validate URL first
       if (!body.url || typeof body.url !== 'string') {
+        this.logger.error('Missing or invalid URL in request body', { body });
         throw new Error('Valid URL is required');
       }
 
