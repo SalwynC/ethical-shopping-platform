@@ -576,20 +576,40 @@ export class AppController {
   @Header('Access-Control-Allow-Origin', '*')
   @Header('Access-Control-Allow-Methods', 'GET,OPTIONS')
   @Header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  getHistory(limit?: string, skip?: string, brand?: string) {
+  async getHistory(limit?: string, skip?: string, brand?: string) {
     try {
       const limitNum = parseInt(limit) || 50;
       const skipNum = parseInt(skip) || 0;
 
-      this.logger.warn('History feature requires MongoDB - returning empty');
+      // Fetch analysis history from PostgreSQL via Prisma
+      const analyses = await this.prismaService.getAnalysisHistory(
+        limitNum,
+        skipNum,
+      );
+      const total = await this.prismaService.countAnalyses();
+
+      this.logger.log(
+        `📚 Retrieved ${analyses.length} analysis records from PostgreSQL`,
+      );
+
       return {
         success: true,
-        message: 'History feature available when MongoDB is connected',
-        data: [],
-        total: 0,
+        message: 'Analysis history retrieved from PostgreSQL',
+        data: analyses.map((a) => ({
+          id: a.id,
+          productId: a.productId,
+          title: a.product?.title || 'Unknown Product',
+          dealScore: a.dealScore,
+          ethicalScore: a.ethicalScore,
+          trustScore: a.trustScore,
+          decision: a.decision,
+          recommendation: a.recommendation,
+          analyzedAt: a.createdAt,
+        })),
+        total,
         limit: limitNum,
         skip: skipNum,
-        dbStatus: 'disconnected',
+        dbStatus: 'connected',
       };
     } catch (error) {
       this.logger.error(`Failed to retrieve history: ${error.message}`);
@@ -605,24 +625,35 @@ export class AppController {
 
   @Get('history/stats')
   @Header('Access-Control-Allow-Origin', '*')
-  getHistoryStats() {
+  async getHistoryStats() {
     try {
+      const stats = await this.prismaService.getAnalyticsData();
+
+      this.logger.log(`📊 Retrieved analytics stats from PostgreSQL`);
+
       return {
         success: true,
-        message: 'Stats feature available when MongoDB is connected',
+        message: 'Stats retrieved from PostgreSQL',
         stats: {
-          totalAnalyses: 0,
-          avgEthicalScore: 0,
-          avgDealScore: 0,
-          topBrands: [],
+          totalAnalyses: stats.totalAnalyses,
+          avgEthicalScore: stats.avgEthicalScore,
+          avgDealScore: stats.avgDealScore,
+          platformStats: stats.platformStats,
+          recentAnalyses: stats.recentAnalyses,
         },
-        dbStatus: 'disconnected',
+        dbStatus: 'connected',
       };
     } catch (error) {
       this.logger.error(`Failed to get stats: ${error.message}`);
       return {
         success: false,
         message: error.message,
+        stats: {
+          totalAnalyses: 0,
+          avgEthicalScore: 0,
+          avgDealScore: 0,
+          platformStats: {},
+        },
         dbStatus: 'error',
       };
     }

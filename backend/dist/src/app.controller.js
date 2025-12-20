@@ -340,19 +340,34 @@ let AppController = AppController_1 = class AppController {
             };
         }
     }
-    getHistory(limit, skip, brand) {
+    async getHistory(limit, skip, brand) {
         try {
             const limitNum = parseInt(limit) || 50;
             const skipNum = parseInt(skip) || 0;
-            this.logger.warn('History feature requires MongoDB - returning empty');
+            const analyses = await this.prismaService.getAnalysisHistory(limitNum, skipNum);
+            const total = await this.prismaService.countAnalyses();
+            this.logger.log(`📚 Retrieved ${analyses.length} analysis records from PostgreSQL`);
             return {
                 success: true,
-                message: 'History feature available when MongoDB is connected',
-                data: [],
-                total: 0,
+                message: 'Analysis history retrieved from PostgreSQL',
+                data: analyses.map((a) => {
+                    var _a;
+                    return ({
+                        id: a.id,
+                        productId: a.productId,
+                        title: ((_a = a.product) === null || _a === void 0 ? void 0 : _a.title) || 'Unknown Product',
+                        dealScore: a.dealScore,
+                        ethicalScore: a.ethicalScore,
+                        trustScore: a.trustScore,
+                        decision: a.decision,
+                        recommendation: a.recommendation,
+                        analyzedAt: a.createdAt,
+                    });
+                }),
+                total,
                 limit: limitNum,
                 skip: skipNum,
-                dbStatus: 'disconnected',
+                dbStatus: 'connected',
             };
         }
         catch (error) {
@@ -366,18 +381,21 @@ let AppController = AppController_1 = class AppController {
             };
         }
     }
-    getHistoryStats() {
+    async getHistoryStats() {
         try {
+            const stats = await this.prismaService.getAnalyticsData();
+            this.logger.log(`📊 Retrieved analytics stats from PostgreSQL`);
             return {
                 success: true,
-                message: 'Stats feature available when MongoDB is connected',
+                message: 'Stats retrieved from PostgreSQL',
                 stats: {
-                    totalAnalyses: 0,
-                    avgEthicalScore: 0,
-                    avgDealScore: 0,
-                    topBrands: [],
+                    totalAnalyses: stats.totalAnalyses,
+                    avgEthicalScore: stats.avgEthicalScore,
+                    avgDealScore: stats.avgDealScore,
+                    platformStats: stats.platformStats,
+                    recentAnalyses: stats.recentAnalyses,
                 },
-                dbStatus: 'disconnected',
+                dbStatus: 'connected',
             };
         }
         catch (error) {
@@ -385,6 +403,12 @@ let AppController = AppController_1 = class AppController {
             return {
                 success: false,
                 message: error.message,
+                stats: {
+                    totalAnalyses: 0,
+                    avgEthicalScore: 0,
+                    avgDealScore: 0,
+                    platformStats: {},
+                },
                 dbStatus: 'error',
             };
         }
@@ -902,14 +926,14 @@ __decorate([
     (0, common_1.Header)('Access-Control-Allow-Headers', 'Content-Type, Authorization'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AppController.prototype, "getHistory", null);
 __decorate([
     (0, common_1.Get)('history/stats'),
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AppController.prototype, "getHistoryStats", null);
 __decorate([
     (0, common_1.Post)('predict'),

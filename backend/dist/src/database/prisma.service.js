@@ -310,6 +310,47 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
             };
         }
     }
+    async getAnalysisHistory(limit = 50, skip = 0) {
+        try {
+            if (!this.isConnected) {
+                return Array.from(this.fallbackData.analyses.values()).slice(skip, skip + limit);
+            }
+            const analyses = await this.analysis.findMany({
+                take: limit,
+                skip,
+                orderBy: { createdAt: 'desc' },
+                include: {
+                    product: {
+                        select: {
+                            id: true,
+                            title: true,
+                            url: true,
+                            price: true,
+                        },
+                    },
+                },
+            });
+            this.logger.log(`📚 Retrieved ${analyses.length} analyses from PostgreSQL`);
+            return analyses;
+        }
+        catch (error) {
+            this.logger.error('❌ Error getting analysis history:', error);
+            return [];
+        }
+    }
+    async countAnalyses() {
+        try {
+            if (!this.isConnected) {
+                return this.fallbackData.analyses.size;
+            }
+            const count = await this.analysis.count();
+            return count;
+        }
+        catch (error) {
+            this.logger.error('❌ Error counting analyses:', error);
+            return 0;
+        }
+    }
     getFallbackRules() {
         return Array.from(this.fallbackData.rules.values());
     }
