@@ -661,26 +661,38 @@ export class AppController {
 
   @Post('predict')
   @Header('Access-Control-Allow-Origin', '*')
-  async predict(body: { url: string; days?: number }) {
+  async predict(@Body() body: any = {}) {
     // Price prediction endpoint
-    const days = body.days || 7;
+    try {
+      const url = body.url || body.productId || 'unknown';
+      const days = body.days || 7;
 
-    return {
-      url: body.url,
-      predictions: Array.from({ length: days }, (_, i) => ({
-        date: new Date(Date.now() + i * 24 * 60 * 60 * 1000)
+      return {
+        success: true,
+        url,
+        predictions: Array.from({ length: days }, (_, i) => ({
+          date: new Date(Date.now() + i * 24 * 60 * 60 * 1000)
+            .toISOString()
+            .split('T')[0],
+          predictedPrice: Math.random() * 1000 + 500, // Mock prediction
+          confidence: Math.random() * 40 + 60,
+        })),
+        recommendation: Math.random() > 0.5 ? 'wait' : 'buy_now',
+        bestTimeToBuy: new Date(
+          Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000,
+        )
           .toISOString()
           .split('T')[0],
-        predictedPrice: Math.random() * 1000 + 500, // Mock prediction
-        confidence: Math.random() * 40 + 60,
-      })),
-      recommendation: Math.random() > 0.5 ? 'wait' : 'buy_now',
-      bestTimeToBy: new Date(
-        Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000,
-      )
-        .toISOString()
-        .split('T')[0],
-    };
+      };
+    } catch (error) {
+      this.logger.error(`Price prediction failed: ${error.message}`);
+      return {
+        success: false,
+        message: error.message,
+        predictions: [],
+        recommendation: 'wait',
+      };
+    }
   }
 
   @Get('alternatives')
@@ -739,14 +751,29 @@ export class AppController {
 
   @Post('consent')
   @Header('Access-Control-Allow-Origin', '*')
-  async recordConsent(body: { userId: string; consent: boolean }) {
-    // Privacy consent tracking
-    return {
-      success: true,
-      userId: body.userId,
-      consentRecorded: body.consent,
-      timestamp: new Date().toISOString(),
-    };
+  async recordConsent(@Body() body: any = {}) {
+    try {
+      // Privacy consent tracking
+      const userId = body.userId || body.user_id || 'anonymous';
+      const consentGiven = body.consent !== undefined ? body.consent : body.consentGiven || false;
+
+      this.logger.log(`📋 Consent recorded for user: ${userId}`);
+
+      return {
+        success: true,
+        userId,
+        consentRecorded: consentGiven,
+        timestamp: new Date().toISOString(),
+        message: 'Consent recorded successfully',
+      };
+    } catch (error) {
+      this.logger.error(`Consent recording failed: ${error.message}`);
+      return {
+        success: false,
+        message: error.message,
+        timestamp: new Date().toISOString(),
+      };
+    }
   }
 
   @Get('metrics')

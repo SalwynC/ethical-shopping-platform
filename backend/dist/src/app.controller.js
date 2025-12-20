@@ -413,22 +413,35 @@ let AppController = AppController_1 = class AppController {
             };
         }
     }
-    async predict(body) {
-        const days = body.days || 7;
-        return {
-            url: body.url,
-            predictions: Array.from({ length: days }, (_, i) => ({
-                date: new Date(Date.now() + i * 24 * 60 * 60 * 1000)
+    async predict(body = {}) {
+        try {
+            const url = body.url || body.productId || 'unknown';
+            const days = body.days || 7;
+            return {
+                success: true,
+                url,
+                predictions: Array.from({ length: days }, (_, i) => ({
+                    date: new Date(Date.now() + i * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .split('T')[0],
+                    predictedPrice: Math.random() * 1000 + 500,
+                    confidence: Math.random() * 40 + 60,
+                })),
+                recommendation: Math.random() > 0.5 ? 'wait' : 'buy_now',
+                bestTimeToBuy: new Date(Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000)
                     .toISOString()
                     .split('T')[0],
-                predictedPrice: Math.random() * 1000 + 500,
-                confidence: Math.random() * 40 + 60,
-            })),
-            recommendation: Math.random() > 0.5 ? 'wait' : 'buy_now',
-            bestTimeToBy: new Date(Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000)
-                .toISOString()
-                .split('T')[0],
-        };
+            };
+        }
+        catch (error) {
+            this.logger.error(`Price prediction failed: ${error.message}`);
+            return {
+                success: false,
+                message: error.message,
+                predictions: [],
+                recommendation: 'wait',
+            };
+        }
     }
     async getAlternatives(category) {
         const mockAlternatives = [
@@ -472,13 +485,27 @@ let AppController = AppController_1 = class AppController {
             version: '2.0.0',
         };
     }
-    async recordConsent(body) {
-        return {
-            success: true,
-            userId: body.userId,
-            consentRecorded: body.consent,
-            timestamp: new Date().toISOString(),
-        };
+    async recordConsent(body = {}) {
+        try {
+            const userId = body.userId || body.user_id || 'anonymous';
+            const consentGiven = body.consent !== undefined ? body.consent : body.consentGiven || false;
+            this.logger.log(`📋 Consent recorded for user: ${userId}`);
+            return {
+                success: true,
+                userId,
+                consentRecorded: consentGiven,
+                timestamp: new Date().toISOString(),
+                message: 'Consent recorded successfully',
+            };
+        }
+        catch (error) {
+            this.logger.error(`Consent recording failed: ${error.message}`);
+            return {
+                success: false,
+                message: error.message,
+                timestamp: new Date().toISOString(),
+            };
+        }
     }
     async getMetrics() {
         const analytics = await this.prismaService.getAnalyticsData();
@@ -938,6 +965,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)('predict'),
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
@@ -966,6 +994,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)('consent'),
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
