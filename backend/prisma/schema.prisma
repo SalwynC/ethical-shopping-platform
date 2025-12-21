@@ -85,6 +85,7 @@ model Analysis {
   product         Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
   alternatives    Alternative[]
   ruleEvaluations RuleEvaluation[]
+  userSavings     UserSavings[]
 
   @@index([productId])
   @@index([createdAt])
@@ -144,4 +145,33 @@ model RuleEvaluation {
 
   @@index([analysisId])
   @@index([ruleId])
+}
+
+// Track actual savings when users follow recommendations
+model UserSavings {
+  id         String @id @default(cuid())
+  analysisId String?
+
+  amount        Float   // Actual savings amount (INR)
+  originalPrice Float   // Price user would have paid
+  finalPrice    Float   // Price actually paid
+  currency      String  @default("INR")
+  
+  productTitle  String
+  platform      String?
+  
+  // When user made the purchase
+  purchasedAt   DateTime @default(now())
+  recordedAt    DateTime @default(now())
+  
+  // Optional user tracking
+  userId        String?
+  sessionId     String?
+  
+  // Relations
+  analysis      Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+
+  @@index([purchasedAt])
+  @@index([recordedAt])
+  @@index([analysisId])
 }

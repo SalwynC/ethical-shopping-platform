@@ -73,7 +73,37 @@ let AppController = AppController_1 = class AppController {
         catch (error) {
             return {
                 success: false,
-                error: error.message,
+                error: 'Failed to fetch live stats',
+            };
+        }
+    }
+    async recordSavings(body) {
+        try {
+            if (!body.amount || body.amount <= 0) {
+                return {
+                    success: false,
+                    error: 'Invalid savings amount',
+                };
+            }
+            await this.realProductAnalyzerService.recordUserSavings({
+                analysisId: body.analysisId,
+                amount: body.amount,
+                originalPrice: body.originalPrice,
+                finalPrice: body.finalPrice,
+                productTitle: body.productTitle,
+                platform: body.platform,
+                userId: body.userId,
+                sessionId: body.sessionId,
+            });
+            return {
+                success: true,
+                message: `Savings recorded: ₹${body.amount}`,
+            };
+        }
+        catch (error) {
+            return {
+                success: false,
+                error: 'Failed to record savings',
             };
         }
     }
@@ -966,6 +996,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "getLiveStats", null);
+__decorate([
+    (0, common_1.Post)('record-savings'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "recordSavings", null);
 __decorate([
     (0, common_1.Post)('analyze'),
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),

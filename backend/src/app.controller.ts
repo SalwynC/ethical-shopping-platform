@@ -208,7 +208,52 @@ export class AppController {
     } catch (error) {
       return {
         success: false,
-        error: error.message,
+        error: 'Failed to fetch live stats',
+      };
+    }
+  }
+
+  @Post('record-savings')
+  @Header('Access-Control-Allow-Origin', '*')
+  async recordSavings(
+    @Body() body: {
+      analysisId?: string;
+      amount: number;
+      originalPrice: number;
+      finalPrice: number;
+      productTitle: string;
+      platform?: string;
+      userId?: string;
+      sessionId?: string;
+    },
+  ) {
+    try {
+      if (!body.amount || body.amount <= 0) {
+        return {
+          success: false,
+          error: 'Invalid savings amount',
+        };
+      }
+
+      await this.realProductAnalyzerService.recordUserSavings({
+        analysisId: body.analysisId,
+        amount: body.amount,
+        originalPrice: body.originalPrice,
+        finalPrice: body.finalPrice,
+        productTitle: body.productTitle,
+        platform: body.platform,
+        userId: body.userId,
+        sessionId: body.sessionId,
+      });
+
+      return {
+        success: true,
+        message: `Savings recorded: ₹${body.amount}`,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Failed to record savings',
       };
     }
   }
