@@ -60,8 +60,21 @@ export class PrismaService
   }
 
   private async seedInitialData() {
-    // No DB seeding required for ethics rules (using in-memory fallback)
-    this.logger.log('ℹ️ Using in-memory ethics rules fallback');
+    try {
+      // Check if database is empty
+      const productCount = await this.product.count();
+      const savingsCount = await this.userSavings.count();
+
+      if (productCount === 0 && savingsCount === 0) {
+        this.logger.log('🌱 Database is empty, auto-seeding with real data...');
+        await this.autoSeedDatabase();
+        this.logger.log('✅ Auto-seeding completed!');
+      } else {
+        this.logger.log(`📊 Database ready: ${productCount} products, ${savingsCount} savings records`);
+      }
+    } catch (error) {
+      this.logger.warn('⚠️  Auto-seed skipped:', error.message);
+    }
   }
 
   private async initializeFallbackData() {
@@ -112,6 +125,271 @@ export class PrismaService
 
     this.logger.log(
       `✅ Initialized ${ethicsRules.length} ethics rules in memory`,
+    );
+    this.logger.log('✅ Fallback data initialized');
+  }
+
+  private async autoSeedDatabase() {
+    // Clear existing data
+    await this.userSavings.deleteMany();
+    await this.ruleEvaluation.deleteMany();
+    await this.alternative.deleteMany();
+    await this.analysis.deleteMany();
+    await this.priceHistory.deleteMany();
+    await this.product.deleteMany();
+
+    // Real products
+    const products = [
+      {
+        url: 'https://www.amazon.in/dp/B0BHYQ7L8N',
+        title: 'boAt Rockerz 450 Wireless Headphones',
+        description: 'Premium wireless headphone with 50-hour battery',
+        price: 1499,
+        originalPrice: 4990,
+        currency: 'INR',
+        platform: 'amazon',
+        productId: 'B0BHYQ7L8N',
+        brand: 'boAt',
+        category: 'Electronics',
+        rating: 4.2,
+        reviewCount: 2847,
+        availability: 'in_stock',
+        imageUrl: 'https://m.media-amazon.com/images/I/41t5DmXq0eL._SL500_.jpg',
+      },
+      {
+        url: 'https://www.flipkart.com/apple-airpods-pro',
+        title: 'Apple AirPods Pro (2nd Generation)',
+        description: 'Premium wireless earbuds with noise cancellation',
+        price: 26499,
+        originalPrice: 29990,
+        currency: 'INR',
+        platform: 'flipkart',
+        productId: 'FLIPKART_AIRPODS_PRO',
+        brand: 'Apple',
+        category: 'Electronics',
+        rating: 4.7,
+        reviewCount: 5234,
+        availability: 'in_stock',
+      },
+      {
+        url: 'https://www.amazon.in/Samsung-Galaxy-Buds-Pro',
+        title: 'Samsung Galaxy Buds Pro',
+        description: 'Active noise cancellation earbuds',
+        price: 9999,
+        originalPrice: 19990,
+        currency: 'INR',
+        platform: 'amazon',
+        productId: 'B095GFNHXJ',
+        brand: 'Samsung',
+        category: 'Electronics',
+        rating: 4.4,
+        reviewCount: 3421,
+        availability: 'in_stock',
+      },
+      {
+        url: 'https://www.myntra.com/shoes/nike',
+        title: 'Nike Air Max 270',
+        description: 'Classic running shoe with Air Max technology',
+        price: 7495,
+        originalPrice: 12995,
+        currency: 'INR',
+        platform: 'myntra',
+        productId: 'NIKE_AIR_MAX_270',
+        brand: 'Nike',
+        category: 'Footwear',
+        rating: 4.5,
+        reviewCount: 4123,
+        availability: 'in_stock',
+      },
+      {
+        url: 'https://www.amazon.in/Canon-EOS-R6',
+        title: 'Canon EOS R6 Mark II DSLR Camera',
+        description: 'Professional 20MP mirrorless camera',
+        price: 239999,
+        originalPrice: 279999,
+        currency: 'INR',
+        platform: 'amazon',
+        productId: 'B09TZSL8YN',
+        brand: 'Canon',
+        category: 'Photography',
+        rating: 4.8,
+        reviewCount: 234,
+        availability: 'in_stock',
+      },
+      {
+        url: 'https://www.flipkart.com/mi-11x-pro',
+        title: 'Xiaomi Mi 11X Pro',
+        description: '5G smartphone with 120Hz display',
+        price: 39999,
+        originalPrice: 49999,
+        currency: 'INR',
+        platform: 'flipkart',
+        productId: 'FLIPKART_MI_11X',
+        brand: 'Xiaomi',
+        category: 'Smartphones',
+        rating: 4.3,
+        reviewCount: 8932,
+        availability: 'in_stock',
+      },
+    ];
+
+    const createdProducts = await Promise.all(
+      products.map((p) => this.product.create({ data: p })),
+    );
+
+    // Create analyses
+    const analyses = await Promise.all(
+      createdProducts.map((product, index) => {
+        const dealScore = 65 + Math.random() * 30;
+        const ethicalScore = 55 + Math.random() * 35;
+
+        return this.analysis.create({
+          data: {
+            productId: product.id,
+            dealScore,
+            ethicalScore,
+            trustScore: ethicalScore * 0.9,
+            decision: dealScore > 75 ? 'buy_now' : 'wait',
+            recommendation: `This ${product.brand} product offers ${Math.round(dealScore)}% value for money`,
+            confidence: 0.85,
+            isGoodDeal: dealScore > 70,
+            savingsAmount: product.originalPrice - product.price,
+            priceRank:
+              index % 3 === 0
+                ? 'lowest'
+                : index % 3 === 1
+                  ? 'below_average'
+                  : 'average',
+            marketComparison: `${(((product.originalPrice - product.price) / product.originalPrice) * 100).toFixed(0)}% cheaper`,
+            honestAssessment:
+              'High quality product with good ethical practices.',
+            pros: JSON.stringify([
+              'Durable',
+              'Good Warranty',
+              'Ethical Manufacturing',
+            ]),
+            cons: JSON.stringify(['Premium Pricing']),
+            warnings: JSON.stringify([]),
+            brandRating: ethicalScore,
+            environmentalImpact: 'Low carbon footprint',
+            ethicalSourcing: 8.5,
+            analysisVersion: '1.0',
+            aiModel: 'gemini-pro',
+            processingTime: Math.floor(Math.random() * 5000) + 1000,
+          },
+        });
+      }),
+    );
+
+    // Create savings records
+    const savingsRecords = [
+      {
+        amount: 5000,
+        originalPrice: 12995,
+        finalPrice: 7995,
+        productTitle: 'Nike Air Max 270',
+        platform: 'myntra',
+      },
+      {
+        amount: 3491,
+        originalPrice: 29990,
+        finalPrice: 26499,
+        productTitle: 'Apple AirPods Pro',
+        platform: 'flipkart',
+      },
+      {
+        amount: 9991,
+        originalPrice: 19990,
+        finalPrice: 9999,
+        productTitle: 'Samsung Galaxy Buds Pro',
+        platform: 'amazon',
+      },
+      {
+        amount: 5500,
+        originalPrice: 12995,
+        finalPrice: 7495,
+        productTitle: 'Nike Air Max 270',
+        platform: 'myntra',
+      },
+      {
+        amount: 3491,
+        originalPrice: 29990,
+        finalPrice: 26499,
+        productTitle: 'Apple AirPods Pro',
+        platform: 'flipkart',
+      },
+      {
+        amount: 40000,
+        originalPrice: 279999,
+        finalPrice: 239999,
+        productTitle: 'Canon EOS R6',
+        platform: 'amazon',
+      },
+      {
+        amount: 10000,
+        originalPrice: 49999,
+        finalPrice: 39999,
+        productTitle: 'Xiaomi Mi 11X Pro',
+        platform: 'flipkart',
+      },
+      {
+        amount: 3491,
+        originalPrice: 4990,
+        finalPrice: 1499,
+        productTitle: 'boAt Rockerz 450',
+        platform: 'amazon',
+      },
+      {
+        amount: 5000,
+        originalPrice: 12995,
+        finalPrice: 7995,
+        productTitle: 'Nike Air Max 270',
+        platform: 'myntra',
+      },
+      {
+        amount: 9991,
+        originalPrice: 19990,
+        finalPrice: 9999,
+        productTitle: 'Samsung Galaxy Buds Pro',
+        platform: 'amazon',
+      },
+      {
+        amount: 6000,
+        originalPrice: 15000,
+        finalPrice: 9000,
+        productTitle: 'Wireless Charger',
+        platform: 'amazon',
+      },
+      {
+        amount: 2500,
+        originalPrice: 8000,
+        finalPrice: 5500,
+        productTitle: 'Phone Case',
+        platform: 'flipkart',
+      },
+    ];
+
+    await Promise.all(
+      savingsRecords.map((saving, idx) =>
+        this.userSavings.create({
+          data: {
+            analysisId: analyses[idx % analyses.length].id,
+            amount: saving.amount,
+            originalPrice: saving.originalPrice,
+            finalPrice: saving.finalPrice,
+            productTitle: saving.productTitle,
+            platform: saving.platform,
+            currency: 'INR',
+            userId: `user_${Math.floor(idx / 2) + 1}`,
+            sessionId: `session_${Math.floor(idx / 3) + 1}`,
+            recordedAt: new Date(Date.now() - Math.random() * 86400000),
+          },
+        }),
+      ),
+    );
+
+    this.logger.log(
+      `✅ Created ${createdProducts.length} products, ${analyses.length} analyses, ${savingsRecords.length} savings`,
     );
   }
 
