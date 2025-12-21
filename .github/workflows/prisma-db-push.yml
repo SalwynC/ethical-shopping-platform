@@ -32,7 +32,5 @@ jobs:
 
       - name: Verify
         working-directory: backend
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           npx prisma migrate status || true

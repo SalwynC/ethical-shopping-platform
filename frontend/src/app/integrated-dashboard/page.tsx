@@ -20,6 +20,7 @@ import {
   IconShield,
   IconServer
 } from "@tabler/icons-react";
+import { useUsdInrRate, formatDual } from "../../lib/currency";
 
 interface APIResponse {
   status: 'idle' | 'loading' | 'success' | 'error';
@@ -39,6 +40,7 @@ interface BackendStatus {
 }
 
 export default function IntegratedDashboardPage() {
+  const fx = useUsdInrRate();
   const [productUrl, setProductUrl] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [apiResponses, setApiResponses] = useState<APIResponse[]>([]);
@@ -377,8 +379,10 @@ export default function IntegratedDashboardPage() {
                 <div className="space-y-2 text-sm text-gray-300">
                   <p>
                     <span className="text-gray-400">Current:</span>{" "}
-                    {currentResponse.data?.priceTrend?.currency || "₹"}{" "}
-                    {currentResponse.data?.priceTrend?.current || "N/A"}
+                    <PriceNow
+                      currency={currentResponse.data?.priceTrend?.currency}
+                      amount={currentResponse.data?.priceTrend?.current}
+                    />
                   </p>
                   <p>
                     <span className="text-gray-400">Deal Score:</span>{" "}
@@ -457,6 +461,19 @@ export default function IntegratedDashboardPage() {
       </div>
     </div>
   );
+}
+
+function PriceNow({ currency, amount }: { currency?: string; amount?: number }) {
+  const fxLocal = useUsdInrRate();
+  if (typeof amount !== 'number') return <span>N/A</span>;
+  const base = currency?.toUpperCase() === 'USD' || currency === '$' ? 'USD' : 'INR';
+  const rate = typeof window !== 'undefined' ? (window.localStorage.getItem('fx:USD_INR') ? JSON.parse(window.localStorage.getItem('fx:USD_INR') as string)?.rate : undefined) : undefined;
+  const usdInr = fxLocal?.rate ?? rate ?? 84;
+  if (usdInr) {
+    const dual = formatDual(amount, base as 'USD' | 'INR', usdInr);
+    return <span>{dual.inr} · {dual.usd}</span>;
+  }
+  return <span>{currency || '₹'} {amount}</span>;
 }
 
 function ProcessStep({

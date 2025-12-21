@@ -12,6 +12,7 @@ import { PriceComparisonService } from './services/price-comparison.service';
 import { AIScraperService } from './services/ai-scraper.service';
 import { HtmlScraperService } from './services/html-scraper.service';
 import { ReviewCheckerService } from './services/review-checker.service';
+import { RealProductAnalyzerService } from './services/real-product-analyzer.service';
 
 @Module({
   imports: [],
@@ -34,6 +35,7 @@ import { ReviewCheckerService } from './services/review-checker.service';
     AlternativesEngineService,
     PriceComparisonService,
     ReviewCheckerService,
+    RealProductAnalyzerService,
   ],
 })
 export class AppModule {}

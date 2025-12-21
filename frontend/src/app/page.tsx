@@ -17,7 +17,6 @@ import {
   IconExternalLink,
 } from '@tabler/icons-react';
 
-import { AppHeader } from '../components/layout/AppHeader';
 import { FloatingActions } from '../components/layout/FloatingActions';
 import { LiveStatusIndicator } from '../components/layout/LiveStatusIndicator';
 import { LiveBackground } from '../components/layout/LiveBackground';
@@ -28,6 +27,8 @@ import { useTheme } from '../contexts/ThemeContext';
 import { AnalysisProgress, AnalysisStep } from '../components/analysis/AnalysisProgress';
 import { ProductAnalysisResults } from '../components/analysis/ProductAnalysisResults';
 import { recordProductAnalysis } from '../lib/real-analytics';
+import { useUsdInrRate, formatDual } from '../lib/currency';
+import { fetchLiveStats } from '../lib/api';
 
 const suggestions = [
   'https://www.amazon.com/dp/B08N5WRWNW',
@@ -76,6 +77,21 @@ const initialAnalysisSteps: AnalysisStep[] = [
   }
 ];
 
+function SavedToday({ amountUsd }: { amountUsd: number }) {
+  const fx = useUsdInrRate();
+  const display = fx ? formatDual(amountUsd, 'USD', fx.rate) : { usd: `$${amountUsd.toLocaleString()}` as string, inr: `₹${Math.round(amountUsd * 84).toLocaleString('en-IN')}` as string };
+  return (
+    <motion.div 
+      className="text-3xl font-bold text-purple-400 mb-2"
+      initial={{ scale: 1.1 }}
+      animate={{ scale: 1 }}
+    >
+      <span className="block text-purple-400">{display.inr}</span>
+      <span className="block text-purple-300 text-xl">{display.usd}</span>
+    </motion.div>
+  );
+}
+
 export default function HomePage() {
   const [productUrl, setProductUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -101,21 +117,33 @@ export default function HomePage() {
     // Mark component as client-mounted
     setIsClientMounted(true);
     
-    // Initialize random values only on client
-    setLiveStats({
-      analyzing: Math.floor(Math.random() * 50) + 20,
-      processed: 50127 + Math.floor(Math.random() * 100),
-      saved: Math.floor(Math.random() * 1000) + 500
-    });
+    // Fetch real live stats from backend
+    const fetchAndUpdateStats = async () => {
+      try {
+        const response = await fetchLiveStats();
+        if (response.success && response.data) {
+          setLiveStats({
+            analyzing: response.data.analyzing,
+            processed: response.data.processed,
+            saved: response.data.saved
+          });
+        }
+      } catch (error) {
+        // Fallback to demo data if backend unreachable
+        console.log('Using demo stats (backend not available)');
+        setLiveStats({
+          analyzing: Math.floor(Math.random() * 50) + 20,
+          processed: 50127 + Math.floor(Math.random() * 100),
+          saved: Math.floor(Math.random() * 1000) + 500
+        });
+      }
+    };
+
+    // Fetch immediately
+    fetchAndUpdateStats();
     
-    // Real-time stats updates
-    const statsInterval = setInterval(() => {
-      setLiveStats(prev => ({
-        analyzing: Math.max(1, prev.analyzing + Math.floor(Math.random() * 6) - 2),
-        processed: prev.processed + Math.floor(Math.random() * 3),
-        saved: prev.saved + Math.floor(Math.random() * 2)
-      }));
-    }, 2000);
+    // Real-time stats updates from backend
+    const statsInterval = setInterval(fetchAndUpdateStats, 3000);
 
     // Mouse tracking for interactive effects
     const handleMouseMove = (e: MouseEvent) => {
@@ -460,7 +488,6 @@ export default function HomePage() {
     <>
       <LiveBackground />
       <div className="relative z-10 min-h-screen">
-        <AppHeader />
         <LiveStatusIndicator />
         
         {/* Hero Section - Enhanced with Live Animation */}
@@ -979,14 +1006,7 @@ export default function HomePage() {
                   className="text-center"
                   whileHover={{ scale: 1.05 }}
                 >
-                  <motion.div 
-                    className="text-3xl font-bold text-purple-400 mb-2"
-                    key={isClientMounted ? liveStats.saved : 750}
-                    initial={{ scale: 1.1 }}
-                    animate={{ scale: 1 }}
-                  >
-                    ${isClientMounted ? liveStats.saved.toLocaleString() : '750'}
-                  </motion.div>
+                  <SavedToday amountUsd={isClientMounted ? liveStats.saved : 750} />
                   <div className="text-gray-700 dark:text-gray-200 text-sm font-medium">Saved by users today</div>
                 </motion.div>
               </div>

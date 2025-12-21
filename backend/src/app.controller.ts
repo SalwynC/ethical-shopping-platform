@@ -14,6 +14,7 @@ import { ScraperService, ProductData } from './scraper.service';
 import { AIService, AIAnalysis } from './ai.service';
 import { PrismaService } from './database/prisma.service';
 import { ReviewCheckerService } from './services/review-checker.service';
+import { RealProductAnalyzerService } from './services/real-product-analyzer.service';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
@@ -173,6 +174,7 @@ export class AppController {
     private readonly scraperService: ScraperService,
     private readonly aiService: AIService,
     private readonly prismaService: PrismaService,
+    private readonly realProductAnalyzerService: RealProductAnalyzerService,
   ) {}
 
   @Inject()
@@ -187,6 +189,28 @@ export class AppController {
       uptime: process.uptime(),
       version: '1.0.0',
     };
+  }
+
+  @Get('live-stats')
+  @Header('Access-Control-Allow-Origin', '*')
+  async getLiveStats() {
+    try {
+      const stats = await this.realProductAnalyzerService.getRealTimeStats();
+      return {
+        success: true,
+        data: {
+          analyzing: stats.analyzing,
+          processed: stats.processed,
+          saved: stats.saved,
+          timestamp: new Date().toISOString(),
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
   }
 
   @Post('analyze')

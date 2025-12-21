@@ -11,6 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { CompetitiveFeaturesDisplay } from "./CompetitiveFeaturesDisplay";
 import { CompetitiveFeatures } from "../../types/api";
+import { useUsdInrRate, formatDual } from "../../lib/currency";
 
 interface ProductVariant {
   name: string;
@@ -102,9 +103,13 @@ interface ProductAnalysisResultsProps {
 }
 
 export function ProductAnalysisResults({ result, url }: ProductAnalysisResultsProps) {
-  const formatPrice = (amount?: number) => {
-    return amount ? `₹${amount.toLocaleString('en-IN')}` : 'N/A';
-  };
+    const fx = useUsdInrRate();
+    const formatPrice = (amount?: number) => {
+      if (!amount && amount !== 0) return 'N/A';
+      if (!fx) return `₹${amount!.toLocaleString('en-IN')}`;
+      const dual = formatDual(amount!, 'INR', fx.rate);
+      return `${dual.inr} · ${dual.usd}`;
+    };
 
   const getDecisionColorClass = (decision?: string) => {
     switch (decision) {

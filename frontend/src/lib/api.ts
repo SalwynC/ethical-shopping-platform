@@ -124,3 +124,19 @@ export async function fetchHealth(): Promise<HealthResponse> {
   );
 }
 
+export async function fetchLiveStats(): Promise<{
+  success: boolean;
+  data?: { analyzing: number; processed: number; saved: number; timestamp: string };
+  error?: string;
+}> {
+  return fetchWithErrorHandling(
+    `${getApiBaseUrl()}/api/live-stats`,
+    {
+      method: "GET",
+      headers: JSON_HEADERS,
+      cache: "no-store",
+    },
+  );
+}
+
+

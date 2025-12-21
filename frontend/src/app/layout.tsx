@@ -3,7 +3,7 @@ import { Inter, Fira_Code } from "next/font/google";
 
 import "./globals.css";
 import { Providers } from "./providers";
-import { NavigationBar } from "../components/layout/NavigationBar";
+import { AppHeader } from "../components/layout/AppHeader";
 import { BackToTop } from "../components/common/BackToTop";
 
 // Force dynamic rendering for the entire app
@@ -86,7 +86,8 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Providers>
-          <NavigationBar />
+          <AppHeader />
+          <div className="h-14 md:h-16" />
           {children}
           <BackToTop />
         </Providers>

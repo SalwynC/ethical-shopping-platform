@@ -3,6 +3,7 @@
 import NextLink from "next/link";
 import { EmptyState } from "../../../components/common/EmptyState";
 import type { AlternativeProduct } from "../../../types/api";
+import { useUsdInrRate, formatDual } from "../../../lib/currency";
 
 interface AlternativesGridProps {
   alternatives?: AlternativeProduct[];
@@ -10,6 +11,7 @@ interface AlternativesGridProps {
 }
 
 export function AlternativesGrid({ alternatives = [], isLoading }: AlternativesGridProps) {
+  const fx = useUsdInrRate();
   if (isLoading) {
     return (
       <div className="p-4">
@@ -49,9 +51,16 @@ export function AlternativesGrid({ alternatives = [], isLoading }: AlternativesG
             </p>
             
             <div className="flex justify-between items-center">
-              {alternative.price && (
+              {typeof alternative.price === 'number' && (
                 <span className="font-semibold text-lg text-green-600 dark:text-green-400">
-                  ${alternative.price.toFixed(2)}
+                  {(() => {
+                    const base = 'USD';
+                    if (fx) {
+                      const dual = formatDual(alternative.price!, base, fx.rate);
+                      return `${dual.inr} · ${dual.usd}`;
+                    }
+                    return `$${alternative.price.toFixed(2)}`;
+                  })()}
                 </span>
               )}
               
