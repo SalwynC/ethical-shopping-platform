@@ -1,8 +1,8 @@
 "use client";
 
 // Simplified PriceIntelligenceReport component - Tailwind version
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
 import {
   IconCurrency,
   IconTrendingUp,
@@ -13,7 +13,7 @@ import {
   IconClock,
   IconCheck,
 } from "@tabler/icons-react";
-import { useUsdInrRate, formatDual } from "../../lib/currency";
+import { formatCurrency } from "../../lib/currency";
 
 interface PriceIntelligenceData {
   currentPrice: {
@@ -54,8 +54,7 @@ interface PriceIntelligenceReportProps {
 
 export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceReportProps) {
   const [showDetails, setShowDetails] = useState(false);
-  const fx = useUsdInrRate();
-  const resolveCurrency = (c: string): 'USD' | 'INR' => (c?.toUpperCase() === 'USD' || c === '$') ? 'USD' : 'INR';
+  const resolveCurrency = (c: string) => 'INR';
 
   if (isLoading) {
     return (
@@ -110,22 +109,15 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
           <div className="bg-white/10 rounded-lg p-4">
             <div className="text-sm opacity-90">Current Price</div>
             <div className="text-2xl font-bold">
-              {fx ? (
-                (() => {
-                  const base = resolveCurrency(data.currentPrice.currency);
-                  const dual = formatDual(data.currentPrice.amount, base, fx.rate);
-                  return (
-                    <div>
-                      <div>{dual.inr}</div>
-                      <div className="text-lg opacity-90">{dual.usd}</div>
-                    </div>
-                  );
-                })()
-              ) : (
-                <span>
-                  {data.currentPrice.currency}{data.currentPrice.amount.toLocaleString()}
-                </span>
-              )}
+              {(() => {
+                const base = resolveCurrency(data.currentPrice.currency);
+                const inrAmount = base === 'USD' ? Math.round(data.currentPrice.amount * 84) : data.currentPrice.amount;
+                return (
+                  <div>
+                    <div>{formatCurrency(inrAmount, 'INR')}</div>
+                  </div>
+                );
+              })()}
             </div>
             <div className={`text-sm ${getConfidenceColor(data.currentPrice.confidence)}`}>
               {data.currentPrice.confidence} Confidence
@@ -136,22 +128,15 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
           <div className="bg-white/10 rounded-lg p-4">
             <div className="text-sm opacity-90">You Save</div>
             <div className="text-2xl font-bold text-green-300">
-              {fx ? (
-                (() => {
-                  const base = resolveCurrency(data.currentPrice.currency);
-                  const dual = formatDual(data.originalPrice.savings, base, fx.rate);
-                  return (
-                    <div>
-                      <div>{dual.inr}</div>
-                      <div className="text-lg opacity-90">{dual.usd}</div>
-                    </div>
-                  );
-                })()
-              ) : (
-                <span>
-                  {data.currentPrice.currency}{data.originalPrice.savings.toLocaleString()}
-                </span>
-              )}
+              {(() => {
+                const base = resolveCurrency(data.currentPrice.currency);
+                const inrAmount = base === 'USD' ? Math.round(data.originalPrice.savings * 84) : data.originalPrice.savings;
+                return (
+                  <div>
+                    <div>{formatCurrency(inrAmount, 'INR')}</div>
+                  </div>
+                );
+              })()}
             </div>
             <div className="text-sm text-green-200">
               {data.originalPrice.discountPercentage}% off
@@ -209,19 +194,15 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-gray-600 dark:text-gray-400">Market Average</span>
                 <span className="font-medium">
-                  {fx ? (
-                    (() => {
-                      const base = resolveCurrency(data.currentPrice.currency);
-                      const dual = formatDual(data.marketAnalysis.averagePrice, base, fx.rate);
-                      return (
-                        <span>
-                          {dual.inr} · {dual.usd}
-                        </span>
-                      );
-                    })()
-                  ) : (
-                    <span>{data.currentPrice.currency}{data.marketAnalysis.averagePrice.toLocaleString()}</span>
-                  )}
+                  {(() => {
+                    const base = resolveCurrency(data.currentPrice.currency);
+                    const inrAmount = base === 'USD' ? Math.round(data.marketAnalysis.averagePrice * 84) : data.marketAnalysis.averagePrice;
+                    return (
+                      <span>
+                        {formatCurrency(inrAmount, 'INR')}
+                      </span>
+                    );
+                  })()}
                 </span>
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400">

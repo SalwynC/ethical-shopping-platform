@@ -21,6 +21,7 @@ const price_comparison_service_1 = require("./services/price-comparison.service"
 const ai_scraper_service_1 = require("./services/ai-scraper.service");
 const html_scraper_service_1 = require("./services/html-scraper.service");
 const review_checker_service_1 = require("./services/review-checker.service");
+const real_product_analyzer_service_1 = require("./services/real-product-analyzer.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -41,6 +42,7 @@ exports.AppModule = AppModule = __decorate([
             alternatives_engine_service_1.AlternativesEngineService,
             price_comparison_service_1.PriceComparisonService,
             review_checker_service_1.ReviewCheckerService,
+            real_product_analyzer_service_1.RealProductAnalyzerService,
         ],
     })
 ], AppModule);

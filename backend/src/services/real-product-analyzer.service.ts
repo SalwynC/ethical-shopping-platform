@@ -74,7 +74,7 @@ export class RealProductAnalyzerService {
         platform: this.extractPlatform(url),
         title: productData.title,
         price: productData.price,
-        currency: productData.currency || 'USD',
+        currency: 'INR',
         originalPrice: productData.originalPrice,
         brand: productData.brand,
         category: productData.category,
@@ -136,7 +136,7 @@ export class RealProductAnalyzerService {
       return {
         title,
         price: price || 49.99,
-        currency: 'USD',
+        currency: 'INR',
         rating: Math.random() * 5,
         reviewCount: Math.floor(Math.random() * 1000),
         availability: 'in_stock',
@@ -148,7 +148,7 @@ export class RealProductAnalyzerService {
       return {
         title: 'Product',
         price: 39.99,
-        currency: 'USD',
+        currency: 'INR',
         rating: 4.5,
         reviewCount: 250,
         availability: 'in_stock',

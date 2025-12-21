@@ -20,6 +20,7 @@ const scraper_service_1 = require("./scraper.service");
 const ai_service_1 = require("./ai.service");
 const prisma_service_1 = require("./database/prisma.service");
 const review_checker_service_1 = require("./services/review-checker.service");
+const real_product_analyzer_service_1 = require("./services/real-product-analyzer.service");
 const class_validator_1 = require("class-validator");
 class AnalyzeDto {
 }
@@ -40,11 +41,12 @@ const analyticsData = {
     recentAnalyzes: [],
 };
 let AppController = AppController_1 = class AppController {
-    constructor(appService, scraperService, aiService, prismaService) {
+    constructor(appService, scraperService, aiService, prismaService, realProductAnalyzerService) {
         this.appService = appService;
         this.scraperService = scraperService;
         this.aiService = aiService;
         this.prismaService = prismaService;
+        this.realProductAnalyzerService = realProductAnalyzerService;
         this.logger = new common_1.Logger(AppController_1.name);
     }
     async health() {
@@ -54,6 +56,26 @@ let AppController = AppController_1 = class AppController {
             uptime: process.uptime(),
             version: '1.0.0',
         };
+    }
+    async getLiveStats() {
+        try {
+            const stats = await this.realProductAnalyzerService.getRealTimeStats();
+            return {
+                success: true,
+                data: {
+                    analyzing: stats.analyzing,
+                    processed: stats.processed,
+                    saved: stats.saved,
+                    timestamp: new Date().toISOString(),
+                },
+            };
+        }
+        catch (error) {
+            return {
+                success: false,
+                error: error.message,
+            };
+        }
     }
     async analyze(body = {}) {
         var _a;
@@ -938,6 +960,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "health", null);
 __decorate([
+    (0, common_1.Get)('live-stats'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "getLiveStats", null);
+__decorate([
     (0, common_1.Post)('analyze'),
     (0, common_1.Header)('Access-Control-Allow-Origin', '*'),
     (0, common_1.Header)('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS'),
@@ -1026,6 +1055,7 @@ exports.AppController = AppController = AppController_1 = __decorate([
     __metadata("design:paramtypes", [app_service_1.AppService,
         scraper_service_1.ScraperService,
         ai_service_1.AIService,
-        prisma_service_1.PrismaService])
+        prisma_service_1.PrismaService,
+        real_product_analyzer_service_1.RealProductAnalyzerService])
 ], AppController);
 //# sourceMappingURL=app.controller.js.map

@@ -27,7 +27,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { AnalysisProgress, AnalysisStep } from '../components/analysis/AnalysisProgress';
 import { ProductAnalysisResults } from '../components/analysis/ProductAnalysisResults';
 import { recordProductAnalysis } from '../lib/real-analytics';
-import { useUsdInrRate, formatDual } from '../lib/currency';
+import { formatCurrency } from '../lib/currency';
 import { fetchLiveStats } from '../lib/api';
 
 const suggestions = [
@@ -78,16 +78,14 @@ const initialAnalysisSteps: AnalysisStep[] = [
 ];
 
 function SavedToday({ amountUsd }: { amountUsd: number }) {
-  const fx = useUsdInrRate();
-  const display = fx ? formatDual(amountUsd, 'USD', fx.rate) : { usd: `$${amountUsd.toLocaleString()}` as string, inr: `₹${Math.round(amountUsd * 84).toLocaleString('en-IN')}` as string };
+  const inrAmount = Math.round(amountUsd * 84);
   return (
     <motion.div 
       className="text-3xl font-bold text-purple-400 mb-2"
       initial={{ scale: 1.1 }}
       animate={{ scale: 1 }}
     >
-      <span className="block text-purple-400">{display.inr}</span>
-      <span className="block text-purple-300 text-xl">{display.usd}</span>
+      <span className="block text-purple-400">{formatCurrency(inrAmount, 'INR')}</span>
     </motion.div>
   );
 }
