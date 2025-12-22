@@ -87,15 +87,25 @@ GET    /api/health                   # Server health
 
 ### Start Servers
 ```bash
-npm run dev              # Both together
+npm run dev              # Both together (from root)
 npm run dev:frontend    # Just frontend
 npm run dev:backend     # Just backend
+
+# Or use the startup scripts in /scripts directory
+./scripts/start-all.ps1  # PowerShell: Start both services
+./scripts/start-dev.ps1  # PowerShell: Start with dev config
 ```
 
 ### Build & Deploy
 ```bash
 npm run build           # Build everything
 npm run start:prod      # Run production
+```
+
+### Running Tests
+```bash
+npm run test            # Run all tests
+# Test scripts located in /tests directory
 ```
 
 ### Tests
