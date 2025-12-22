@@ -42,8 +42,10 @@ export class PrismaService
       this.logger.log('✅ PostgreSQL connected successfully');
       this.isConnected = true;
 
-      // Seed initial data if needed (no DB writes required)
-      await this.seedInitialData();
+      // Seed initial data asynchronously (don't wait for it)
+      this.seedInitialData().catch((error) => {
+        this.logger.warn('⚠️  Auto-seed error:', error.message);
+      });
     } catch (error) {
       this.logger.warn('⚠️  Database connection failed - using in-memory storage');
       this.logger.warn(`Details: ${error?.message?.substring(0, 100) || 'Unknown error'}`);

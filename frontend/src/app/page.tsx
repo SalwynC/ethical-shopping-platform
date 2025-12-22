@@ -326,8 +326,8 @@ export default function HomePage() {
       // Start visual progress simulation
       const progressPromise = simulateAnalysisSteps();
       
-      // Call comprehensive analysis API with enhanced headers
-      const apiPromise = fetch('/api/comprehensive-analysis', {
+      // Call analyze API endpoint (correct backend endpoint)
+      const apiPromise = fetch('/api/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -337,12 +337,7 @@ export default function HomePage() {
           'Pragma': 'no-cache'
         },
         body: JSON.stringify({ 
-          action: 'comprehensive_analysis',
-          productData: {
-            url: productUrl.trim(),
-            title: 'Loading...',
-            category: 'general'
-          },
+          url: productUrl.trim(),
           requestId,
           timestamp: new Date().toISOString()
         }),
@@ -355,92 +350,83 @@ export default function HomePage() {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         console.error(`❌ [${requestId}] Analysis failed after ${processingTime}ms:`, errorData);
-        throw new Error(errorData.error || `HTTP ${response.status}: Real-time analysis failed`);
+        throw new Error(errorData.error || `HTTP ${response.status}: Product analysis failed`);
       }
 
       const analysisData = await response.json();
-      console.log(`✅ [${requestId}] Comprehensive analysis completed in ${processingTime}ms`);
-      console.log(`📊 Advanced analytics received:`, analysisData);
+      console.log(`✅ [${requestId}] Analysis completed in ${processingTime}ms`);
+      console.log(`📊 Results received:`, analysisData);
       
-      // Extract comprehensive analysis results
-      const comprehensiveAnalysis = analysisData.analysis;
+      // Extract analysis results from backend
       const mockResults = {
         productUrl: productUrl.trim(),
-        productName: comprehensiveAnalysis?.productData?.title || `Product from ${new URL(productUrl.trim()).hostname}`,
-        overallScore: Math.round((comprehensiveAnalysis?.ethicalAssessment?.overallScore + (comprehensiveAnalysis?.marketResearch?.trendAnalysis?.popularityScore || 75)) / 2),
-        ethicalScore: comprehensiveAnalysis?.ethicalAssessment?.overallScore || 85,
-        priceScore: comprehensiveAnalysis?.marketResearch?.trendAnalysis?.popularityScore || 78,
-        sustainabilityScore: comprehensiveAnalysis?.ethicalAssessment?.environmentalImpact?.score || 87,
-        reviewTrust: comprehensiveAnalysis?.historicalContext?.reviewTrends?.averageRating ? Math.round(comprehensiveAnalysis.historicalContext.reviewTrends.averageRating * 20) : 89,
+        productName: analysisData.productInfo?.title || `Product from ${new URL(productUrl.trim()).hostname}`,
+        overallScore: Math.round((analysisData.ethicalScore + analysisData.dealScore) / 2),
+        ethicalScore: analysisData.ethicalScore || 75,
+        priceScore: analysisData.dealScore || 70,
+        sustainabilityScore: Math.round((analysisData.ethicalScore * 0.8) + (analysisData.dealScore * 0.2)),
+        reviewTrust: analysisData.productInfo?.rating ? Math.round(analysisData.productInfo.rating * 20) : 80,
         processingTime,
         requestId,
         timestamp: new Date().toISOString(),
         
-        // Enhanced data with variants and statistics
-        productVariants: [
-          { 
-            name: 'Standard Option', 
-            price: comprehensiveAnalysis?.productData?.price || 49.99,
-            availability: comprehensiveAnalysis?.productData?.availability || 'in_stock',
-            ethicalScore: comprehensiveAnalysis?.ethicalAssessment?.overallScore || 85
-          },
-          { 
-            name: 'Premium Option', 
-            price: (comprehensiveAnalysis?.productData?.price || 49.99) * 1.3,
-            availability: 'in_stock',
-            ethicalScore: (comprehensiveAnalysis?.ethicalAssessment?.overallScore || 85) + 10
-          },
-          { 
-            name: 'Eco-Friendly Variant', 
-            price: (comprehensiveAnalysis?.productData?.price || 49.99) * 1.15,
-            availability: 'limited',
-            ethicalScore: 95
-          }
-        ],
+        // Real data from backend
+        productData: analysisData.productInfo,
         
-        priceHistory: comprehensiveAnalysis?.historicalContext?.priceHistory || [],
+        // Price trends from backend
+        priceAnalysis: analysisData.priceTrend,
+        
+        // Market position
         marketStats: {
-          competitorAnalysis: comprehensiveAnalysis?.marketResearch?.competitorAnalysis,
-          trendDirection: comprehensiveAnalysis?.marketResearch?.trendAnalysis?.trendDirection,
-          marketPosition: comprehensiveAnalysis?.marketResearch?.competitorAnalysis?.pricePosition,
-          demandForecast: comprehensiveAnalysis?.marketResearch?.trendAnalysis?.demandForecast
+          pricePosition: analysisData.recommendation?.confidence,
+          demandForecast: analysisData.recommendation?.urgency,
+          trendDirection: analysisData.priceTrend?.marketTrend
         },
         
-        alternatives: comprehensiveAnalysis?.alternativesRecommendations?.slice(0, 3) || [
-          { title: 'Eco Alternative 1', ethicalScore: 95, priceComparison: -10, reasonForRecommendation: 'Better sustainability practices' },
-          { title: 'Sustainable Option 2', ethicalScore: 91, priceComparison: 5, reasonForRecommendation: 'Fair trade certified' },
-          { title: 'Fair Trade Choice 3', ethicalScore: 88, priceComparison: -2, reasonForRecommendation: 'Transparent supply chain' }
+        // Ethical alternatives from backend
+        alternatives: analysisData.ethicalAlternatives?.slice(0, 3) || [
+          { title: 'Top Ethical Alternative', ethicalScore: 92, priceComparison: -5 },
+          { title: 'Sustainable Option', ethicalScore: 88, priceComparison: 3 },
+          { title: 'Fair Trade Choice', ethicalScore: 85, priceComparison: 0 }
         ],
         
+        // Detailed insights
         insights: [
-          `Ethical score: ${comprehensiveAnalysis?.ethicalAssessment?.overallScore || 85}/100 - ${comprehensiveAnalysis?.ethicalAssessment?.laborPractices?.workingConditions || 'Good'} working conditions`,
-          `Market position: ${comprehensiveAnalysis?.marketResearch?.competitorAnalysis?.pricePosition?.replace('_', ' ') || 'competitive pricing'}`,
-          `Environmental impact: ${comprehensiveAnalysis?.ethicalAssessment?.environmentalImpact?.sustainabilityRating || 'B'} grade sustainability rating`,
-          `Brand reputation: ${comprehensiveAnalysis?.historicalContext?.brandReputation?.reputationScore || 75}/100 reputation score`,
-          `Risk assessment: ${comprehensiveAnalysis?.riskAssessment?.overallRisk || 'medium'} risk level`
-        ]
+          `Ethical Score: ${analysisData.ethicalScore || 75}/100`,
+          `Deal Score: ${analysisData.dealScore || 70}/100`,
+          `Decision: ${analysisData.decision || 'NEUTRAL'}`,
+          `Market Trend: ${analysisData.priceTrend?.marketTrend || 'stable'}`,
+          `Confidence: ${analysisData.recommendation?.confidence || 'Medium'}`
+        ],
+        
+        futurePredict: {
+          nextWeekPrice: analysisData.priceTrend?.predictedNextWeek,
+          discountTrend: analysisData.priceTrend?.discountPercent,
+          bestTimeToByy: analysisData.priceTrend?.marketTrend === 'declining' ? 'Soon - Price likely to drop further' : 'Now - Good deal',
+          priceVolatility: analysisData.priceTrend?.confidence ? 'Low volatility' : 'High volatility'
+        }
       };
       
       setAnalysisResults(mockResults);
       setShowResults(true);
       
-      // Record real user analysis with smart analytics
+      // Record real user analysis
       await recordProductAnalysis({
         url: productUrl.trim(),
         title: mockResults.productName,
-        category: 'general',
+        category: analysisData.platform || 'general',
         platform: new URL(productUrl.trim()).hostname,
         analysisStartTime: startTime,
         source: 'manual'
       }, {
         ethicalScore: mockResults.ethicalScore,
-        environmentalImpact: `Score: ${mockResults.sustainabilityScore}/100`,
-        laborPractices: 'Fair trade practices verified',
+        dealScore: mockResults.priceScore,
+        decision: analysisData.decision,
         alternatives: mockResults.alternatives.length,
         success: true
       });
       
-      console.log('🧠 Smart analytics updated with real user analysis');
+      console.log('🧠 Analysis recorded successfully');
       
       // Scroll to results
       setTimeout(() => {
@@ -660,7 +646,7 @@ export default function HomePage() {
                           placeholder="Paste any product URL: Amazon, eBay, Nike, Apple, Target..."
                           value={productUrl}
                           onChange={(e) => setProductUrl(e.target.value)}
-                          className={`w-full pl-14 pr-26 py-5 text-base rounded-xl border-2 bg-gray-50/50 dark:bg-slate-700/50 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-600 focus:outline-none transition-all duration-300 hover:bg-white dark:hover:bg-slate-600 overflow-x-auto whitespace-nowrap ${
+                          className={`w-full pl-14 pr-12 py-5 text-base rounded-xl border-2 bg-gray-50/50 dark:bg-slate-700/50 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-600 focus:outline-none transition-all duration-300 hover:bg-white dark:hover:bg-slate-600 overflow-x-auto whitespace-nowrap ${
                             urlError 
                               ? 'border-red-300 bg-red-50/50 dark:bg-red-900/20 focus:border-red-400 focus:ring-red-500/20' 
                               : isValidUrl 

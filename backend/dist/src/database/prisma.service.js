@@ -37,7 +37,9 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
             await this.$connect();
             this.logger.log('✅ PostgreSQL connected successfully');
             this.isConnected = true;
-            await this.seedInitialData();
+            this.seedInitialData().catch((error) => {
+                this.logger.warn('⚠️  Auto-seed error:', error.message);
+            });
         }
         catch (error) {
             this.logger.warn('⚠️  Database connection failed - using in-memory storage');
