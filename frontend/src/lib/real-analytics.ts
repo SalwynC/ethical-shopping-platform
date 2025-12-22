@@ -241,6 +241,8 @@ export async function recordProductAnalysis(productData: {
   analysisStartTime?: number;
 }, analysisResults?: {
   ethicalScore?: number;
+  dealScore?: number;
+  decision?: string;
   environmentalImpact?: string;
   laborPractices?: string;
   alternatives?: number;
