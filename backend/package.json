@@ -47,12 +47,12 @@
     "rate-limiter-flexible": "^9.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "swagger-ui-express": "^5.0.1",
     "serverless-http": "^3.2.0",
+    "swagger-ui-express": "^5.0.1",
     "user-agents": "^1.1.669"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.0",
+    "@nestjs/cli": "^11.0.10",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@types/express": "^5.0.0",
