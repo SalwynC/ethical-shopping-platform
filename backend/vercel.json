@@ -1,13 +1,11 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/*.ts", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "api/index.ts" }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run start:dev",
+  "installCommand": "npm install",
+  "framework": "nestjs",
   "env": {
-    "NODE_ENV": "production",
-    "GOOGLE_AI_API_KEY": "AIzaSyC6wJhXILe3tpXl9UXN1VgfXmZHUgNKk_U"
+    "NODE_ENV": "production"
   }
 }
