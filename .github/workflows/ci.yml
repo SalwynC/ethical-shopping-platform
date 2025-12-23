@@ -23,15 +23,13 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
-        working-directory: frontend
-        run: npm ci
+      - name: Install workspace dependencies
+        run: npm ci --workspaces --prefer-offline
 
       - name: Build frontend
-        working-directory: frontend
-        run: npm run build
+        run: npm run build --workspace=frontend
         env:
           NEXT_PUBLIC_BACKEND_URL: https://ethical-shopping-backend.vercel.app
 
@@ -55,19 +53,16 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
-        working-directory: backend
-        run: npm ci
+      - name: Install workspace dependencies
+        run: npm ci --workspaces --prefer-offline
 
       - name: Generate Prisma Client
-        working-directory: backend
-        run: npx prisma generate
+        run: npx prisma generate --schema=backend/prisma/schema.prisma
 
       - name: Build backend
-        working-directory: backend
-        run: npm run build
+        run: npm run build --workspace=backend
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -89,13 +84,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm ci
+      - name: Install workspace dependencies
+        run: npm ci --workspaces --prefer-offline
 
       - name: Lint frontend
-        working-directory: frontend
-        run: npm run lint || true
+        run: npm run lint --workspace=frontend || true
 
   status:
     name: Build Status
