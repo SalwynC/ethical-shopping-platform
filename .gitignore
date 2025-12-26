@@ -75,3 +75,9 @@ frontend/.env*
 
 # Next.js build files
 frontend/.next/
+
+# Documentation - exclude from git
+documentation/
+FINAL_STATUS.md
+*.md
+!README.md

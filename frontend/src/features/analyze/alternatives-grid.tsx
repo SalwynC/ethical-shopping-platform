@@ -1,9 +1,9 @@
 "use client";
 
 import NextLink from "next/link";
-import { EmptyState } from "../../../components/common/EmptyState";
-import type { AlternativeProduct } from "../../../types/api";
-import { useUsdInrRate, formatDual } from "../../../lib/currency";
+import { EmptyState } from "../../components/common/EmptyState";
+import type { AlternativeProduct } from "../../types/api";
+import { useUsdInrRate, formatDual } from "../../lib/currency";
 
 interface AlternativesGridProps {
   alternatives?: AlternativeProduct[];

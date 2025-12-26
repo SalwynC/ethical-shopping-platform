@@ -1,0 +1,39 @@
+# Documentation
+documentation/
+docs/
+*.md
+!README.md
+
+# Scripts
+scripts/
+
+# Development
+.github/
+test/
+*.test.ts
+*.spec.ts
+
+# Frontend (deployed separately)
+frontend/
+
+# Services (deployed separately)
+services/
+
+# Database
+database/
+
+# Build artifacts
+dist/
+node_modules/
+
+# Config not needed
+.eslintrc*
+.prettierrc*
+eslint.config.mjs
+tsconfig.json
+tsconfig.build.json
+jest.config.ts
+
+# Logs and local env
+*.log
+.env.local

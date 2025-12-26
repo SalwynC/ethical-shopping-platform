@@ -5,6 +5,7 @@
   "installCommand": "npm install --workspaces",
   "outputDirectory": "frontend/.next",
   "framework": "nextjs",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ./frontend ./backend",
   "rewrites": [
     {
       "source": "/api/:path*",

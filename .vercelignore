@@ -1,0 +1,47 @@
+# Documentation - not needed in deployment
+documentation/
+docs/
+*.md
+!README.md
+
+# Scripts - not needed in deployment
+scripts/
+
+# Development files
+.github/
+.vscode/
+.idea/
+
+# Test files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+**/test/
+**/__tests__/
+
+# Backend (deployed separately)
+backend/
+
+# Services (deployed separately)
+services/
+
+# Database
+database/
+
+# Infrastructure
+infra/
+
+# Config files not needed
+.eslintrc*
+.prettierrc*
+eslint.config.mjs
+.editorconfig
+tsconfig.json
+tsconfig.build.json
+jest.config.*
+
+# Other
+*.log
+.env.local
+.env*.local
