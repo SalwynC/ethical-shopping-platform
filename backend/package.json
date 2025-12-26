@@ -23,7 +23,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
-    "@nestjs/swagger": "^11.0.2",
+    "@nestjs/swagger": "^11.2.3",
     "@prisma/client": "^6.19.0",
     "@types/cheerio": "^0.22.35",
     "@types/user-agents": "^1.0.4",
