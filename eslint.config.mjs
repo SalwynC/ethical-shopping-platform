@@ -39,6 +39,7 @@ export default tseslint.config(
       'react/forbid-dom-props': 'off',
       'react/no-unknown-property': 'off',
       'react/style-prop-object': 'off',
+      'no-useless-escape': 'warn',
     },
   },
 );

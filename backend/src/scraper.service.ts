@@ -737,7 +737,7 @@ export class ScraperService {
       /\/dp\/([A-Z0-9]{10})/i, // Amazon
       /\/p\/([^?]+)/i, // Flipkart
       /\/([0-9]+)/i, // Generic numeric ID
-      /product\/([^\/\?]+)/i, // Generic product path
+      /product\/([^/?]+)/i, // Generic product path
     ];
 
     for (const pattern of patterns) {

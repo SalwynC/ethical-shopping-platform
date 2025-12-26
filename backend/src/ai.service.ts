@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import OpenAI from 'openai';
 import { ProductData } from './scraper.service';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
-import NodeCache = require('node-cache');
+import NodeCache from 'node-cache';
 
 export interface AIAnalysis {
   dealScore: number;
