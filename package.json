@@ -30,6 +30,7 @@
   }
 
   ,"overrides": {
-    "glob": "^11.1.0"
+    "glob": "^11.1.0",
+    "@nestjs/cli>glob": "^11.1.0"
   }
 }
