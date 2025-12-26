@@ -34,7 +34,10 @@ export interface RealProductAnalysis {
 @Injectable()
 export class RealProductAnalyzerService {
   private readonly logger = new Logger(RealProductAnalyzerService.name);
-  private readonly cache = new Map<string, { data: RealProductAnalysis; timestamp: number }>();
+  private readonly cache = new Map<
+    string,
+    { data: RealProductAnalysis; timestamp: number }
+  >();
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
   constructor(
@@ -64,12 +67,13 @@ export class RealProductAnalyzerService {
       const aiAnalysis = await this.aiService.analyzeProduct(productData, url);
 
       // Step 3: Price comparison
-      const priceComparison = this.priceComparisonService.analyzePriceComparison(
-        productData.title,
-        productData.price,
-        productData.originalPrice,
-        this.extractPlatform(url),
-      );
+      const priceComparison =
+        this.priceComparisonService.analyzePriceComparison(
+          productData.title,
+          productData.price,
+          productData.originalPrice,
+          this.extractPlatform(url),
+        );
 
       // Step 4: Build comprehensive analysis
       const analysis: RealProductAnalysis = {
@@ -102,12 +106,14 @@ export class RealProductAnalyzerService {
             price: productData.price,
           },
         ],
-        alternativeProducts: priceComparison.comparisons.slice(0, 5).map(comp => ({
-          title: `${productData.title} - ${comp.platform}`,
-          price: comp.totalPrice,
-          ethicalScore: 75,
-          url: comp.url || '#',
-        })),
+        alternativeProducts: priceComparison.comparisons
+          .slice(0, 5)
+          .map((comp) => ({
+            title: `${productData.title} - ${comp.platform}`,
+            price: comp.totalPrice,
+            ethicalScore: 75,
+            url: comp.url || '#',
+          })),
       };
 
       // Cache result
@@ -132,7 +138,9 @@ export class RealProductAnalyzerService {
 
       const $ = cheerio.load(response.data);
       const title = $('h1').first().text().trim() || $('title').text();
-      const priceText = $('[data-price], .price, .product-price').first().text();
+      const priceText = $('[data-price], .price, .product-price')
+        .first()
+        .text();
       const price = this.extractPrice(priceText);
 
       return {
@@ -183,7 +191,8 @@ export class RealProductAnalyzerService {
     averagePrice: number,
     rating: number,
   ): number {
-    const priceScore = averagePrice > 0 ? (1 - currentPrice / averagePrice) * 50 : 25;
+    const priceScore =
+      averagePrice > 0 ? (1 - currentPrice / averagePrice) * 50 : 25;
     const ratingScore = (rating / 5) * 50;
     return Math.min(100, Math.max(0, priceScore + ratingScore));
   }
@@ -195,7 +204,8 @@ export class RealProductAnalyzerService {
   ): string {
     if (ethicalScore < 40) return 'Avoid - Poor ethical practices';
     if (currentPrice < averagePrice * 0.8) return 'Good deal - Buy now';
-    if (currentPrice > averagePrice * 1.2) return 'Overpriced - Wait for discount';
+    if (currentPrice > averagePrice * 1.2)
+      return 'Overpriced - Wait for discount';
     return 'Fair price - Consider alternatives';
   }
 
@@ -223,7 +233,9 @@ export class RealProductAnalyzerService {
           currency: 'INR',
         },
       });
-      this.logger.log(`Recorded savings: ₹${data.amount} for ${data.productTitle}`);
+      this.logger.log(
+        `Recorded savings: ₹${data.amount} for ${data.productTitle}`,
+      );
     } catch (error) {
       this.logger.error(`Error recording user savings: ${error.message}`);
       throw error;
@@ -244,17 +256,19 @@ export class RealProductAnalyzerService {
         // Fallback if analysis model doesn't work
         analysisCount = 0;
       }
-      
-      const totalSavingsResult = await this.prismaService.userSavings.aggregate({
-        _sum: {
-          amount: true,
-        },
-        where: {
-          recordedAt: {
-            gte: new Date(new Date().setHours(0, 0, 0, 0)), // Today
+
+      const totalSavingsResult = await this.prismaService.userSavings.aggregate(
+        {
+          _sum: {
+            amount: true,
+          },
+          where: {
+            recordedAt: {
+              gte: new Date(new Date().setHours(0, 0, 0, 0)), // Today
+            },
           },
         },
-      });
+      );
 
       const actualSavings = totalSavingsResult._sum.amount || 0;
       const baseAnalyzing = 150;
@@ -262,7 +276,10 @@ export class RealProductAnalyzerService {
 
       return {
         analyzing: baseAnalyzing + Math.floor(Math.random() * 50),
-        processed: totalAnalyzed > 0 ? totalAnalyzed : 50000 + Math.floor(Math.random() * 500),
+        processed:
+          totalAnalyzed > 0
+            ? totalAnalyzed
+            : 50000 + Math.floor(Math.random() * 500),
         saved: Math.round(actualSavings * 100) / 100, // Real savings in INR
       };
     } catch (error) {

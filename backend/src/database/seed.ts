@@ -385,14 +385,16 @@ async function main() {
   // Create products in batches to avoid connection pool issues
   const createdProducts = [];
   const batchSize = 5;
-  
+
   for (let i = 0; i < products.length; i += batchSize) {
     const batch = products.slice(i, i + batchSize);
     const batchResults = await Promise.all(
-      batch.map((p) => prisma.product.create({ data: p }))
+      batch.map((p) => prisma.product.create({ data: p })),
     );
     createdProducts.push(...batchResults);
-    console.log(`✅ Created products ${i + 1}-${Math.min(i + batchSize, products.length)}`);
+    console.log(
+      `✅ Created products ${i + 1}-${Math.min(i + batchSize, products.length)}`,
+    );
   }
 
   console.log(`✅ Total created: ${createdProducts.length} products`);
@@ -417,10 +419,20 @@ async function main() {
             confidence: 0.85,
             isGoodDeal: dealScore > 70,
             savingsAmount: product.originalPrice - product.price,
-            priceRank: index % 3 === 0 ? 'lowest' : index % 3 === 1 ? 'below_average' : 'average',
+            priceRank:
+              index % 3 === 0
+                ? 'lowest'
+                : index % 3 === 1
+                  ? 'below_average'
+                  : 'average',
             marketComparison: `This product is ${(((product.originalPrice - product.price) / product.originalPrice) * 100).toFixed(0)}% cheaper than market average`,
             honestAssessment: `High quality product with good ethical practices. Value for money is excellent.`,
-            pros: JSON.stringify(['Durable', 'Good Warranty', 'Ethical Manufacturing', 'Excellent Customer Service']),
+            pros: JSON.stringify([
+              'Durable',
+              'Good Warranty',
+              'Ethical Manufacturing',
+              'Excellent Customer Service',
+            ]),
             cons: JSON.stringify(['Premium Pricing', 'Limited Color Options']),
             warnings: JSON.stringify([]),
             brandRating: ethicalScore,
@@ -431,46 +443,228 @@ async function main() {
             processingTime: Math.floor(Math.random() * 5000) + 1000,
           },
         });
-      })
+      }),
     );
     analyses.push(...batchAnalyses);
-    console.log(`✅ Created analyses ${i + 1}-${Math.min(i + batchSize, createdProducts.length)}`);
+    console.log(
+      `✅ Created analyses ${i + 1}-${Math.min(i + batchSize, createdProducts.length)}`,
+    );
   }
 
   console.log(`✅ Total created: ${analyses.length} analyses`);
 
   // Create user savings records (real transactions) - expanded to match 25 products
   const savingsRecords = [
-    { amount: 5000, originalPrice: 12995, finalPrice: 7995, productTitle: 'Nike Air Max 270', platform: 'myntra' },
-    { amount: 3491, originalPrice: 29990, finalPrice: 26499, productTitle: 'Apple AirPods Pro', platform: 'flipkart' },
-    { amount: 9991, originalPrice: 19990, finalPrice: 9999, productTitle: 'Samsung Galaxy Buds Pro', platform: 'amazon' },
-    { amount: 5500, originalPrice: 12995, finalPrice: 7495, productTitle: 'Nike Air Max 270', platform: 'myntra' },
-    { amount: 3491, originalPrice: 29990, finalPrice: 26499, productTitle: 'Apple AirPods Pro', platform: 'flipkart' },
-    { amount: 40000, originalPrice: 279999, finalPrice: 239999, productTitle: 'Canon EOS R6 Mark II', platform: 'amazon' },
-    { amount: 10000, originalPrice: 49999, finalPrice: 39999, productTitle: 'Xiaomi Mi 11X Pro', platform: 'flipkart' },
-    { amount: 3491, originalPrice: 4990, finalPrice: 1499, productTitle: 'boAt Rockerz 450', platform: 'amazon' },
-    { amount: 5000, originalPrice: 12995, finalPrice: 7995, productTitle: 'Nike Air Max 270', platform: 'myntra' },
-    { amount: 9991, originalPrice: 19990, finalPrice: 9999, productTitle: 'Samsung Galaxy Buds Pro', platform: 'amazon' },
-    { amount: 10000, originalPrice: 79900, finalPrice: 69900, productTitle: 'Apple iPhone 15', platform: 'amazon' },
-    { amount: 30000, originalPrice: 154999, finalPrice: 124999, productTitle: 'Samsung Galaxy S23 Ultra', platform: 'flipkart' },
-    { amount: 15000, originalPrice: 59999, finalPrice: 44999, productTitle: 'OnePlus 11R 5G', platform: 'amazon' },
-    { amount: 10000, originalPrice: 44999, finalPrice: 34999, productTitle: 'Realme GT Neo 5', platform: 'flipkart' },
-    { amount: 5000, originalPrice: 34990, finalPrice: 29990, productTitle: 'Sony WH-1000XM5', platform: 'amazon' },
-    { amount: 8000, originalPrice: 16999, finalPrice: 8999, productTitle: 'Adidas Ultraboost 22', platform: 'myntra' },
-    { amount: 6000, originalPrice: 7999, finalPrice: 1999, productTitle: 'Fire-Boltt Phoenix Ultra', platform: 'amazon' },
-    { amount: 4500, originalPrice: 6999, finalPrice: 2499, productTitle: 'Noise ColorFit Pro 4', platform: 'flipkart' },
-    { amount: 3000, originalPrice: 7999, finalPrice: 4999, productTitle: 'JBL Tune 230NC TWS', platform: 'amazon' },
-    { amount: 5500, originalPrice: 10999, finalPrice: 5499, productTitle: 'Puma RS-X Bold', platform: 'myntra' },
-    { amount: 20000, originalPrice: 74999, finalPrice: 54999, productTitle: 'Mi Notebook Ultra', platform: 'flipkart' },
-    { amount: 22000, originalPrice: 84990, finalPrice: 62990, productTitle: 'HP Pavilion Gaming', platform: 'amazon' },
-    { amount: 2000, originalPrice: 10995, finalPrice: 8995, productTitle: 'Logitech MX Master 3S', platform: 'amazon' },
-    { amount: 13000, originalPrice: 45999, finalPrice: 32999, productTitle: 'Dell Gaming Monitor', platform: 'flipkart' },
-    { amount: 5000, originalPrice: 54990, finalPrice: 49990, productTitle: 'PlayStation 5', platform: 'amazon' },
-    { amount: 2500, originalPrice: 4999, finalPrice: 2499, productTitle: "Levi's 511 Jeans", platform: 'myntra' },
-    { amount: 1500, originalPrice: 5999, finalPrice: 4499, productTitle: 'Amazon Echo Dot 5', platform: 'flipkart' },
-    { amount: 11000, originalPrice: 54999, finalPrice: 43999, productTitle: 'GoPro HERO11 Black', platform: 'amazon' },
-    { amount: 7000, originalPrice: 12995, finalPrice: 5995, productTitle: 'Nike Air Max 270', platform: 'myntra' },
-    { amount: 15000, originalPrice: 49999, finalPrice: 34999, productTitle: 'OnePlus 11R 5G', platform: 'amazon' },
+    {
+      amount: 5000,
+      originalPrice: 12995,
+      finalPrice: 7995,
+      productTitle: 'Nike Air Max 270',
+      platform: 'myntra',
+    },
+    {
+      amount: 3491,
+      originalPrice: 29990,
+      finalPrice: 26499,
+      productTitle: 'Apple AirPods Pro',
+      platform: 'flipkart',
+    },
+    {
+      amount: 9991,
+      originalPrice: 19990,
+      finalPrice: 9999,
+      productTitle: 'Samsung Galaxy Buds Pro',
+      platform: 'amazon',
+    },
+    {
+      amount: 5500,
+      originalPrice: 12995,
+      finalPrice: 7495,
+      productTitle: 'Nike Air Max 270',
+      platform: 'myntra',
+    },
+    {
+      amount: 3491,
+      originalPrice: 29990,
+      finalPrice: 26499,
+      productTitle: 'Apple AirPods Pro',
+      platform: 'flipkart',
+    },
+    {
+      amount: 40000,
+      originalPrice: 279999,
+      finalPrice: 239999,
+      productTitle: 'Canon EOS R6 Mark II',
+      platform: 'amazon',
+    },
+    {
+      amount: 10000,
+      originalPrice: 49999,
+      finalPrice: 39999,
+      productTitle: 'Xiaomi Mi 11X Pro',
+      platform: 'flipkart',
+    },
+    {
+      amount: 3491,
+      originalPrice: 4990,
+      finalPrice: 1499,
+      productTitle: 'boAt Rockerz 450',
+      platform: 'amazon',
+    },
+    {
+      amount: 5000,
+      originalPrice: 12995,
+      finalPrice: 7995,
+      productTitle: 'Nike Air Max 270',
+      platform: 'myntra',
+    },
+    {
+      amount: 9991,
+      originalPrice: 19990,
+      finalPrice: 9999,
+      productTitle: 'Samsung Galaxy Buds Pro',
+      platform: 'amazon',
+    },
+    {
+      amount: 10000,
+      originalPrice: 79900,
+      finalPrice: 69900,
+      productTitle: 'Apple iPhone 15',
+      platform: 'amazon',
+    },
+    {
+      amount: 30000,
+      originalPrice: 154999,
+      finalPrice: 124999,
+      productTitle: 'Samsung Galaxy S23 Ultra',
+      platform: 'flipkart',
+    },
+    {
+      amount: 15000,
+      originalPrice: 59999,
+      finalPrice: 44999,
+      productTitle: 'OnePlus 11R 5G',
+      platform: 'amazon',
+    },
+    {
+      amount: 10000,
+      originalPrice: 44999,
+      finalPrice: 34999,
+      productTitle: 'Realme GT Neo 5',
+      platform: 'flipkart',
+    },
+    {
+      amount: 5000,
+      originalPrice: 34990,
+      finalPrice: 29990,
+      productTitle: 'Sony WH-1000XM5',
+      platform: 'amazon',
+    },
+    {
+      amount: 8000,
+      originalPrice: 16999,
+      finalPrice: 8999,
+      productTitle: 'Adidas Ultraboost 22',
+      platform: 'myntra',
+    },
+    {
+      amount: 6000,
+      originalPrice: 7999,
+      finalPrice: 1999,
+      productTitle: 'Fire-Boltt Phoenix Ultra',
+      platform: 'amazon',
+    },
+    {
+      amount: 4500,
+      originalPrice: 6999,
+      finalPrice: 2499,
+      productTitle: 'Noise ColorFit Pro 4',
+      platform: 'flipkart',
+    },
+    {
+      amount: 3000,
+      originalPrice: 7999,
+      finalPrice: 4999,
+      productTitle: 'JBL Tune 230NC TWS',
+      platform: 'amazon',
+    },
+    {
+      amount: 5500,
+      originalPrice: 10999,
+      finalPrice: 5499,
+      productTitle: 'Puma RS-X Bold',
+      platform: 'myntra',
+    },
+    {
+      amount: 20000,
+      originalPrice: 74999,
+      finalPrice: 54999,
+      productTitle: 'Mi Notebook Ultra',
+      platform: 'flipkart',
+    },
+    {
+      amount: 22000,
+      originalPrice: 84990,
+      finalPrice: 62990,
+      productTitle: 'HP Pavilion Gaming',
+      platform: 'amazon',
+    },
+    {
+      amount: 2000,
+      originalPrice: 10995,
+      finalPrice: 8995,
+      productTitle: 'Logitech MX Master 3S',
+      platform: 'amazon',
+    },
+    {
+      amount: 13000,
+      originalPrice: 45999,
+      finalPrice: 32999,
+      productTitle: 'Dell Gaming Monitor',
+      platform: 'flipkart',
+    },
+    {
+      amount: 5000,
+      originalPrice: 54990,
+      finalPrice: 49990,
+      productTitle: 'PlayStation 5',
+      platform: 'amazon',
+    },
+    {
+      amount: 2500,
+      originalPrice: 4999,
+      finalPrice: 2499,
+      productTitle: "Levi's 511 Jeans",
+      platform: 'myntra',
+    },
+    {
+      amount: 1500,
+      originalPrice: 5999,
+      finalPrice: 4499,
+      productTitle: 'Amazon Echo Dot 5',
+      platform: 'flipkart',
+    },
+    {
+      amount: 11000,
+      originalPrice: 54999,
+      finalPrice: 43999,
+      productTitle: 'GoPro HERO11 Black',
+      platform: 'amazon',
+    },
+    {
+      amount: 7000,
+      originalPrice: 12995,
+      finalPrice: 5995,
+      productTitle: 'Nike Air Max 270',
+      platform: 'myntra',
+    },
+    {
+      amount: 15000,
+      originalPrice: 49999,
+      finalPrice: 34999,
+      productTitle: 'OnePlus 11R 5G',
+      platform: 'amazon',
+    },
   ];
 
   // Create savings in batches
@@ -493,9 +687,11 @@ async function main() {
             recordedAt: new Date(Date.now() - Math.random() * 86400000), // Random time today
           },
         });
-      })
+      }),
     );
-    console.log(`✅ Created savings ${i + 1}-${Math.min(i + batchSize, savingsRecords.length)}`);
+    console.log(
+      `✅ Created savings ${i + 1}-${Math.min(i + batchSize, savingsRecords.length)}`,
+    );
   }
 
   console.log(`✅ Total created: ${savingsRecords.length} savings records`);

@@ -53,8 +53,5 @@ next-env.d.ts
 backend/dist/
 frontend/.next/
 
-# documentation (keep local only - not tracked in git)
-docs/
-
 # Next.js build files
 frontend/.next/

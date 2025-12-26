@@ -216,7 +216,8 @@ export class AppController {
   @Post('record-savings')
   @Header('Access-Control-Allow-Origin', '*')
   async recordSavings(
-    @Body() body: {
+    @Body()
+    body: {
       analysisId?: string;
       amount: number;
       originalPrice: number;
@@ -329,7 +330,7 @@ export class AppController {
         this.logger.log(`🌐 No extension data, attempting to scrape...`);
         try {
           // Use Promise.race with timeout to ensure we don't hang
-          productData = await Promise.race([
+          productData = (await Promise.race([
             this.scraperService.scrapeProduct(body.url),
             new Promise((_, reject) =>
               setTimeout(
@@ -338,9 +339,11 @@ export class AppController {
                 10000,
               ),
             ), // 10 second timeout
-          ]) as ProductData;
+          ])) as ProductData;
         } catch (scraperError) {
-          this.logger.warn(`⚠️ Scraper failed, using mock fallback: ${scraperError.message}`);
+          this.logger.warn(
+            `⚠️ Scraper failed, using mock fallback: ${scraperError.message}`,
+          );
           // Use a quick mock fallback instead of failing
           productData = {
             title: `Product from ${this.detectPlatform(body.url)}`,
@@ -384,10 +387,7 @@ export class AppController {
       // Step 3: AI Analysis
       let aiAnalysis: AIAnalysis;
       try {
-        aiAnalysis = await this.aiService.analyzeProduct(
-          productData,
-          body.url,
-        );
+        aiAnalysis = await this.aiService.analyzeProduct(productData, body.url);
       } catch (aiError) {
         this.logger.error(`❌ AI analysis failed: ${aiError.message}`);
         throw new Error(`AI analysis failed: ${aiError.message}`);
@@ -827,7 +827,8 @@ export class AppController {
     try {
       // Privacy consent tracking
       const userId = body.userId || body.user_id || 'anonymous';
-      const consentGiven = body.consent !== undefined ? body.consent : body.consentGiven || false;
+      const consentGiven =
+        body.consent !== undefined ? body.consent : body.consentGiven || false;
 
       this.logger.log(`📋 Consent recorded for user: ${userId}`);
 
@@ -921,7 +922,11 @@ export class AppController {
     try {
       const fallback = (this.prismaService as any).fallbackData;
       if (fallback && fallback.products) {
-        return { products: Array.from((fallback.products as Map<string, any>).values()).slice(-50).reverse() };
+        return {
+          products: Array.from((fallback.products as Map<string, any>).values())
+            .slice(-50)
+            .reverse(),
+        };
       }
     } catch (e) {
       // ignore

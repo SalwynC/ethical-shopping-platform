@@ -27,7 +27,7 @@ export class PrismaService
     // Check if DATABASE_URL is properly configured
     const dbUrl = process.env.DATABASE_URL;
     this.logger.log(`🔍 DATABASE_URL present: ${!!dbUrl}`);
-    
+
     if (!dbUrl || dbUrl.includes('placeholder')) {
       this.logger.warn('⚠️  Database not configured - using in-memory storage');
       this.logger.warn('📖 See REAL_DATABASE_SETUP.md for PostgreSQL setup');
@@ -47,8 +47,12 @@ export class PrismaService
         this.logger.warn('⚠️  Auto-seed error:', error.message);
       });
     } catch (error) {
-      this.logger.warn('⚠️  Database connection failed - using in-memory storage');
-      this.logger.warn(`Details: ${error?.message?.substring(0, 100) || 'Unknown error'}`);
+      this.logger.warn(
+        '⚠️  Database connection failed - using in-memory storage',
+      );
+      this.logger.warn(
+        `Details: ${error?.message?.substring(0, 100) || 'Unknown error'}`,
+      );
       this.isConnected = false;
 
       // Initialize fallback data
@@ -72,7 +76,9 @@ export class PrismaService
         await this.autoSeedDatabase();
         this.logger.log('✅ Auto-seeding completed!');
       } else {
-        this.logger.log(`📊 Database ready: ${productCount} products, ${savingsCount} savings records`);
+        this.logger.log(
+          `📊 Database ready: ${productCount} products, ${savingsCount} savings records`,
+        );
       }
     } catch (error) {
       this.logger.warn('⚠️  Auto-seed skipped:', error.message);
@@ -453,11 +459,13 @@ export class PrismaService
               typeof productData.features === 'string'
                 ? productData.features
                 : productData.features
-                ? JSON.stringify(productData.features)
-                : null,
+                  ? JSON.stringify(productData.features)
+                  : null,
           },
         });
-        this.logger.log(`📦 Created new product in PostgreSQL: ${product.title}`);
+        this.logger.log(
+          `📦 Created new product in PostgreSQL: ${product.title}`,
+        );
       } else {
         product = await this.product.update({
           where: { id: product.id },
@@ -518,12 +526,8 @@ export class PrismaService
           priceRank: analysisData.priceRank,
           marketComparison: analysisData.marketComparison,
           honestAssessment: analysisData.honestAssessment,
-          pros: analysisData.pros
-            ? JSON.stringify(analysisData.pros)
-            : null,
-          cons: analysisData.cons
-            ? JSON.stringify(analysisData.cons)
-            : null,
+          pros: analysisData.pros ? JSON.stringify(analysisData.pros) : null,
+          cons: analysisData.cons ? JSON.stringify(analysisData.cons) : null,
           warnings: analysisData.warnings
             ? JSON.stringify(analysisData.warnings)
             : null,
@@ -561,11 +565,7 @@ export class PrismaService
     }
   }
 
-  async savePriceHistory(
-    productId: string,
-    price: number,
-    currency = 'INR',
-  ) {
+  async savePriceHistory(productId: string, price: number, currency = 'INR') {
     if (!this.isConnected) {
       this.logger.log('ℹ️ Skipping saving price history (no DB connection)');
       return;
@@ -642,7 +642,10 @@ export class PrismaService
     try {
       if (!this.isConnected) {
         // Return from in-memory fallback
-        return Array.from(this.fallbackData.analyses.values()).slice(skip, skip + limit);
+        return Array.from(this.fallbackData.analyses.values()).slice(
+          skip,
+          skip + limit,
+        );
       }
 
       const analyses = await this.analysis.findMany({
@@ -661,7 +664,9 @@ export class PrismaService
         },
       });
 
-      this.logger.log(`📚 Retrieved ${analyses.length} analyses from PostgreSQL`);
+      this.logger.log(
+        `📚 Retrieved ${analyses.length} analyses from PostgreSQL`,
+      );
       return analyses;
     } catch (error) {
       this.logger.error('❌ Error getting analysis history:', error);
