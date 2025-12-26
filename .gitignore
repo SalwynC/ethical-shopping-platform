@@ -52,6 +52,26 @@ next-env.d.ts
 # Build outputs
 backend/dist/
 frontend/.next/
+frontend/out/
+
+# Cache and temporary files
+.turbo
+*.log
+.DS_Store
+*.tsbuildinfo
+
+# Service worker files
+frontend/public/sw.js
+frontend/public/workbox-*.js
+
+# Environment files (keep examples)
+.env*
+!.env.example
+!.env.local.example
+backend/.env*
+!backend/.env.example
+frontend/.env*
+!frontend/.env.example
 
 # Next.js build files
 frontend/.next/

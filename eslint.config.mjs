@@ -6,7 +6,19 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['eslint.config.mjs'],
+    ignores: [
+      'eslint.config.mjs',
+      'frontend/.next/**',
+      'frontend/out/**',
+      'frontend/public/sw.js',
+      'frontend/public/workbox-*.js',
+      'backend/dist/**',
+      'node_modules/**',
+      '**/node_modules/**',
+      '.next/**',
+      'dist/**',
+      'build/**',
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
