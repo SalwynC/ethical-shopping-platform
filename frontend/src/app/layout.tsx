@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { AppHeader } from "../components/layout/AppHeader";
 import { BackToTop } from "../components/common/BackToTop";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Force dynamic rendering for the entire app
 // Note: This applies to server components, client components are already dynamic
@@ -79,6 +80,7 @@ export default function RootLayout({
           <div className="h-14 md:h-16" />
           {children}
           <BackToTop />
+          <SpeedInsights />
         </Providers>
       </body>
     </html>
