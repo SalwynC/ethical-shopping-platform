@@ -26,9 +26,9 @@ import {
   Min,
 } from 'class-validator';
 
-class AnalyzeDto {
+export class AnalyzeDto {
   @IsUrl()
-  url: string;
+  url!: string;
 
   @IsOptional()
   productData?: {

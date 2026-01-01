@@ -37,8 +37,8 @@ export interface AIAnalysis {
 @Injectable()
 export class AIService {
   private readonly logger = new Logger(AIService.name);
-  private genAI: GoogleGenerativeAI;
-  private openai: OpenAI;
+  private genAI!: GoogleGenerativeAI;
+  private openai!: OpenAI;
   private rateLimiter: RateLimiterMemory;
   private cache: NodeCache;
   private hasValidGeminiKey: boolean;
@@ -47,26 +47,28 @@ export class AIService {
   constructor() {
     // Initialize Google Gemini AI with proper error handling
     const geminiKey = process.env.GOOGLE_AI_API_KEY;
-    this.hasValidGeminiKey =
+    this.hasValidGeminiKey = !!(
       geminiKey &&
       geminiKey !== 'your_free_gemini_api_key_here' &&
-      geminiKey.length > 20;
+      geminiKey.length > 20
+    );
 
     // Initialize OpenAI with proper error handling
     const openaiKey = process.env.OPENAI_API_KEY;
-    this.hasValidOpenAIKey =
+    this.hasValidOpenAIKey = !!(
       openaiKey &&
       openaiKey !== 'your_openai_api_key_here' &&
-      openaiKey.length > 20;
+      openaiKey.length > 20
+    );
 
-    if (this.hasValidGeminiKey) {
+    if (this.hasValidGeminiKey && geminiKey) {
       this.genAI = new GoogleGenerativeAI(geminiKey);
       this.logger.log('✅ Google Gemini AI initialized successfully');
     } else {
       this.logger.warn('⚠️  No valid Google Gemini API key found.');
     }
 
-    if (this.hasValidOpenAIKey) {
+    if (this.hasValidOpenAIKey && openaiKey) {
       this.openai = new OpenAI({ apiKey: openaiKey });
       this.logger.log('✅ OpenAI initialized successfully');
     } else {
