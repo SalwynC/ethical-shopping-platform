@@ -45,3 +45,19 @@ jest.config.*
 *.log
 .env.local
 .env*.local
+
+# Build outputs - avoid uploading local build artifacts
+.next/
+frontend/.next/
+dist/
+frontend/dist/
+out/
+frontend/out/
+# Vercel local build folder
+.vercel/
+frontend/.vercel/
+# Node modules
+node_modules/
+frontend/node_modules/
+# Public assets to avoid service workers or prebuilt SW being deployed accidentally
+public/sw.js
