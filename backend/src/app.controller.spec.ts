@@ -3,6 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ScraperService } from './scraper.service';
 import { AIService } from './ai.service';
+import { PrismaService } from './database/prisma.service';
+import { RealProductAnalyzerService } from './services/real-product-analyzer.service';
+import { ReviewCheckerService } from './services/review-checker.service';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -42,6 +45,32 @@ describe('AppController', () => {
               sustainability: { score: 75, factors: ['Good'], impact: 'Low' },
               alternatives: [],
             }),
+          },
+        },
+        {
+          provide: PrismaService,
+          useValue: {
+            findOrCreateProduct: jest.fn().mockResolvedValue({ id: 'prod-1', title: 'Test Product' }),
+            saveAnalysis: jest.fn().mockResolvedValue({ id: 'analysis-1' }),
+            savePriceHistory: jest.fn().mockResolvedValue(true),
+            getAnalysisHistory: jest.fn().mockResolvedValue([]),
+            countAnalyses: jest.fn().mockResolvedValue(0),
+            getAnalyticsData: jest.fn().mockResolvedValue({ totalAnalyses: 0, avgEthicalScore: 0, avgDealScore: 0, platformStats: {}, recentAnalyses: [] }),
+            getFallbackRules: jest.fn().mockResolvedValue([]),
+          },
+        },
+        {
+          provide: RealProductAnalyzerService,
+          useValue: {
+            getRealTimeStats: jest.fn().mockResolvedValue({ analyzing: 0, processed: 0, saved: 0 }),
+            recordUserSavings: jest.fn().mockResolvedValue(true),
+          },
+        },
+        {
+          provide: ReviewCheckerService,
+          useValue: {
+            analyzeReviews: jest.fn().mockReturnValue({ score: 80, trustLevel: 'High', sentiment: 'Positive', quality: 80, flags: [], recommendation: 'ok' }),
+            getReviewBadge: jest.fn().mockReturnValue('✅'),
           },
         },
       ],
