@@ -7,15 +7,16 @@ export const maxDuration = 300;
 
 // Get backend URL from environment or use fallback
 function getBackendUrl() {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 
-                     process.env.BACKEND_URL || 
-                     'https://ethical-shopping-platform-backend.vercel.app';
+  const backendUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    process.env.BACKEND_URL ||
+    'https://ethical-shopping-platform-backend.vercel.app';
   return backendUrl.replace(/\/$/, ''); // Remove trailing slash
 }
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
-  
+
   try {
     const { url } = await request.json();
 
@@ -24,7 +25,9 @@ export async function POST(request: NextRequest) {
     }
 
     const backendUrl = getBackendUrl();
-    console.log(`🔄 Forwarding analysis request to backend: ${backendUrl}/api/analyze for URL: ${url}`);
+    console.log(
+      `🔄 Forwarding analysis request to backend: ${backendUrl}/api/analyze for URL: ${url}`,
+    );
 
     // Call the real backend
     const backendResponse = await fetch(`${backendUrl}/api/analyze`, {
@@ -56,18 +59,20 @@ export async function POST(request: NextRequest) {
         processingTime: `${processingTime}ms`,
         freshData: true,
         serverTime: new Date().toLocaleTimeString(),
-      }
+      },
     });
-
   } catch (error: any) {
     const processingTime = Date.now() - startTime;
     console.error('Analysis error:', error);
-    
-    return NextResponse.json({
-      error: 'Analysis failed',
-      message: error.message || 'Could not analyze product',
-      processingTime: `${processingTime}ms`,
-      timestamp: new Date().toISOString(),
-    }, { status: 500 });
+
+    return NextResponse.json(
+      {
+        error: 'Analysis failed',
+        message: error.message || 'Could not analyze product',
+        processingTime: `${processingTime}ms`,
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 },
+    );
   }
 }

@@ -1,10 +1,10 @@
 /* eslint-disable react/forbid-dom-props */
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   IconHome,
   IconSearch,
@@ -14,15 +14,23 @@ import {
   IconFlask,
   IconMenu2,
   IconX,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
 
 const navigation = [
-  { name: "Home", href: "/" as const, icon: IconHome },
-  { name: "Analysis", href: "/analysis" as const, icon: IconSearch },
-  { name: "Comprehensive", href: "/comprehensive-analysis" as const, icon: IconChartBar },
-  { name: "Reports", href: "/reports" as const, icon: IconShieldCheck },
-  { name: "Track", href: "/track-analysis" as const, icon: IconHistory },
-  { name: "Test Dashboard", href: "/integrated-dashboard" as const, icon: IconFlask },
+  { name: 'Home', href: '/' as const, icon: IconHome },
+  { name: 'Analysis', href: '/analysis' as const, icon: IconSearch },
+  {
+    name: 'Comprehensive',
+    href: '/comprehensive-analysis' as const,
+    icon: IconChartBar,
+  },
+  { name: 'Reports', href: '/reports' as const, icon: IconShieldCheck },
+  { name: 'Track', href: '/track-analysis' as const, icon: IconHistory },
+  {
+    name: 'Test Dashboard',
+    href: '/integrated-dashboard' as const,
+    icon: IconFlask,
+  },
 ];
 
 export function NavigationBar() {
@@ -58,8 +66,8 @@ export function NavigationBar() {
                     href={item.href}
                     className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       isActive
-                        ? "bg-gradient-to-r from-green-500 to-blue-600 text-white shadow-lg"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        ? 'bg-gradient-to-r from-green-500 to-blue-600 text-white shadow-lg'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
                     <Icon size={18} className="mr-2" />
@@ -93,7 +101,10 @@ export function NavigationBar() {
               {isMobileMenuOpen ? (
                 <IconX size={24} className="text-gray-700 dark:text-gray-300" />
               ) : (
-                <IconMenu2 size={24} className="text-gray-700 dark:text-gray-300" />
+                <IconMenu2
+                  size={24}
+                  className="text-gray-700 dark:text-gray-300"
+                />
               )}
             </button>
           </div>
@@ -109,10 +120,10 @@ export function NavigationBar() {
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <motion.div
-              initial={{ x: "100%" }}
+              initial={{ x: '100%' }}
               animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 20 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 20 }}
               className="absolute right-0 top-14 bottom-0 w-64 bg-white dark:bg-gray-900 shadow-xl"
               onClick={(e) => e.stopPropagation()}
             >
@@ -127,8 +138,8 @@ export function NavigationBar() {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                         isActive
-                          ? "bg-gradient-to-r from-green-500 to-blue-600 text-white shadow-lg"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                          ? 'bg-gradient-to-r from-green-500 to-blue-600 text-white shadow-lg'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                       }`}
                     >
                       <Icon size={20} className="mr-3" />

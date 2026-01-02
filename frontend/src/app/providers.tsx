@@ -1,14 +1,11 @@
-"use client";
+'use client';
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { ReactNode, useState } from "react";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactNode, useState } from 'react';
 
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { DevServiceWorkerCleanup } from "@/components/common/DevServiceWorkerCleanup";
-import "@/lib/dev-utils"; // Initialize development utilities
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { DevServiceWorkerCleanup } from '@/components/common/DevServiceWorkerCleanup';
+import '@/lib/dev-utils'; // Initialize development utilities
 
 type ProvidersProps = {
   children: ReactNode;
@@ -23,9 +20,9 @@ const queryClientConfig = {
         // Don't retry on network/connection errors
         if (
           error instanceof Error &&
-          (error.message.includes("Unable to connect") ||
-            error.message.includes("Failed to fetch") ||
-            error.message.includes("NetworkError"))
+          (error.message.includes('Unable to connect') ||
+            error.message.includes('Failed to fetch') ||
+            error.message.includes('NetworkError'))
         ) {
           return false;
         }
@@ -37,12 +34,12 @@ const queryClientConfig = {
         // The browser already logs ERR_CONNECTION_REFUSED, so we don't need to duplicate it
         if (
           !(error instanceof Error) ||
-          (!error.message.includes("Unable to connect") &&
-            !error.message.includes("Failed to fetch") &&
-            !error.message.includes("NetworkError"))
+          (!error.message.includes('Unable to connect') &&
+            !error.message.includes('Failed to fetch') &&
+            !error.message.includes('NetworkError'))
         ) {
           // Only log non-network errors
-          console.error("Query error:", error);
+          console.error('Query error:', error);
         }
       },
     },
@@ -52,11 +49,11 @@ const queryClientConfig = {
         // Suppress console errors for connection refused errors
         if (
           !(error instanceof Error) ||
-          (!error.message.includes("Unable to connect") &&
-            !error.message.includes("Failed to fetch") &&
-            !error.message.includes("NetworkError"))
+          (!error.message.includes('Unable to connect') &&
+            !error.message.includes('Failed to fetch') &&
+            !error.message.includes('NetworkError'))
         ) {
-          console.error("Mutation error:", error);
+          console.error('Mutation error:', error);
         }
       },
     },
@@ -75,4 +72,3 @@ export function Providers({ children }: ProvidersProps) {
     </ThemeProvider>
   );
 }
-

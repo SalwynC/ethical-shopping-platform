@@ -1,72 +1,77 @@
 /* eslint-disable react/forbid-dom-props */
-"use client";
+'use client';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { IconExternalLink, IconAlertCircle, IconCheck, IconLoader2 } from "@tabler/icons-react";
-import { AnalysisStep } from "../../components/analysis/AnalysisProgress";
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { motion } from 'framer-motion';
+import {
+  IconExternalLink,
+  IconAlertCircle,
+  IconCheck,
+  IconLoader2,
+} from '@tabler/icons-react';
+import { AnalysisStep } from '../../components/analysis/AnalysisProgress';
 
 export default function AnalysisPage() {
   const searchParams = useSearchParams();
-  const [productUrl, setProductUrl] = useState<string>("");
+  const [productUrl, setProductUrl] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [overallProgress, setOverallProgress] = useState(0);
   const [steps, setSteps] = useState<AnalysisStep[]>([]);
-  
+
   // Initial analysis steps
   const initialSteps: AnalysisStep[] = [
     {
-      id: "url-validation",
-      label: "Validating Product URL",
-      status: "pending",
-      message: "Checking if the URL is accessible and contains product data"
+      id: 'url-validation',
+      label: 'Validating Product URL',
+      status: 'pending',
+      message: 'Checking if the URL is accessible and contains product data',
     },
     {
-      id: "product-extraction", 
-      label: "Extracting Product Information",
-      status: "pending",
-      message: "Getting product title, price, description, and images"
+      id: 'product-extraction',
+      label: 'Extracting Product Information',
+      status: 'pending',
+      message: 'Getting product title, price, description, and images',
     },
     {
-      id: "sustainability-check",
-      label: "Analyzing Sustainability Metrics", 
-      status: "pending",
-      message: "Checking environmental impact and eco-certifications"
+      id: 'sustainability-check',
+      label: 'Analyzing Sustainability Metrics',
+      status: 'pending',
+      message: 'Checking environmental impact and eco-certifications',
     },
     {
-      id: "ethical-evaluation",
-      label: "Evaluating Ethical Practices",
-      status: "pending", 
-      message: "Assessing labor practices and fair trade compliance"
+      id: 'ethical-evaluation',
+      label: 'Evaluating Ethical Practices',
+      status: 'pending',
+      message: 'Assessing labor practices and fair trade compliance',
     },
     {
-      id: "price-comparison",
-      label: "Comparing Prices Across Platforms",
-      status: "pending",
-      message: "Finding better deals on similar products"
+      id: 'price-comparison',
+      label: 'Comparing Prices Across Platforms',
+      status: 'pending',
+      message: 'Finding better deals on similar products',
     },
     {
-      id: "alternatives-search",
-      label: "Finding Ethical Alternatives",
-      status: "pending",
-      message: "Searching for more sustainable product options"
-    }
+      id: 'alternatives-search',
+      label: 'Finding Ethical Alternatives',
+      status: 'pending',
+      message: 'Searching for more sustainable product options',
+    },
   ];
 
   // Read URL query param on component mount
   useEffect(() => {
     if (searchParams) {
-      const url = searchParams.get("url");
+      const url = searchParams.get('url');
       if (url) {
         setProductUrl(decodeURIComponent(url));
         setSteps(initialSteps);
       } else {
         // Redirect to home if no URL provided
-        window.location.href = "/";
+        window.location.href = '/';
       }
     }
   }, [searchParams]);
@@ -75,46 +80,50 @@ export default function AnalysisPage() {
   const simulateAnalysis = async () => {
     setIsAnalyzing(true);
     setOverallProgress(0);
-    
+
     for (let i = 0; i < initialSteps.length; i++) {
       const currentStep = initialSteps[i];
-      
+
       // Update current step to in-progress
-      setSteps(prev => prev.map(step => 
-        step.id === currentStep.id 
-          ? { ...step, status: "in-progress", progress: 0 }
-          : step
-      ));
+      setSteps((prev) =>
+        prev.map((step) =>
+          step.id === currentStep.id
+            ? { ...step, status: 'in-progress', progress: 0 }
+            : step,
+        ),
+      );
 
       // Simulate progress for current step
       for (let progress = 0; progress <= 100; progress += 20) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        setSteps(prev => prev.map(step =>
-          step.id === currentStep.id
-            ? { ...step, progress }
-            : step
-        ));
-        
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
+        setSteps((prev) =>
+          prev.map((step) =>
+            step.id === currentStep.id ? { ...step, progress } : step,
+          ),
+        );
+
         // Update overall progress
         const stepProgress = (i * 100 + progress) / initialSteps.length;
         setOverallProgress(stepProgress);
       }
 
       // Mark current step as completed
-      setSteps(prev => prev.map(step =>
-        step.id === currentStep.id
-          ? { 
-              ...step, 
-              status: "completed", 
-              progress: 100,
-              message: getCompletedMessage(currentStep.id)
-            }
-          : step
-      ));
+      setSteps((prev) =>
+        prev.map((step) =>
+          step.id === currentStep.id
+            ? {
+                ...step,
+                status: 'completed',
+                progress: 100,
+                message: getCompletedMessage(currentStep.id),
+              }
+            : step,
+        ),
+      );
 
       // Small delay between steps
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 300));
     }
 
     setIsAnalyzing(false);
@@ -123,14 +132,14 @@ export default function AnalysisPage() {
 
   const getCompletedMessage = (stepId: string): string => {
     const messages: Record<string, string> = {
-      "url-validation": "✅ Product URL validated successfully",
-      "product-extraction": "✅ Product information extracted",
-      "sustainability-check": "✅ Sustainability score: 7.5/10",
-      "ethical-evaluation": "✅ Ethical rating: Good (Fair Trade Certified)",
-      "price-comparison": "✅ Found 3 better deals on other platforms",
-      "alternatives-search": "✅ Found 5 more sustainable alternatives"
+      'url-validation': '✅ Product URL validated successfully',
+      'product-extraction': '✅ Product information extracted',
+      'sustainability-check': '✅ Sustainability score: 7.5/10',
+      'ethical-evaluation': '✅ Ethical rating: Good (Fair Trade Certified)',
+      'price-comparison': '✅ Found 3 better deals on other platforms',
+      'alternatives-search': '✅ Found 5 more sustainable alternatives',
     };
-    return messages[stepId] || "✅ Step completed successfully";
+    return messages[stepId] || '✅ Step completed successfully';
   };
 
   const getDomainFromUrl = (url: string): string => {
@@ -152,7 +161,7 @@ export default function AnalysisPage() {
               <h1 className="text-4xl font-bold text-gray-900">
                 🌱 Ethical Product Analysis
               </h1>
-              
+
               {productUrl && (
                 <div className="flex flex-wrap items-center gap-4">
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
@@ -165,14 +174,16 @@ export default function AnalysisPage() {
                 </div>
               )}
 
-              {!isAnalyzing && steps.length > 0 && steps.every(s => s.status === "pending") && (
-                <button 
-                  onClick={simulateAnalysis}
-                  className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-cyan-700 transition-all transform hover:scale-105 shadow-lg max-w-xs"
-                >
-                  🚀 Start Ethical Analysis
-                </button>
-              )}
+              {!isAnalyzing &&
+                steps.length > 0 &&
+                steps.every((s) => s.status === 'pending') && (
+                  <button
+                    onClick={simulateAnalysis}
+                    className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-cyan-700 transition-all transform hover:scale-105 shadow-lg max-w-xs"
+                  >
+                    🚀 Start Ethical Analysis
+                  </button>
+                )}
             </div>
           </div>
 
@@ -181,33 +192,50 @@ export default function AnalysisPage() {
             <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
               <div className="space-y-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Analysis Progress</h2>
-                  <div className="text-sm text-gray-500">{overallProgress}% Complete</div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    Analysis Progress
+                  </h2>
+                  <div className="text-sm text-gray-500">
+                    {overallProgress}% Complete
+                  </div>
                 </div>
-                
+
                 <div className="w-full bg-gray-200 rounded-full h-2 mb-6 overflow-hidden">
-                  <motion.div 
+                  <motion.div
                     className="bg-gradient-to-r from-emerald-500 to-cyan-500 h-2 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${overallProgress}%` }}
                     transition={{ duration: 0.5 }}
                   ></motion.div>
                 </div>
-                
+
                 <div className="space-y-4">
                   {steps.map((step, index) => (
-                    <div key={step.id} className="flex items-center gap-4 p-4 rounded-xl bg-gray-50">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        step.status === 'completed' ? 'bg-green-500 text-white' :
-                        step.status === 'in-progress' ? 'bg-blue-500 text-white' :
-                        'bg-gray-300 text-gray-600'
-                      }`}>
-                        {step.status === 'completed' ? <IconCheck size={16} /> :
-                         step.status === 'in-progress' ? <IconLoader2 size={16} className="animate-spin" /> :
-                         index + 1}
+                    <div
+                      key={step.id}
+                      className="flex items-center gap-4 p-4 rounded-xl bg-gray-50"
+                    >
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          step.status === 'completed'
+                            ? 'bg-green-500 text-white'
+                            : step.status === 'in-progress'
+                              ? 'bg-blue-500 text-white'
+                              : 'bg-gray-300 text-gray-600'
+                        }`}
+                      >
+                        {step.status === 'completed' ? (
+                          <IconCheck size={16} />
+                        ) : step.status === 'in-progress' ? (
+                          <IconLoader2 size={16} className="animate-spin" />
+                        ) : (
+                          index + 1
+                        )}
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{step.label}</h3>
+                        <h3 className="font-semibold text-gray-900">
+                          {step.label}
+                        </h3>
                         <p className="text-sm text-gray-600">{step.message}</p>
                       </div>
                     </div>
@@ -221,18 +249,23 @@ export default function AnalysisPage() {
           {!isAnalyzing && overallProgress === 100 && (
             <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
               <div className="space-y-6">
-                <h2 className="text-3xl font-bold text-gray-900">📊 Analysis Complete!</h2>
-                
+                <h2 className="text-3xl font-bold text-gray-900">
+                  📊 Analysis Complete!
+                </h2>
+
                 <div className="bg-green-50 border border-green-200 rounded-xl p-6">
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mt-1">
                       <IconCheck size={14} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-green-800 mb-2">Sustainability Score: 7.5/10</h3>
+                      <h3 className="font-bold text-green-800 mb-2">
+                        Sustainability Score: 7.5/10
+                      </h3>
                       <p className="text-green-700">
-                        This product has good sustainability practices with room for improvement.
-                        Consider the alternatives below for better environmental impact.
+                        This product has good sustainability practices with room
+                        for improvement. Consider the alternatives below for
+                        better environmental impact.
                       </p>
                     </div>
                   </div>
@@ -260,9 +293,12 @@ export default function AnalysisPage() {
                   <IconAlertCircle size={14} className="text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-red-800 mb-2">No Product URL Provided</h3>
+                  <h3 className="font-bold text-red-800 mb-2">
+                    No Product URL Provided
+                  </h3>
                   <p className="text-red-700">
-                    Please return to the homepage and enter a product URL to analyze.
+                    Please return to the homepage and enter a product URL to
+                    analyze.
                   </p>
                 </div>
               </div>
@@ -273,4 +309,3 @@ export default function AnalysisPage() {
     </div>
   );
 }
-

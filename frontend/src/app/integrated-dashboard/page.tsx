@@ -1,15 +1,15 @@
 /* eslint-disable react/forbid-dom-props */
-"use client";
+'use client';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { 
-  IconSearch, 
-  IconLoader2, 
-  IconCheck, 
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import {
+  IconSearch,
+  IconLoader2,
+  IconCheck,
   IconAlertCircle,
   IconArrowRight,
   IconCode,
@@ -18,9 +18,9 @@ import {
   IconTrendingUp,
   IconLeaf,
   IconShield,
-  IconServer
-} from "@tabler/icons-react";
-import { formatCurrency } from "../../lib/currency";
+  IconServer,
+} from '@tabler/icons-react';
+import { formatCurrency } from '../../lib/currency';
 
 interface APIResponse {
   status: 'idle' | 'loading' | 'success' | 'error';
@@ -40,13 +40,13 @@ interface BackendStatus {
 }
 
 export default function IntegratedDashboardPage() {
-  const [productUrl, setProductUrl] = useState("");
+  const [productUrl, setProductUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [apiResponses, setApiResponses] = useState<APIResponse[]>([]);
   const [backendStatus, setBackendStatus] = useState<BackendStatus>({
     connected: false,
     healthy: false,
-    message: "Checking backend...",
+    message: 'Checking backend...',
   });
 
   // Check backend health on mount
@@ -54,10 +54,10 @@ export default function IntegratedDashboardPage() {
     const checkBackendHealth = async () => {
       try {
         const startTime = Date.now();
-        const response = await fetch("/api/health", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          cache: "no-store",
+        const response = await fetch('/api/health', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
         });
         const responseTime = Date.now() - startTime;
 
@@ -67,7 +67,7 @@ export default function IntegratedDashboardPage() {
             connected: true,
             healthy: true,
             uptime: data.uptime,
-            message: "✅ Backend is healthy",
+            message: '✅ Backend is healthy',
             responseTime,
           });
         } else {
@@ -81,7 +81,7 @@ export default function IntegratedDashboardPage() {
         setBackendStatus({
           connected: false,
           healthy: false,
-          message: `❌ Backend unreachable: ${err instanceof Error ? err.message : "Unknown error"}`,
+          message: `❌ Backend unreachable: ${err instanceof Error ? err.message : 'Unknown error'}`,
         });
       }
     };
@@ -93,7 +93,7 @@ export default function IntegratedDashboardPage() {
 
   const analyzeProduct = async () => {
     if (!productUrl.trim()) {
-      alert("Please enter a product URL");
+      alert('Please enter a product URL');
       return;
     }
 
@@ -103,9 +103,9 @@ export default function IntegratedDashboardPage() {
     try {
       // Call backend API through our frontend route
       const startTime = Date.now();
-      const response = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: productUrl }),
       });
       const duration = Date.now() - startTime;
@@ -119,9 +119,9 @@ export default function IntegratedDashboardPage() {
       // Log the API response
       setApiResponses([
         {
-          status: "success",
+          status: 'success',
           timestamp: new Date().toLocaleTimeString(),
-          endpoint: "/api/analyze",
+          endpoint: '/api/analyze',
           data: data,
           duration: duration,
         },
@@ -129,10 +129,10 @@ export default function IntegratedDashboardPage() {
     } catch (error) {
       setApiResponses([
         {
-          status: "error",
+          status: 'error',
           timestamp: new Date().toLocaleTimeString(),
-          endpoint: "/api/analyze",
-          error: error instanceof Error ? error.message : "Unknown error",
+          endpoint: '/api/analyze',
+          error: error instanceof Error ? error.message : 'Unknown error',
           duration: 0,
         },
       ]);
@@ -170,19 +170,30 @@ export default function IntegratedDashboardPage() {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <IconServer size={24} className={backendStatus.healthy ? "text-green-500" : "text-red-500"} />
+                <IconServer
+                  size={24}
+                  className={
+                    backendStatus.healthy ? 'text-green-500' : 'text-red-500'
+                  }
+                />
                 <div>
-                  <p className="text-sm font-semibold text-gray-300">Backend Status</p>
-                  <p className="text-lg font-bold text-white">{backendStatus.message}</p>
+                  <p className="text-sm font-semibold text-gray-300">
+                    Backend Status
+                  </p>
+                  <p className="text-lg font-bold text-white">
+                    {backendStatus.message}
+                  </p>
                   {backendStatus.responseTime && (
-                    <p className="text-xs text-gray-400">Response: {backendStatus.responseTime}ms</p>
+                    <p className="text-xs text-gray-400">
+                      Response: {backendStatus.responseTime}ms
+                    </p>
                   )}
                 </div>
               </div>
               <motion.div
                 animate={{ opacity: [1, 0.5, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className={`w-4 h-4 rounded-full ${backendStatus.healthy ? "bg-green-500" : "bg-red-500"}`}
+                className={`w-4 h-4 rounded-full ${backendStatus.healthy ? 'bg-green-500' : 'bg-red-500'}`}
               />
             </div>
           </motion.div>
@@ -197,7 +208,7 @@ export default function IntegratedDashboardPage() {
                 type="url"
                 value={productUrl}
                 onChange={(e) => setProductUrl(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && analyzeProduct()}
+                onKeyPress={(e) => e.key === 'Enter' && analyzeProduct()}
                 placeholder="https://www.amazon.com/dp/..."
                 className="flex-1 px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
               />
@@ -242,13 +253,19 @@ export default function IntegratedDashboardPage() {
               <div className="bg-slate-700/50 p-3 rounded border border-slate-600">
                 <p className="text-gray-400">Payload</p>
                 <pre className="text-green-400 font-mono text-xs overflow-auto max-h-32">
-                  {JSON.stringify({ url: productUrl || "(enter URL)" }, null, 2)}
+                  {JSON.stringify(
+                    { url: productUrl || '(enter URL)' },
+                    null,
+                    2,
+                  )}
                 </pre>
               </div>
               <div className="bg-slate-700/50 p-3 rounded border border-slate-600">
                 <p className="text-gray-400">Status</p>
-                <p className={`font-semibold ${isAnalyzing ? "text-yellow-400" : "text-gray-400"}`}>
-                  {isAnalyzing ? "🔄 Pending..." : "⏳ Ready"}
+                <p
+                  className={`font-semibold ${isAnalyzing ? 'text-yellow-400' : 'text-gray-400'}`}
+                >
+                  {isAnalyzing ? '🔄 Pending...' : '⏳ Ready'}
                 </p>
               </div>
             </div>
@@ -266,25 +283,37 @@ export default function IntegratedDashboardPage() {
                 icon={<IconDatabase size={20} />}
                 title="1. Web Scraping"
                 desc="Extract product data"
-                active={currentResponse?.status === "loading" || currentResponse?.status === "success"}
+                active={
+                  currentResponse?.status === 'loading' ||
+                  currentResponse?.status === 'success'
+                }
               />
               <ProcessStep
                 icon={<IconBrain size={20} />}
                 title="2. AI Analysis"
                 desc="Google Gemini processing"
-                active={currentResponse?.status === "loading" || currentResponse?.status === "success"}
+                active={
+                  currentResponse?.status === 'loading' ||
+                  currentResponse?.status === 'success'
+                }
               />
               <ProcessStep
                 icon={<IconTrendingUp size={20} />}
                 title="3. Price Prediction"
                 desc="ML forecasting"
-                active={currentResponse?.status === "loading" || currentResponse?.status === "success"}
+                active={
+                  currentResponse?.status === 'loading' ||
+                  currentResponse?.status === 'success'
+                }
               />
               <ProcessStep
                 icon={<IconLeaf size={20} />}
                 title="4. Sustainability"
                 desc="Carbon & ethics"
-                active={currentResponse?.status === "loading" || currentResponse?.status === "success"}
+                active={
+                  currentResponse?.status === 'loading' ||
+                  currentResponse?.status === 'success'
+                }
               />
             </div>
           </motion.div>
@@ -300,19 +329,24 @@ export default function IntegratedDashboardPage() {
               <IconDatabase className="text-green-400" size={24} />
               <h2 className="text-lg font-bold text-white">Backend Response</h2>
             </div>
-            
+
             {!currentResponse ? (
               <div className="text-center py-8 text-gray-400">
                 <p>No analysis yet</p>
                 <p className="text-sm">Enter a URL and click Analyze</p>
               </div>
-            ) : currentResponse.status === "error" ? (
+            ) : currentResponse.status === 'error' ? (
               <div className="bg-red-900/30 border border-red-700 rounded p-4">
                 <div className="flex items-start gap-2">
-                  <IconAlertCircle className="text-red-400 flex-shrink-0 mt-0.5" size={20} />
+                  <IconAlertCircle
+                    className="text-red-400 flex-shrink-0 mt-0.5"
+                    size={20}
+                  />
                   <div>
                     <p className="font-semibold text-red-300">Error</p>
-                    <p className="text-sm text-red-200">{currentResponse.error}</p>
+                    <p className="text-sm text-red-200">
+                      {currentResponse.error}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -326,7 +360,9 @@ export default function IntegratedDashboardPage() {
                 </div>
                 <div className="bg-slate-700/50 p-3 rounded border border-slate-600">
                   <p className="text-gray-400 mb-2">Response Time</p>
-                  <p className="text-cyan-400 font-mono">{currentResponse.duration}ms</p>
+                  <p className="text-cyan-400 font-mono">
+                    {currentResponse.duration}ms
+                  </p>
                 </div>
                 <div className="bg-slate-700/50 p-3 rounded border border-slate-600 max-h-40 overflow-auto">
                   <p className="text-gray-400 mb-2">Data</p>
@@ -340,7 +376,7 @@ export default function IntegratedDashboardPage() {
         </div>
 
         {/* Detailed Response Section */}
-        {currentResponse && currentResponse.status === "success" && (
+        {currentResponse && currentResponse.status === 'success' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -355,80 +391,88 @@ export default function IntegratedDashboardPage() {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Product Info */}
               <div className="bg-slate-700/50 rounded-lg p-4">
-                <h3 className="font-bold text-blue-300 mb-3">📦 Product Information</h3>
+                <h3 className="font-bold text-blue-300 mb-3">
+                  📦 Product Information
+                </h3>
                 <div className="space-y-2 text-sm text-gray-300">
                   <p>
-                    <span className="text-gray-400">Title:</span>{" "}
-                    {currentResponse.data?.productInfo?.title || "N/A"}
+                    <span className="text-gray-400">Title:</span>{' '}
+                    {currentResponse.data?.productInfo?.title || 'N/A'}
                   </p>
                   <p>
-                    <span className="text-gray-400">Brand:</span>{" "}
-                    {currentResponse.data?.productInfo?.brand || "N/A"}
+                    <span className="text-gray-400">Brand:</span>{' '}
+                    {currentResponse.data?.productInfo?.brand || 'N/A'}
                   </p>
                   <p>
-                    <span className="text-gray-400">Platform:</span>{" "}
-                    {currentResponse.data?.platform || "N/A"}
+                    <span className="text-gray-400">Platform:</span>{' '}
+                    {currentResponse.data?.platform || 'N/A'}
                   </p>
                 </div>
               </div>
 
               {/* Pricing */}
               <div className="bg-slate-700/50 rounded-lg p-4">
-                <h3 className="font-bold text-green-300 mb-3">💰 Pricing Analysis</h3>
+                <h3 className="font-bold text-green-300 mb-3">
+                  💰 Pricing Analysis
+                </h3>
                 <div className="space-y-2 text-sm text-gray-300">
                   <p>
-                    <span className="text-gray-400">Current:</span>{" "}
+                    <span className="text-gray-400">Current:</span>{' '}
                     <PriceNow
                       currency={currentResponse.data?.priceTrend?.currency}
                       amount={currentResponse.data?.priceTrend?.current}
                     />
                   </p>
                   <p>
-                    <span className="text-gray-400">Deal Score:</span>{" "}
-                    {currentResponse.data?.dealScore || "N/A"}/100
+                    <span className="text-gray-400">Deal Score:</span>{' '}
+                    {currentResponse.data?.dealScore || 'N/A'}/100
                   </p>
                   <p>
-                    <span className="text-gray-400">Recommendation:</span>{" "}
-                    {currentResponse.data?.decision || "N/A"}
+                    <span className="text-gray-400">Recommendation:</span>{' '}
+                    {currentResponse.data?.decision || 'N/A'}
                   </p>
                 </div>
               </div>
 
               {/* Ethics & Sustainability */}
               <div className="bg-slate-700/50 rounded-lg p-4">
-                <h3 className="font-bold text-green-300 mb-3">🌍 Sustainability</h3>
+                <h3 className="font-bold text-green-300 mb-3">
+                  🌍 Sustainability
+                </h3>
                 <div className="space-y-2 text-sm text-gray-300">
                   <p>
-                    <span className="text-gray-400">Ethical Score:</span>{" "}
-                    {currentResponse.data?.ethicalScore || "N/A"}/100
+                    <span className="text-gray-400">Ethical Score:</span>{' '}
+                    {currentResponse.data?.ethicalScore || 'N/A'}/100
                   </p>
                   <p>
-                    <span className="text-gray-400">Trust Level:</span>{" "}
-                    {currentResponse.data?.trustScore?.overallTrust || "N/A"}
+                    <span className="text-gray-400">Trust Level:</span>{' '}
+                    {currentResponse.data?.trustScore?.overallTrust || 'N/A'}
                   </p>
                   <p>
-                    <span className="text-gray-400">Carbon Impact:</span>{" "}
-                    {currentResponse.data?.sustainabilityMetrics?.carbonFootprint ||
-                      "N/A"}
+                    <span className="text-gray-400">Carbon Impact:</span>{' '}
+                    {currentResponse.data?.sustainabilityMetrics
+                      ?.carbonFootprint || 'N/A'}
                   </p>
                 </div>
               </div>
 
               {/* Recommendations */}
               <div className="bg-slate-700/50 rounded-lg p-4">
-                <h3 className="font-bold text-purple-300 mb-3">💡 Recommendations</h3>
+                <h3 className="font-bold text-purple-300 mb-3">
+                  💡 Recommendations
+                </h3>
                 <div className="space-y-2 text-sm text-gray-300">
                   <p>
-                    <span className="text-gray-400">Action:</span>{" "}
-                    {currentResponse.data?.recommendation?.action || "N/A"}
+                    <span className="text-gray-400">Action:</span>{' '}
+                    {currentResponse.data?.recommendation?.action || 'N/A'}
                   </p>
                   <p>
-                    <span className="text-gray-400">Confidence:</span>{" "}
-                    {currentResponse.data?.recommendation?.confidence || "N/A"}%
+                    <span className="text-gray-400">Confidence:</span>{' '}
+                    {currentResponse.data?.recommendation?.confidence || 'N/A'}%
                   </p>
                   <p>
-                    <span className="text-gray-400">Urgency:</span>{" "}
-                    {currentResponse.data?.recommendation?.urgency || "N/A"}
+                    <span className="text-gray-400">Urgency:</span>{' '}
+                    {currentResponse.data?.recommendation?.urgency || 'N/A'}
                   </p>
                 </div>
               </div>
@@ -436,7 +480,9 @@ export default function IntegratedDashboardPage() {
 
             {/* Raw JSON */}
             <div className="mt-6 bg-slate-700/50 rounded-lg p-4">
-              <h3 className="font-bold text-cyan-300 mb-3">📋 Full JSON Response</h3>
+              <h3 className="font-bold text-cyan-300 mb-3">
+                📋 Full JSON Response
+              </h3>
               <pre className="bg-slate-900 p-4 rounded text-cyan-400 font-mono text-xs overflow-auto max-h-64">
                 {JSON.stringify(currentResponse.data, null, 2)}
               </pre>
@@ -451,9 +497,11 @@ export default function IntegratedDashboardPage() {
           transition={{ delay: 0.4 }}
           className="mt-12 text-center text-gray-400 text-sm"
         >
-          <p>🔗 This page shows real-time integration between Frontend & Backend</p>
+          <p>
+            🔗 This page shows real-time integration between Frontend & Backend
+          </p>
           <p className="mt-2">
-            Frontend runs on <strong>Next.js 14</strong> • Backend runs on{" "}
+            Frontend runs on <strong>Next.js 14</strong> • Backend runs on{' '}
             <strong>NestJS</strong> • Deployed on <strong>Vercel</strong>
           </p>
         </motion.div>
@@ -462,9 +510,16 @@ export default function IntegratedDashboardPage() {
   );
 }
 
-function PriceNow({ currency, amount }: { currency?: string; amount?: number }) {
+function PriceNow({
+  currency,
+  amount,
+}: {
+  currency?: string;
+  amount?: number;
+}) {
   if (typeof amount !== 'number') return <span>N/A</span>;
-  const base = currency?.toUpperCase() === 'USD' || currency === '$' ? 'USD' : 'INR';
+  const base =
+    currency?.toUpperCase() === 'USD' || currency === '$' ? 'USD' : 'INR';
   const inrAmount = base === 'USD' ? Math.round(amount * 84) : amount;
   return <span>{formatCurrency(inrAmount, 'INR')}</span>;
 }
@@ -481,12 +536,16 @@ function ProcessStep({
   active?: boolean;
 }) {
   return (
-    <div className={`flex items-start gap-3 p-3 rounded-lg transition-all ${active ? "bg-purple-700/40 border border-purple-500/50" : "bg-slate-700/30 border border-slate-600/50"}`}>
-      <div className={`mt-1 ${active ? "text-purple-400" : "text-gray-400"}`}>
+    <div
+      className={`flex items-start gap-3 p-3 rounded-lg transition-all ${active ? 'bg-purple-700/40 border border-purple-500/50' : 'bg-slate-700/30 border border-slate-600/50'}`}
+    >
+      <div className={`mt-1 ${active ? 'text-purple-400' : 'text-gray-400'}`}>
         {icon}
       </div>
       <div>
-        <p className={`font-semibold text-sm ${active ? "text-purple-200" : "text-gray-300"}`}>
+        <p
+          className={`font-semibold text-sm ${active ? 'text-purple-200' : 'text-gray-300'}`}
+        >
           {title}
         </p>
         <p className="text-xs text-gray-400">{desc}</p>

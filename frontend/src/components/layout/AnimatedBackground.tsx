@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -30,7 +30,7 @@ export function AnimatedBackground() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-    
+
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
@@ -38,7 +38,7 @@ export function AnimatedBackground() {
     const initParticles = () => {
       const newParticles: Particle[] = [];
       const colors = ['#0F4C3A', '#4A90A4', '#87A96B', '#F4A261', '#2C5F8E'];
-      
+
       for (let i = 0; i < 50; i++) {
         newParticles.push({
           x: Math.random() * canvas.width,
@@ -47,7 +47,7 @@ export function AnimatedBackground() {
           speedX: (Math.random() - 0.5) * 0.5,
           speedY: (Math.random() - 0.5) * 0.5,
           opacity: Math.random() * 0.3 + 0.1,
-          color: colors[Math.floor(Math.random() * colors.length)]
+          color: colors[Math.floor(Math.random() * colors.length)],
         });
       }
       setParticles(newParticles);
@@ -59,8 +59,8 @@ export function AnimatedBackground() {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      setParticles(prevParticles => 
-        prevParticles.map(particle => {
+      setParticles((prevParticles) =>
+        prevParticles.map((particle) => {
           // Update position
           let newX = particle.x + particle.speedX;
           let newY = particle.y + particle.speedY;
@@ -73,11 +73,11 @@ export function AnimatedBackground() {
           newY = Math.max(0, Math.min(canvas.height, newY));
 
           return { ...particle, x: newX, y: newY };
-        })
+        }),
       );
 
       // Draw particles
-      particles.forEach(particle => {
+      particles.forEach((particle) => {
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fillStyle = particle.color;
@@ -87,7 +87,7 @@ export function AnimatedBackground() {
 
       // Draw connections
       particles.forEach((particle, i) => {
-        particles.slice(i + 1).forEach(otherParticle => {
+        particles.slice(i + 1).forEach((otherParticle) => {
           const dx = particle.x - otherParticle.x;
           const dy = particle.y - otherParticle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
@@ -129,7 +129,8 @@ export function AnimatedBackground() {
           width: '100%',
           height: '100%',
           zIndex: -2,
-          background: 'linear-gradient(135deg, #0F4C3A 0%, #2C5F8E 50%, #1B365C 100%)'
+          background:
+            'linear-gradient(135deg, #0F4C3A 0%, #2C5F8E 50%, #1B365C 100%)',
         }}
       />
 
@@ -143,7 +144,7 @@ export function AnimatedBackground() {
           height: '100%',
           zIndex: -1,
           overflow: 'hidden',
-          pointerEvents: 'none'
+          pointerEvents: 'none',
         }}
       >
         {/* Large Organic Shape 1 */}
@@ -152,12 +153,12 @@ export function AnimatedBackground() {
             x: [0, 100, 0],
             y: [0, -50, 0],
             rotate: [0, 180, 360],
-            scale: [1, 1.1, 1]
+            scale: [1, 1.1, 1],
           }}
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "linear"
+            ease: 'linear',
           }}
           style={{
             position: 'absolute',
@@ -165,9 +166,10 @@ export function AnimatedBackground() {
             right: '10%',
             width: '300px',
             height: '300px',
-            background: 'radial-gradient(circle, rgba(135, 169, 107, 0.1) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, rgba(135, 169, 107, 0.1) 0%, transparent 70%)',
             borderRadius: '63% 37% 54% 46% / 55% 48% 52% 45%',
-            filter: 'blur(40px)'
+            filter: 'blur(40px)',
           }}
         />
 
@@ -177,12 +179,12 @@ export function AnimatedBackground() {
             x: [0, -80, 0],
             y: [0, 60, 0],
             rotate: [0, -180, -360],
-            scale: [1, 0.9, 1]
+            scale: [1, 0.9, 1],
           }}
           transition={{
             duration: 25,
             repeat: Infinity,
-            ease: "linear"
+            ease: 'linear',
           }}
           style={{
             position: 'absolute',
@@ -190,9 +192,10 @@ export function AnimatedBackground() {
             left: '5%',
             width: '400px',
             height: '400px',
-            background: 'radial-gradient(circle, rgba(74, 144, 164, 0.08) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, rgba(74, 144, 164, 0.08) 0%, transparent 70%)',
             borderRadius: '38% 62% 63% 37% / 70% 33% 67% 30%',
-            filter: 'blur(50px)'
+            filter: 'blur(50px)',
           }}
         />
 
@@ -202,12 +205,12 @@ export function AnimatedBackground() {
             x: [0, 60, 0],
             y: [0, -40, 0],
             rotate: [0, 90, 180],
-            scale: [1, 1.2, 1]
+            scale: [1, 1.2, 1],
           }}
           transition={{
             duration: 15,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: 'easeInOut',
           }}
           style={{
             position: 'absolute',
@@ -216,9 +219,10 @@ export function AnimatedBackground() {
             transform: 'translate(-50%, -50%)',
             width: '200px',
             height: '200px',
-            background: 'radial-gradient(circle, rgba(244, 162, 97, 0.06) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, rgba(244, 162, 97, 0.06) 0%, transparent 70%)',
             borderRadius: '49% 51% 35% 65% / 68% 42% 58% 32%',
-            filter: 'blur(30px)'
+            filter: 'blur(30px)',
           }}
         />
 
@@ -229,25 +233,30 @@ export function AnimatedBackground() {
             animate={{
               y: [0, -30, 0],
               opacity: [0.3, 0.6, 0.3],
-              scale: [1, 1.1, 1]
+              scale: [1, 1.1, 1],
             }}
             transition={{
               duration: 4 + i,
               repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.5
+              ease: 'easeInOut',
+              delay: i * 0.5,
             }}
             style={{
               position: 'absolute',
-              top: `${20 + (i * 10)}%`,
-              left: `${10 + (i * 10)}%`,
-              width: `${20 + (i * 5)}px`,
-              height: `${20 + (i * 5)}px`,
+              top: `${20 + i * 10}%`,
+              left: `${10 + i * 10}%`,
+              width: `${20 + i * 5}px`,
+              height: `${20 + i * 5}px`,
               background: `radial-gradient(circle, ${
-                ['rgba(15, 76, 58, 0.1)', 'rgba(74, 144, 164, 0.1)', 'rgba(135, 169, 107, 0.1)', 'rgba(244, 162, 97, 0.1)'][i % 4]
+                [
+                  'rgba(15, 76, 58, 0.1)',
+                  'rgba(74, 144, 164, 0.1)',
+                  'rgba(135, 169, 107, 0.1)',
+                  'rgba(244, 162, 97, 0.1)',
+                ][i % 4]
               } 0%, transparent 70%)`,
               borderRadius: '50%',
-              filter: 'blur(10px)'
+              filter: 'blur(10px)',
             }}
           />
         ))}
@@ -255,12 +264,12 @@ export function AnimatedBackground() {
         {/* Live Animated Grid Pattern */}
         <motion.div
           animate={{
-            backgroundPosition: ['0px 0px', '60px 60px', '0px 0px']
+            backgroundPosition: ['0px 0px', '60px 60px', '0px 0px'],
           }}
           transition={{
             duration: 10,
             repeat: Infinity,
-            ease: "linear"
+            ease: 'linear',
           }}
           style={{
             position: 'absolute',
@@ -273,30 +282,30 @@ export function AnimatedBackground() {
               radial-gradient(circle at 75% 75%, rgba(6, 182, 212, 0.03) 1px, transparent 1px)
             `,
             backgroundSize: '60px 60px',
-            opacity: 0.7
+            opacity: 0.7,
           }}
         />
-        
+
         {/* Dynamic Gradient Overlay */}
         <motion.div
           animate={{
             background: [
               'radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.1) 0%, transparent 50%)',
               'radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.1) 0%, transparent 50%)',
-              'radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.1) 0%, transparent 50%)'
-            ]
+              'radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.1) 0%, transparent 50%)',
+            ],
           }}
           transition={{
             duration: 8,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: 'easeInOut',
           }}
           style={{
             position: 'absolute',
             top: 0,
             left: 0,
             width: '100%',
-            height: '100%'
+            height: '100%',
           }}
         />
       </div>

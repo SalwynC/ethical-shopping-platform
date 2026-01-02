@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Variants } from "framer-motion";
+import { Variants } from 'framer-motion';
 
 // Page transition variants
 export const pageVariants: Variants = {
@@ -42,16 +42,16 @@ export const cardVariants: Variants = {
     scale: 1,
     transition: {
       duration: 0.5,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
   hover: {
     y: -8,
     scale: 1.02,
-    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
     transition: {
       duration: 0.2,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
   tap: {
@@ -90,7 +90,7 @@ export const itemVariants: Variants = {
     x: 0,
     transition: {
       duration: 0.4,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
 };
@@ -104,7 +104,7 @@ export const buttonVariants: Variants = {
     scale: 1.05,
     transition: {
       duration: 0.2,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
   tap: {
@@ -122,7 +122,7 @@ export const loadingVariants: Variants = {
     transition: {
       duration: 1,
       repeat: Infinity,
-      ease: "linear",
+      ease: 'linear',
     },
   },
 };
@@ -138,7 +138,7 @@ export const fadeSlideVariants: Variants = {
     y: 0,
     transition: {
       duration: 0.3,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
 };
@@ -154,7 +154,7 @@ export const scaleFadeVariants: Variants = {
     scale: 1,
     transition: {
       duration: 0.3,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
   exit: {
@@ -172,7 +172,7 @@ export const inputVariants: Variants = {
     scale: 1.02,
     transition: {
       duration: 0.2,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
   blur: {
@@ -186,13 +186,13 @@ export const inputVariants: Variants = {
 // Progress bar animation
 export const progressVariants: Variants = {
   initial: {
-    width: "0%",
+    width: '0%',
   },
   animate: (progress: number) => ({
     width: `${progress}%`,
     transition: {
       duration: 0.8,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   }),
 };
@@ -205,7 +205,7 @@ export const pulseVariants: Variants = {
     transition: {
       duration: 2,
       repeat: Infinity,
-      ease: "easeInOut",
+      ease: 'easeInOut',
     },
   },
 };
@@ -216,7 +216,7 @@ export const bounceVariants: Variants = {
     y: [0, -10, 0],
     transition: {
       duration: 0.6,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
 };
@@ -224,17 +224,17 @@ export const bounceVariants: Variants = {
 // Slide variants for mobile menu
 export const slideVariants: Variants = {
   closed: {
-    x: "-100%",
+    x: '-100%',
     transition: {
       duration: 0.3,
-      ease: "easeInOut",
+      ease: 'easeInOut',
     },
   },
   open: {
-    x: "0%",
+    x: '0%',
     transition: {
       duration: 0.3,
-      ease: "easeInOut",
+      ease: 'easeInOut',
     },
   },
 };
@@ -246,7 +246,7 @@ export const skeletonVariants: Variants = {
     transition: {
       duration: 1.5,
       repeat: Infinity,
-      ease: "easeInOut",
+      ease: 'easeInOut',
     },
   },
 };

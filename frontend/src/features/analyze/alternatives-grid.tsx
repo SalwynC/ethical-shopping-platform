@@ -1,21 +1,26 @@
-"use client";
+'use client';
 
-import NextLink from "next/link";
-import { EmptyState } from "../../components/common/EmptyState";
-import type { AlternativeProduct } from "../../types/api";
-import { useUsdInrRate, formatDual } from "../../lib/currency";
+import NextLink from 'next/link';
+import { EmptyState } from '../../components/common/EmptyState';
+import type { AlternativeProduct } from '../../types/api';
+import { useUsdInrRate, formatDual } from '../../lib/currency';
 
 interface AlternativesGridProps {
   alternatives?: AlternativeProduct[];
   isLoading?: boolean;
 }
 
-export function AlternativesGrid({ alternatives = [], isLoading }: AlternativesGridProps) {
+export function AlternativesGrid({
+  alternatives = [],
+  isLoading,
+}: AlternativesGridProps) {
   const fx = useUsdInrRate();
   if (isLoading) {
     return (
       <div className="p-4">
-        <p className="text-center text-gray-600 dark:text-gray-400">Loading alternatives...</p>
+        <p className="text-center text-gray-600 dark:text-gray-400">
+          Loading alternatives...
+        </p>
       </div>
     );
   }
@@ -32,8 +37,8 @@ export function AlternativesGrid({ alternatives = [], isLoading }: AlternativesG
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {alternatives.map((alternative, index) => (
-        <div 
-          key={`${alternative.title}-${index}`} 
+        <div
+          key={`${alternative.title}-${index}`}
           className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-6 shadow-sm"
         >
           <div className="space-y-4">
@@ -45,25 +50,25 @@ export function AlternativesGrid({ alternatives = [], isLoading }: AlternativesG
                 {alternative.ethicalScore}% Ethical
               </span>
             </div>
-            
+
             <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
               {alternative.rationale}
             </p>
-            
+
             <div className="flex justify-between items-center">
               {typeof alternative.price === 'number' && (
                 <span className="font-semibold text-lg text-green-600 dark:text-green-400">
                   {(() => {
                     const base = 'USD';
                     if (fx) {
-                      const dual = formatDual(alternative.price!, base, fx.rate);
+                      const dual = formatDual(alternative.price, base, fx.rate);
                       return `${dual.inr} · ${dual.usd}`;
                     }
                     return `$${alternative.price.toFixed(2)}`;
                   })()}
                 </span>
               )}
-              
+
               <a
                 href={alternative.url}
                 target="_blank"

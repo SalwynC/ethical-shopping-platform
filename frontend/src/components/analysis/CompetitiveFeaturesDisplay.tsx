@@ -11,17 +11,27 @@ interface ScoreRingProps {
   label?: string;
   color?: 'green' | 'red' | string;
 }
-const ScoreRing: React.FC<ScoreRingProps> = ({ score, size = 'medium', label, color = 'blue' }) => {
+const ScoreRing: React.FC<ScoreRingProps> = ({
+  score,
+  size = 'medium',
+  label,
+  color = 'blue',
+}) => {
   const dim = size === 'small' ? 40 : size === 'large' ? 64 : 48;
   const colorClass =
-    color === 'green' ? 'text-green-600' :
-    color === 'red' ? 'text-red-600' :
-    'text-blue-600';
+    color === 'green'
+      ? 'text-green-600'
+      : color === 'red'
+        ? 'text-red-600'
+        : 'text-blue-600';
   return (
     // eslint-disable-next-line react/forbid-dom-props
     <div className="flex flex-col items-center" style={{ width: dim }}>
       {/* eslint-disable-next-line react/forbid-dom-props */}
-      <div className={`rounded-full flex items-center justify-center ${colorClass} font-semibold text-center`} style={{ height: dim, width: dim }}>
+      <div
+        className={`rounded-full flex items-center justify-center ${colorClass} font-semibold text-center`}
+        style={{ height: dim, width: dim }}
+      >
         {Math.round(score)}
         <span className="text-xs ml-1">%</span>
       </div>
@@ -35,10 +45,9 @@ interface CompetitiveFeaturesDisplayProps {
   isLoading?: boolean;
 }
 
-export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProps> = ({
-  features,
-  isLoading = false
-}) => {
+export const CompetitiveFeaturesDisplay: React.FC<
+  CompetitiveFeaturesDisplayProps
+> = ({ features, isLoading = false }) => {
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse">
@@ -76,48 +85,60 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
             </span>
           </div>
           <div className="ml-auto">
-            <ScoreRing 
-              score={features.pricePrediction.confidence} 
-              size="small" 
+            <ScoreRing
+              score={features.pricePrediction.confidence}
+              size="small"
               label="Confidence"
             />
           </div>
         </div>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <div className="text-center">
             <p className="text-2xl font-bold text-blue-600">
               ₹{features.pricePrediction.nextWeekPrice.toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-300">Next Week</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Next Week
+            </p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-blue-600">
               ₹{features.pricePrediction.nextMonthPrice.toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-300">Next Month</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Next Month
+            </p>
           </div>
           <div className="text-center">
-            <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-              features.pricePrediction.priceDirection === 'up' ? 'bg-red-100 text-red-800' :
-              features.pricePrediction.priceDirection === 'down' ? 'bg-green-100 text-green-800' :
-              'bg-gray-100 text-gray-800'
-            }`}>
+            <div
+              className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                features.pricePrediction.priceDirection === 'up'
+                  ? 'bg-red-100 text-red-800'
+                  : features.pricePrediction.priceDirection === 'down'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-gray-100 text-gray-800'
+              }`}
+            >
               {features.pricePrediction.priceDirection === 'up' && '↗️'}
               {features.pricePrediction.priceDirection === 'down' && '↘️'}
               {features.pricePrediction.priceDirection === 'stable' && '➡️'}
               {features.pricePrediction.priceDirection}
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Trend</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              Trend
+            </p>
           </div>
           <div className="text-center">
             <p className="text-sm font-medium text-gray-900 dark:text-white">
               {features.pricePrediction.confidence}%
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-300">Confidence</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Confidence
+            </p>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 p-3 rounded-lg">
           <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
             💡 Smart Recommendation
@@ -148,9 +169,9 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
             </span>
           </div>
           <div className="ml-auto">
-            <ScoreRing 
-              score={100 - features.carbonFootprint.totalScore} 
-              size="small" 
+            <ScoreRing
+              score={100 - features.carbonFootprint.totalScore}
+              size="small"
               label="Eco Score"
               color="green"
             />
@@ -162,7 +183,9 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
             <p className="text-lg font-bold text-orange-600">
               {features.carbonFootprint.breakdown.manufacturing}
             </p>
-            <p className="text-xs text-gray-600 dark:text-gray-300">Manufacturing</p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Manufacturing
+            </p>
           </div>
           <div className="bg-white dark:bg-gray-800 p-3 rounded-lg text-center">
             <p className="text-lg font-bold text-blue-600">
@@ -174,7 +197,9 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
             <p className="text-lg font-bold text-purple-600">
               {features.carbonFootprint.breakdown.packaging}
             </p>
-            <p className="text-xs text-gray-600 dark:text-gray-300">Packaging</p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Packaging
+            </p>
           </div>
           <div className="bg-white dark:bg-gray-800 p-3 rounded-lg text-center">
             <p className="text-lg font-bold text-red-600">
@@ -196,12 +221,14 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
               💚 Eco-Friendly Suggestions:
             </p>
             <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
-              {features.carbonFootprint.improvementSuggestions.slice(0, 3).map((suggestion, index) => (
-                <li key={index} className="flex items-start">
-                  <span className="text-green-500 mr-2">•</span>
-                  {suggestion}
-                </li>
-              ))}
+              {features.carbonFootprint.improvementSuggestions
+                .slice(0, 3)
+                .map((suggestion, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="text-green-500 mr-2">•</span>
+                    {suggestion}
+                  </li>
+                ))}
             </ul>
           </div>
         )}
@@ -232,42 +259,62 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
 
           <div className="mb-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-900 dark:text-white">Risk Level</span>
+              <span className="text-sm font-medium text-gray-900 dark:text-white">
+                Risk Level
+              </span>
               <span className="text-sm font-bold text-orange-600">
                 {features.supplyChainTransparency.riskScore}/100
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               {/* eslint-disable-next-line react/forbid-dom-props */}
-              <div 
+              <div
                 className="bg-gradient-to-r from-green-400 to-red-400 h-2 rounded-full transition-all"
-                style={{ width: `${features.supplyChainTransparency.riskScore}%` }}
+                style={{
+                  width: `${features.supplyChainTransparency.riskScore}%`,
+                }}
               ></div>
             </div>
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600 dark:text-gray-300">Labor Standards:</span>
-              <span className={`text-sm font-medium capitalize ${
-                features.supplyChainTransparency.laborStandards === 'excellent' ? 'text-green-600' :
-                features.supplyChainTransparency.laborStandards === 'good' ? 'text-blue-600' :
-                features.supplyChainTransparency.laborStandards === 'average' ? 'text-yellow-600' :
-                'text-red-600'
-              }`}>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Labor Standards:
+              </span>
+              <span
+                className={`text-sm font-medium capitalize ${
+                  features.supplyChainTransparency.laborStandards ===
+                  'excellent'
+                    ? 'text-green-600'
+                    : features.supplyChainTransparency.laborStandards === 'good'
+                      ? 'text-blue-600'
+                      : features.supplyChainTransparency.laborStandards ===
+                          'average'
+                        ? 'text-yellow-600'
+                        : 'text-red-600'
+                }`}
+              >
                 {features.supplyChainTransparency.laborStandards}
               </span>
             </div>
-            
+
             {features.supplyChainTransparency.certifications.length > 0 && (
               <div>
-                <span className="text-sm text-gray-600 dark:text-gray-300">Certifications:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  Certifications:
+                </span>
                 <div className="flex flex-wrap gap-1 mt-1">
-                  {features.supplyChainTransparency.certifications.slice(0, 3).map((cert, index) => (
-                    <span key={index} className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                      {cert}
-                    </span>
-                  ))}
+                  {features.supplyChainTransparency.certifications
+                    .slice(0, 3)
+                    .map((cert, index) => (
+                      <span
+                        key={index}
+                        className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded"
+                      >
+                        {cert}
+                      </span>
+                    ))}
                 </div>
               </div>
             )}
@@ -297,47 +344,74 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
 
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="text-center">
-              <ScoreRing score={features.brandReputation.trustScore} size="small" />
-              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">Trust</p>
+              <ScoreRing
+                score={features.brandReputation.trustScore}
+                size="small"
+              />
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                Trust
+              </p>
             </div>
             <div className="text-center">
-              <ScoreRing score={features.brandReputation.ethicalScore} size="small" color="green" />
-              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">Ethics</p>
+              <ScoreRing
+                score={features.brandReputation.ethicalScore}
+                size="small"
+                color="green"
+              />
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                Ethics
+              </p>
             </div>
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600 dark:text-gray-300">Market Position:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Market Position:
+              </span>
               <span className="text-sm font-medium text-purple-600">
                 {features.brandReputation.marketPosition}
               </span>
             </div>
-            
+
             {features.brandReputation.positiveActions.length > 0 && (
               <div>
-                <span className="text-sm text-gray-600 dark:text-gray-300">Positive Actions:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  Positive Actions:
+                </span>
                 <div className="mt-1">
-                  {features.brandReputation.positiveActions.slice(0, 2).map((action, index) => (
-                    <div key={index} className="text-xs text-green-700 dark:text-green-300 flex items-start">
-                      <span className="text-green-500 mr-1">✓</span>
-                      {action}
-                    </div>
-                  ))}
+                  {features.brandReputation.positiveActions
+                    .slice(0, 2)
+                    .map((action, index) => (
+                      <div
+                        key={index}
+                        className="text-xs text-green-700 dark:text-green-300 flex items-start"
+                      >
+                        <span className="text-green-500 mr-1">✓</span>
+                        {action}
+                      </div>
+                    ))}
                 </div>
               </div>
             )}
 
             {features.brandReputation.controversies.length > 0 && (
               <div>
-                <span className="text-sm text-gray-600 dark:text-gray-300">Concerns:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  Concerns:
+                </span>
                 <div className="mt-1">
-                  {features.brandReputation.controversies.slice(0, 2).map((controversy, index) => (
-                    <div key={index} className="text-xs text-red-700 dark:text-red-300 flex items-start">
-                      <span className="text-red-500 mr-1">⚠</span>
-                      {controversy}
-                    </div>
-                  ))}
+                  {features.brandReputation.controversies
+                    .slice(0, 2)
+                    .map((controversy, index) => (
+                      <div
+                        key={index}
+                        className="text-xs text-red-700 dark:text-red-300 flex items-start"
+                      >
+                        <span className="text-red-500 mr-1">⚠</span>
+                        {controversy}
+                      </div>
+                    ))}
                 </div>
               </div>
             )}
@@ -369,71 +443,126 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
         <div className="grid md:grid-cols-3 gap-4">
           {/* Hidden Costs */}
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
-            <h4 className="font-medium text-gray-900 dark:text-white mb-3">Hidden Costs</h4>
+            <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+              Hidden Costs
+            </h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Shipping:</span>
-                <span className="font-medium">₹{features.smartInsights.hiddenCosts.estimatedShipping.toFixed(0)}</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Shipping:
+                </span>
+                <span className="font-medium">
+                  ₹
+                  {features.smartInsights.hiddenCosts.estimatedShipping.toFixed(
+                    0,
+                  )}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-300">Taxes:</span>
-                <span className="font-medium">₹{features.smartInsights.hiddenCosts.taxes.toFixed(0)}</span>
+                <span className="font-medium">
+                  ₹{features.smartInsights.hiddenCosts.taxes.toFixed(0)}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Returns:</span>
-                <span className="font-medium">₹{features.smartInsights.hiddenCosts.returns.toFixed(0)}</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Returns:
+                </span>
+                <span className="font-medium">
+                  ₹{features.smartInsights.hiddenCosts.returns.toFixed(0)}
+                </span>
               </div>
               <div className="border-t pt-2 flex justify-between font-semibold">
                 <span>Total Extra:</span>
-                <span className="text-red-600">₹{features.smartInsights.hiddenCosts.total.toFixed(0)}</span>
+                <span className="text-red-600">
+                  ₹{features.smartInsights.hiddenCosts.total.toFixed(0)}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Value Analysis */}
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
-            <h4 className="font-medium text-gray-900 dark:text-white mb-3">Value Analysis</h4>
+            <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+              Value Analysis
+            </h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Per Feature:</span>
-                <span className="font-medium">₹{features.smartInsights.valueAnalysis.pricePerFeature.toFixed(0)}</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Per Feature:
+                </span>
+                <span className="font-medium">
+                  ₹
+                  {features.smartInsights.valueAnalysis.pricePerFeature.toFixed(
+                    0,
+                  )}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Durability:</span>
-                <span className="font-medium">{features.smartInsights.valueAnalysis.durabilityScore}/100</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Durability:
+                </span>
+                <span className="font-medium">
+                  {features.smartInsights.valueAnalysis.durabilityScore}/100
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Resale Value:</span>
-                <span className="font-medium">₹{features.smartInsights.valueAnalysis.resaleValue.toFixed(0)}</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Resale Value:
+                </span>
+                <span className="font-medium">
+                  ₹{features.smartInsights.valueAnalysis.resaleValue.toFixed(0)}
+                </span>
               </div>
               <div className="border-t pt-2 flex justify-between font-semibold">
                 <span>True Cost:</span>
-                <span className="text-blue-600">₹{features.smartInsights.valueAnalysis.totalCostOfOwnership.toFixed(0)}</span>
+                <span className="text-blue-600">
+                  ₹
+                  {features.smartInsights.valueAnalysis.totalCostOfOwnership.toFixed(
+                    0,
+                  )}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Social Proof */}
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
-            <h4 className="font-medium text-gray-900 dark:text-white mb-3">Social Proof</h4>
+            <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+              Social Proof
+            </h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Trending:</span>
-                <span className="font-medium">{features.smartInsights.socialProof.trendingScore}/100</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Trending:
+                </span>
+                <span className="font-medium">
+                  {features.smartInsights.socialProof.trendingScore}/100
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Virality:</span>
-                <span className={`font-medium capitalize ${
-                  features.smartInsights.socialProof.virality === 'high' ? 'text-green-600' :
-                  features.smartInsights.socialProof.virality === 'medium' ? 'text-yellow-600' :
-                  'text-gray-600'
-                }`}>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Virality:
+                </span>
+                <span
+                  className={`font-medium capitalize ${
+                    features.smartInsights.socialProof.virality === 'high'
+                      ? 'text-green-600'
+                      : features.smartInsights.socialProof.virality === 'medium'
+                        ? 'text-yellow-600'
+                        : 'text-gray-600'
+                  }`}
+                >
                   {features.smartInsights.socialProof.virality}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Mentions:</span>
-                <span className="font-medium">{features.smartInsights.socialProof.socialMediaMentions}</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Mentions:
+                </span>
+                <span className="font-medium">
+                  {features.smartInsights.socialProof.socialMediaMentions}
+                </span>
               </div>
             </div>
           </div>
@@ -457,19 +586,25 @@ export const CompetitiveFeaturesDisplay: React.FC<CompetitiveFeaturesDisplayProp
           <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
             No other platform offers this level of comprehensive analysis
           </p>
-          
+
           <div className="grid md:grid-cols-5 gap-3 text-xs">
             <div className="bg-white dark:bg-gray-800 p-2 rounded-lg">
               <div className="font-semibold text-blue-600">📈 Price ML</div>
-              <div className="text-gray-600 dark:text-gray-300">AI Prediction</div>
+              <div className="text-gray-600 dark:text-gray-300">
+                AI Prediction
+              </div>
             </div>
             <div className="bg-white dark:bg-gray-800 p-2 rounded-lg">
               <div className="font-semibold text-green-600">🌱 Carbon</div>
-              <div className="text-gray-600 dark:text-gray-300">Real Impact</div>
+              <div className="text-gray-600 dark:text-gray-300">
+                Real Impact
+              </div>
             </div>
             <div className="bg-white dark:bg-gray-800 p-2 rounded-lg">
               <div className="font-semibold text-orange-600">🔍 Supply</div>
-              <div className="text-gray-600 dark:text-gray-300">Chain Intel</div>
+              <div className="text-gray-600 dark:text-gray-300">
+                Chain Intel
+              </div>
             </div>
             <div className="bg-white dark:bg-gray-800 p-2 rounded-lg">
               <div className="font-semibold text-purple-600">🏢 Brand</div>

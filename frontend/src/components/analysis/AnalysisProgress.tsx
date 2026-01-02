@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
+import { motion } from 'framer-motion';
 
 export interface AnalysisStep {
   id: string;
   label: string;
-  status: "pending" | "in-progress" | "completed" | "error";
+  status: 'pending' | 'in-progress' | 'completed' | 'error';
   progress?: number;
   message?: string;
 }
@@ -24,45 +24,45 @@ export const AnalysisProgress: React.FC<AnalysisProgressProps> = ({
   overallProgress = 0,
   isAnalyzing = false,
 }) => {
-  const getStepColor = (status: AnalysisStep["status"]) => {
+  const getStepColor = (status: AnalysisStep['status']) => {
     switch (status) {
-      case "completed":
+      case 'completed':
         return {
-          text: "text-green-600 dark:text-green-400",
-          bg: "bg-green-100 dark:bg-green-900/30",
-          border: "border-green-200 dark:border-green-800",
+          text: 'text-green-600 dark:text-green-400',
+          bg: 'bg-green-100 dark:bg-green-900/30',
+          border: 'border-green-200 dark:border-green-800',
         };
-      case "in-progress":
+      case 'in-progress':
         return {
-          text: "text-blue-600 dark:text-blue-400",
-          bg: "bg-blue-100 dark:bg-blue-900/30",
-          border: "border-blue-200 dark:border-blue-800",
+          text: 'text-blue-600 dark:text-blue-400',
+          bg: 'bg-blue-100 dark:bg-blue-900/30',
+          border: 'border-blue-200 dark:border-blue-800',
         };
-      case "error":
+      case 'error':
         return {
-          text: "text-red-600 dark:text-red-400",
-          bg: "bg-red-100 dark:bg-red-900/30",
-          border: "border-red-200 dark:border-red-800",
+          text: 'text-red-600 dark:text-red-400',
+          bg: 'bg-red-100 dark:bg-red-900/30',
+          border: 'border-red-200 dark:border-red-800',
         };
       default:
         return {
-          text: "text-gray-600 dark:text-gray-400",
-          bg: "bg-gray-100 dark:bg-gray-900/30",
-          border: "border-gray-200 dark:border-gray-800",
+          text: 'text-gray-600 dark:text-gray-400',
+          bg: 'bg-gray-100 dark:bg-gray-900/30',
+          border: 'border-gray-200 dark:border-gray-800',
         };
     }
   };
 
-  const getStepIcon = (status: AnalysisStep["status"]) => {
+  const getStepIcon = (status: AnalysisStep['status']) => {
     switch (status) {
-      case "completed":
-        return "✓";
-      case "in-progress":
-        return "◐";
-      case "error":
-        return "✗";
+      case 'completed':
+        return '✓';
+      case 'in-progress':
+        return '◐';
+      case 'error':
+        return '✗';
       default:
-        return "○";
+        return '○';
     }
   };
 
@@ -71,7 +71,9 @@ export const AnalysisProgress: React.FC<AnalysisProgressProps> = ({
       <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Analysis Progress</h3>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+            Analysis Progress
+          </h3>
           {isAnalyzing && (
             <div className="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
           )}
@@ -88,7 +90,7 @@ export const AnalysisProgress: React.FC<AnalysisProgressProps> = ({
             </span>
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-            <div 
+            <div
               className={`h-3 bg-blue-500 rounded-full transition-all duration-300 ${isAnalyzing ? 'animate-pulse' : ''}`}
               style={{ width: `${overallProgress}%` }}
             />
@@ -102,7 +104,7 @@ export const AnalysisProgress: React.FC<AnalysisProgressProps> = ({
             const isActive =
               currentStep != null
                 ? step.id === currentStep
-                : step.status === "in-progress";
+                : step.status === 'in-progress';
 
             return (
               <motion.div
@@ -113,13 +115,13 @@ export const AnalysisProgress: React.FC<AnalysisProgressProps> = ({
               >
                 <div
                   className={`p-4 rounded-lg border transition-all duration-300 ${
-                    step.status === "in-progress"
-                      ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800"
-                      : "bg-gray-50 dark:bg-slate-700/50 border-gray-200 dark:border-slate-600"
-                  } ${isActive ? "shadow-md" : "shadow-sm"}`}
+                    step.status === 'in-progress'
+                      ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                      : 'bg-gray-50 dark:bg-slate-700/50 border-gray-200 dark:border-slate-600'
+                  } ${isActive ? 'shadow-md' : 'shadow-sm'}`}
                   style={{
                     boxShadow: isActive
-                      ? "0 0 0 1px rgba(59,130,246,0.25), 0 10px 30px rgba(15,23,42,0.25)"
+                      ? '0 0 0 1px rgba(59,130,246,0.25), 0 10px 30px rgba(15,23,42,0.25)'
                       : undefined,
                   }}
                 >
@@ -140,21 +142,25 @@ export const AnalysisProgress: React.FC<AnalysisProgressProps> = ({
                           </div>
                         )}
 
-                        {step.status === "in-progress" && step.progress !== undefined && (
-                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
-                            <div 
-                              className="h-1 bg-blue-500 rounded-full transition-all duration-300 animate-pulse"
-                              style={{ width: `${step.progress}%` }}
-                            />
-                          </div>
-                        )}
+                        {step.status === 'in-progress' &&
+                          step.progress !== undefined && (
+                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+                              <div
+                                className="h-1 bg-blue-500 rounded-full transition-all duration-300 animate-pulse"
+                                style={{ width: `${step.progress}%` }}
+                              />
+                            </div>
+                          )}
                       </div>
                     </div>
 
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${colors.bg} ${colors.text}`}>
-                      {step.status === "in-progress"
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-medium ${colors.bg} ${colors.text}`}
+                    >
+                      {step.status === 'in-progress'
                         ? `${step.progress || 0}%`
-                        : step.status.charAt(0).toUpperCase() + step.status.slice(1)}
+                        : step.status.charAt(0).toUpperCase() +
+                          step.status.slice(1)}
                     </span>
                   </div>
                 </div>
@@ -167,18 +173,19 @@ export const AnalysisProgress: React.FC<AnalysisProgressProps> = ({
         {steps.length > 0 && (
           <div className="flex justify-center gap-6">
             <span className="text-sm text-green-600 dark:text-green-400">
-              ✓ {steps.filter((s) => s.status === "completed").length} Completed
+              ✓ {steps.filter((s) => s.status === 'completed').length} Completed
             </span>
 
-            {steps.filter((s) => s.status === "in-progress").length > 0 && (
+            {steps.filter((s) => s.status === 'in-progress').length > 0 && (
               <span className="text-sm text-blue-600 dark:text-blue-400">
-                ◐ {steps.filter((s) => s.status === "in-progress").length} In Progress
+                ◐ {steps.filter((s) => s.status === 'in-progress').length} In
+                Progress
               </span>
             )}
 
-            {steps.filter((s) => s.status === "error").length > 0 && (
+            {steps.filter((s) => s.status === 'error').length > 0 && (
               <span className="text-sm text-red-600 dark:text-red-400">
-                ✗ {steps.filter((s) => s.status === "error").length} Errors
+                ✗ {steps.filter((s) => s.status === 'error').length} Errors
               </span>
             )}
           </div>

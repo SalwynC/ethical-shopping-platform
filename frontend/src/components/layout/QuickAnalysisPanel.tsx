@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,39 +7,39 @@ import {
   IconX,
   IconLeaf,
   IconShoppingCart,
-  IconBolt
+  IconBolt,
 } from '@tabler/icons-react';
 
 // Quick test products for analysis
 const QUICK_TEST_PRODUCTS = [
   {
-    title: "Organic Cotton T-Shirt",
-    url: "https://example.com/organic-cotton-tshirt",
-    category: "clothing",
+    title: 'Organic Cotton T-Shirt',
+    url: 'https://example.com/organic-cotton-tshirt',
+    category: 'clothing',
     expectedScore: 85,
-    icon: "👕"
+    icon: '👕',
   },
   {
-    title: "iPhone 15 Pro",
-    url: "https://apple.com/iphone-15-pro",
-    category: "electronics",
+    title: 'iPhone 15 Pro',
+    url: 'https://apple.com/iphone-15-pro',
+    category: 'electronics',
     expectedScore: 65,
-    icon: "📱"
+    icon: '📱',
   },
   {
-    title: "Fair Trade Coffee",
-    url: "https://example.com/fair-trade-coffee",
-    category: "food",
+    title: 'Fair Trade Coffee',
+    url: 'https://example.com/fair-trade-coffee',
+    category: 'food',
     expectedScore: 92,
-    icon: "☕"
+    icon: '☕',
   },
   {
-    title: "Fast Fashion Sneakers",
-    url: "https://example.com/fast-fashion-sneakers",
-    category: "footwear",
+    title: 'Fast Fashion Sneakers',
+    url: 'https://example.com/fast-fashion-sneakers',
+    category: 'footwear',
     expectedScore: 35,
-    icon: "👟"
-  }
+    icon: '👟',
+  },
 ];
 
 interface QuickAnalysisPanelProps {
@@ -47,12 +47,17 @@ interface QuickAnalysisPanelProps {
   onClose: () => void;
 }
 
-export function QuickAnalysisPanel({ isOpen, onClose }: QuickAnalysisPanelProps) {
+export function QuickAnalysisPanel({
+  isOpen,
+  onClose,
+}: QuickAnalysisPanelProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [lastResult, setLastResult] = useState<string | null>(null);
 
   // Track a quick analysis
-  const trackQuickAnalysis = async (product: typeof QUICK_TEST_PRODUCTS[0]) => {
+  const trackQuickAnalysis = async (
+    product: (typeof QUICK_TEST_PRODUCTS)[0],
+  ) => {
     setIsAnalyzing(true);
     setLastResult(null);
 
@@ -63,37 +68,49 @@ export function QuickAnalysisPanel({ isOpen, onClose }: QuickAnalysisPanelProps)
           url: product.url,
           title: product.title,
           category: product.category,
-          source: 'manual' as const
+          source: 'manual' as const,
         },
         analysisResults: {
           ethicalScore: product.expectedScore,
-          environmentalImpact: product.expectedScore > 80 ? 'Low Impact' : 
-                              product.expectedScore > 60 ? 'Moderate Impact' : 'High Impact',
-          laborPractices: product.expectedScore > 75 ? 'Ethical' : 
-                         product.expectedScore > 50 ? 'Questionable' : 'Concerning',
-          alternatives: Math.floor(Math.random() * 5) + 1
-        }
+          environmentalImpact:
+            product.expectedScore > 80
+              ? 'Low Impact'
+              : product.expectedScore > 60
+                ? 'Moderate Impact'
+                : 'High Impact',
+          laborPractices:
+            product.expectedScore > 75
+              ? 'Ethical'
+              : product.expectedScore > 50
+                ? 'Questionable'
+                : 'Concerning',
+          alternatives: Math.floor(Math.random() * 5) + 1,
+        },
       };
 
       const response = await fetch('/api/track-analysis', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Session-Id': `quick_${Date.now()}`
+          'X-Session-Id': `quick_${Date.now()}`,
         },
-        body: JSON.stringify(analysisPayload)
+        body: JSON.stringify(analysisPayload),
       });
 
       if (response.ok) {
         const result = await response.json();
-        setLastResult(`✅ ${product.icon} Analyzed: ${product.title} (Score: ${product.expectedScore}/100)`);
-        
+        setLastResult(
+          `✅ ${product.icon} Analyzed: ${product.title} (Score: ${product.expectedScore}/100)`,
+        );
+
         // Update the quick analysis counter in the LiveStatusIndicator
-        const counterElement = document.getElementById('quick-analysis-counter');
+        const counterElement = document.getElementById(
+          'quick-analysis-counter',
+        );
         if (counterElement) {
           const currentCount = parseInt(counterElement.textContent || '0');
           counterElement.textContent = (currentCount + 1).toString();
-          
+
           // Add a visual flash effect
           counterElement.style.transform = 'scale(1.2)';
           counterElement.style.color = '#8b5cf6';
@@ -126,7 +143,10 @@ export function QuickAnalysisPanel({ isOpen, onClose }: QuickAnalysisPanelProps)
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
-              <IconAnalyze size={20} className="text-blue-600 dark:text-blue-400" />
+              <IconAnalyze
+                size={20}
+                className="text-blue-600 dark:text-blue-400"
+              />
               <h3 className="font-semibold text-gray-900 dark:text-gray-100">
                 Quick Analysis Test
               </h3>
@@ -144,7 +164,7 @@ export function QuickAnalysisPanel({ isOpen, onClose }: QuickAnalysisPanelProps)
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
               Click to test real analysis tracking:
             </p>
-            
+
             {QUICK_TEST_PRODUCTS.map((product, index) => (
               <button
                 key={index}
@@ -164,15 +184,17 @@ export function QuickAnalysisPanel({ isOpen, onClose }: QuickAnalysisPanelProps)
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      product.expectedScore > 80 
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                        : product.expectedScore > 60 
-                        ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                        : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        product.expectedScore > 80
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                          : product.expectedScore > 60
+                            ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                      }`}
+                    >
                       {product.expectedScore}
                     </span>
                   </div>
@@ -198,7 +220,7 @@ export function QuickAnalysisPanel({ isOpen, onClose }: QuickAnalysisPanelProps)
             <div className="flex items-center justify-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
               >
                 <IconBolt size={16} className="text-blue-600" />
               </motion.div>
@@ -211,7 +233,8 @@ export function QuickAnalysisPanel({ isOpen, onClose }: QuickAnalysisPanelProps)
           {/* Note */}
           <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Watch the analytics update in real-time! Check the "Analyses Today" counter.
+              Watch the analytics update in real-time! Check the "Analyses
+              Today" counter.
             </p>
           </div>
         </motion.div>

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { IconLink } from "@tabler/icons-react";
+import React, { useState } from 'react';
+import { IconLink } from '@tabler/icons-react';
 
 interface SmartUrlInputProps {
   onAnalyze: (url: string) => void;
@@ -9,7 +9,7 @@ interface SmartUrlInputProps {
 }
 
 export function SmartUrlInput({ onAnalyze, loading }: SmartUrlInputProps) {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState('');
 
   const handleAnalyze = () => {
     if (url.trim()) {
@@ -30,7 +30,7 @@ export function SmartUrlInput({ onAnalyze, loading }: SmartUrlInputProps) {
             placeholder="Paste any product URL (Amazon, Flipkart, etc.)"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
+            onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
           />
         </div>
         <button
@@ -44,7 +44,7 @@ export function SmartUrlInput({ onAnalyze, loading }: SmartUrlInputProps) {
               Analyzing...
             </div>
           ) : (
-            "Analyze"
+            'Analyze'
           )}
         </button>
       </div>

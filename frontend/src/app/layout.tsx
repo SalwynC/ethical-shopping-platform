@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
-import "./globals.css";
-import { Providers } from "./providers";
-import { AppHeader } from "../components/layout/AppHeader";
-import { BackToTop } from "../components/common/BackToTop";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import './globals.css';
+import { Providers } from './providers';
+import { AppHeader } from '../components/layout/AppHeader';
+import { BackToTop } from '../components/common/BackToTop';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 // Force dynamic rendering for the entire app
 // Note: This applies to server components, client components are already dynamic
@@ -13,38 +13,38 @@ export const revalidate = 0;
 
 // Use default system fonts to avoid build-time Google Fonts fetch
 
-const title = "Ethical Shopping Intelligence";
+const title = 'Ethical Shopping Intelligence';
 const description =
-  "AI-assisted ethical shopping companion delivering transparent scores, price guidance, and responsible alternatives.";
+  'AI-assisted ethical shopping companion delivering transparent scores, price guidance, and responsible alternatives.';
 
 export const metadata: Metadata = {
   title,
   description,
   keywords: [
-    "ethical shopping",
-    "responsible commerce",
-    "LLM explanations",
-    "price intelligence",
-    "sustainable alternatives",
+    'ethical shopping',
+    'responsible commerce',
+    'LLM explanations',
+    'price intelligence',
+    'sustainable alternatives',
   ],
-  authors: [{ name: "Ethical Shopping Platform" }],
+  authors: [{ name: 'Ethical Shopping Platform' }],
   openGraph: {
     title,
     description,
-    type: "website",
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
+    card: 'summary_large_image',
     title,
     description,
   },
-  manifest: "/manifest.json",
+  manifest: '/manifest.json',
   icons: {
-    icon: "/icons/icon-192x192.png",
-    apple: "/icons/icon-512x512.png",
+    icon: '/icons/icon-192x192.png',
+    apple: '/icons/icon-512x512.png',
   },
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL ?? "https://ethical-shop.example.com",
+    process.env.NEXT_PUBLIC_BASE_URL ?? 'https://ethical-shop.example.com',
   ),
 };
 

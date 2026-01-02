@@ -113,7 +113,7 @@ export type CompetitiveFeatures = {
 };
 
 export type AnalyzeResponse = {
-  decision: "buy_now" | "wait" | "insufficient_data";
+  decision: 'buy_now' | 'wait' | 'insufficient_data';
   ethicalScore: number;
   dealScore?: number;
   priceTrend: PriceTrend;
@@ -146,7 +146,7 @@ export type PredictPriceRequest = {
 };
 
 export type PredictPriceResponse = {
-  trend: "up" | "down" | "flat";
+  trend: 'up' | 'down' | 'flat';
   confidence: number;
   forecast: Array<{ timestamp: string; price: number }>;
   meta: AnalysisMeta;
@@ -173,13 +173,12 @@ export type RulesResponse = {
 };
 
 export type HealthResponse = {
-  status: "ok" | "degraded" | "down";
+  status: 'ok' | 'degraded' | 'down';
   timestamp: string;
   services: Array<{
     name: string;
-    status: "ok" | "degraded" | "down";
+    status: 'ok' | 'degraded' | 'down';
     latencyMs?: number;
     message?: string;
   }>;
 };
-

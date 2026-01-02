@@ -26,7 +26,7 @@ import {
   IconAlertTriangle,
   IconAward,
   IconActivity,
-  IconTrendingDown
+  IconTrendingDown,
 } from '@tabler/icons-react';
 
 interface ProductAnalysis {
@@ -111,12 +111,17 @@ export default function ReportsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'recent' | 'score' | 'category'>('recent');
+  const [sortBy, setSortBy] = useState<'recent' | 'score' | 'category'>(
+    'recent',
+  );
   const [filterOpen, setFilterOpen] = useState(false);
   const [newAnalysisUrl, setNewAnalysisUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [selectedPeriod, setSelectedPeriod] = useState<'24h' | '7d' | '30d' | '90d' | '6m' | '1y'>('30d');
-  const [timeBasedMetrics, setTimeBasedMetrics] = useState<TimeBasedMetrics | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState<
+    '24h' | '7d' | '30d' | '90d' | '6m' | '1y'
+  >('30d');
+  const [timeBasedMetrics, setTimeBasedMetrics] =
+    useState<TimeBasedMetrics | null>(null);
   const [advancedView, setAdvancedView] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState<string | null>(null);
 
@@ -136,7 +141,7 @@ export default function ReportsPage() {
       analyzedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
       source: 'manual',
       domain: 'amazon.com',
-      analysisTime: 2340
+      analysisTime: 2340,
     },
     {
       id: 'analysis_2',
@@ -152,10 +157,10 @@ export default function ReportsPage() {
       analyzedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
       source: 'url_analysis',
       domain: 'nike.com',
-      analysisTime: 3120
+      analysisTime: 3120,
     },
     {
-      id: 'analysis_3', 
+      id: 'analysis_3',
       url: 'https://example.com/fair-trade-coffee',
       title: 'Fair Trade Colombian Coffee Beans',
       category: 'food',
@@ -168,7 +173,7 @@ export default function ReportsPage() {
       analyzedAt: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(), // 4 hours ago
       source: 'search',
       domain: 'example.com',
-      analysisTime: 1890
+      analysisTime: 1890,
     },
     {
       id: 'analysis_4',
@@ -184,20 +189,23 @@ export default function ReportsPage() {
       analyzedAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(), // 6 hours ago
       source: 'manual',
       domain: 'shein.com',
-      analysisTime: 2780
-    }
+      analysisTime: 2780,
+    },
   ];
 
   useEffect(() => {
     const loadComprehensiveData = async () => {
       setIsLoading(true);
-      
+
       try {
         // Load time-based analytics
-        const analyticsResponse = await fetch(`/api/comprehensive-analysis?period=${selectedPeriod}`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
-        });
+        const analyticsResponse = await fetch(
+          `/api/comprehensive-analysis?period=${selectedPeriod}`,
+          {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          },
+        );
 
         if (analyticsResponse.ok) {
           const analyticsData = await analyticsResponse.json();
@@ -208,65 +216,79 @@ export default function ReportsPage() {
         // Fetch existing analysis tracking data
         const trackingResponse = await fetch('/api/track-analysis', {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         });
-        
+
         let realAnalyses = sampleAnalyses;
-        
+
         if (trackingResponse.ok) {
           const trackingData = await trackingResponse.json();
-          
-          if (trackingData.recentAnalyses && trackingData.recentAnalyses.length > 0) {
-            const convertedAnalyses = trackingData.recentAnalyses.map((item: any, index: number) => ({
-              id: `real_analysis_${index}`,
-              url: item.productData?.url || 'https://example.com/product',
-              title: item.productData?.title || 'Real Product Analysis',
-              category: item.productData?.category || 'unknown',
-              ethicalScore: item.analysisResults?.ethicalScore || Math.floor(Math.random() * 100),
-              priceScore: Math.floor(Math.random() * 100),
-              reviewTrust: Math.floor(Math.random() * 100),
-              environmentalImpact: item.analysisResults?.environmentalImpact || 'Unknown',
-              laborPractices: item.analysisResults?.laborPractices || 'Unknown',
-              alternatives: item.analysisResults?.alternatives || 0,
-              analyzedAt: item.timestamp,
-              source: item.productData?.source || 'manual',
-              domain: item.productData?.url ? new URL(item.productData.url).hostname : 'example.com',
-              analysisTime: Math.floor(Math.random() * 3000) + 1000
-            }));
-            
+
+          if (
+            trackingData.recentAnalyses &&
+            trackingData.recentAnalyses.length > 0
+          ) {
+            const convertedAnalyses = trackingData.recentAnalyses.map(
+              (item: any, index: number) => ({
+                id: `real_analysis_${index}`,
+                url: item.productData?.url || 'https://example.com/product',
+                title: item.productData?.title || 'Real Product Analysis',
+                category: item.productData?.category || 'unknown',
+                ethicalScore:
+                  item.analysisResults?.ethicalScore ||
+                  Math.floor(Math.random() * 100),
+                priceScore: Math.floor(Math.random() * 100),
+                reviewTrust: Math.floor(Math.random() * 100),
+                environmentalImpact:
+                  item.analysisResults?.environmentalImpact || 'Unknown',
+                laborPractices:
+                  item.analysisResults?.laborPractices || 'Unknown',
+                alternatives: item.analysisResults?.alternatives || 0,
+                analyzedAt: item.timestamp,
+                source: item.productData?.source || 'manual',
+                domain: item.productData?.url
+                  ? new URL(item.productData.url).hostname
+                  : 'example.com',
+                analysisTime: Math.floor(Math.random() * 3000) + 1000,
+              }),
+            );
+
             realAnalyses = [...convertedAnalyses, ...sampleAnalyses];
           }
         }
-        
+
         // Handle comprehensive analysis for new URLs
         if (searchParams) {
           const urlParam = searchParams.get('url');
           if (urlParam) {
             try {
               // Perform comprehensive analysis
-              const comprehensiveResponse = await fetch('/api/comprehensive-analysis', {
-                method: 'POST',
-                headers: { 
-                  'Content-Type': 'application/json',
-                  'X-Session-Id': `comprehensive_${Date.now()}`
-                },
-                body: JSON.stringify({
-                  action: 'comprehensive_analysis',
-                  productData: {
-                    url: urlParam,
-                    title: `Advanced Analysis: ${new URL(urlParam).hostname}`,
-                    category: 'electronics'
+              const comprehensiveResponse = await fetch(
+                '/api/comprehensive-analysis',
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-Session-Id': `comprehensive_${Date.now()}`,
                   },
-                  analysisResults: {
-                    ethicalScore: Math.floor(Math.random() * 40) + 60
-                  }
-                })
-              });
+                  body: JSON.stringify({
+                    action: 'comprehensive_analysis',
+                    productData: {
+                      url: urlParam,
+                      title: `Advanced Analysis: ${new URL(urlParam).hostname}`,
+                      category: 'electronics',
+                    },
+                    analysisResults: {
+                      ethicalScore: Math.floor(Math.random() * 40) + 60,
+                    },
+                  }),
+                },
+              );
 
               if (comprehensiveResponse.ok) {
                 const comprehensiveData = await comprehensiveResponse.json();
                 const analysis = comprehensiveData.analysis;
-                
+
                 const newAnalysis: ProductAnalysis = {
                   id: `comprehensive_${Date.now()}`,
                   url: urlParam,
@@ -275,15 +297,18 @@ export default function ReportsPage() {
                   ethicalScore: analysis.ethicalAssessment.overallScore,
                   priceScore: Math.floor(Math.random() * 30) + 70,
                   reviewTrust: Math.floor(Math.random() * 25) + 75,
-                  environmentalImpact: analysis.ethicalAssessment.environmentalImpact.sustainabilityRating,
-                  laborPractices: analysis.ethicalAssessment.laborPractices.workingConditions,
+                  environmentalImpact:
+                    analysis.ethicalAssessment.environmentalImpact
+                      .sustainabilityRating,
+                  laborPractices:
+                    analysis.ethicalAssessment.laborPractices.workingConditions,
                   alternatives: analysis.alternativesRecommendations.length,
                   analyzedAt: analysis.timeBasedAnalytics.analysisTimestamp,
                   source: 'comprehensive_analysis',
                   domain: new URL(urlParam).hostname,
-                  analysisTime: analysis.timeBasedAnalytics.processingTime
+                  analysisTime: analysis.timeBasedAnalytics.processingTime,
                 };
-                
+
                 realAnalyses = [newAnalysis, ...realAnalyses];
                 console.log('🚀 COMPREHENSIVE ANALYSIS COMPLETE:', analysis);
               }
@@ -292,27 +317,34 @@ export default function ReportsPage() {
             }
           }
         }
-        
+
         setAnalyses(realAnalyses);
 
         // Calculate enhanced stats
         const totalAnalyses = realAnalyses.length;
         const averageScore = Math.round(
-          realAnalyses.reduce((sum, analysis) => sum + analysis.ethicalScore, 0) / totalAnalyses
+          realAnalyses.reduce(
+            (sum, analysis) => sum + analysis.ethicalScore,
+            0,
+          ) / totalAnalyses,
         );
-        const categoryCount = realAnalyses.reduce((acc, analysis) => {
-          acc[analysis.category] = (acc[analysis.category] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
-        const topCategory = Object.entries(categoryCount).sort(([,a], [,b]) => b - a)[0]?.[0] || 'clothing';
+        const categoryCount = realAnalyses.reduce(
+          (acc, analysis) => {
+            acc[analysis.category] = (acc[analysis.category] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
+        const topCategory =
+          Object.entries(categoryCount).sort(([, a], [, b]) => b - a)[0]?.[0] ||
+          'clothing';
 
         setStats({
           totalAnalyses,
           averageScore,
           topCategory,
-          recentAnalyses: realAnalyses.slice(0, 3)
+          recentAnalyses: realAnalyses.slice(0, 3),
         });
-
       } catch (error) {
         console.error('Failed to load comprehensive data:', error);
         setAnalyses(sampleAnalyses);
@@ -320,27 +352,31 @@ export default function ReportsPage() {
           totalAnalyses: sampleAnalyses.length,
           averageScore: 75,
           topCategory: 'clothing',
-          recentAnalyses: sampleAnalyses.slice(0, 3)
+          recentAnalyses: sampleAnalyses.slice(0, 3),
         });
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     loadComprehensiveData();
   }, [searchParams, selectedPeriod]);
 
-  const filteredAnalyses = analyses.filter(analysis => {
-    const matchesSearch = analysis.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         analysis.domain.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || analysis.category === selectedCategory;
+  const filteredAnalyses = analyses.filter((analysis) => {
+    const matchesSearch =
+      analysis.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      analysis.domain.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'all' || analysis.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   const sortedAnalyses = [...filteredAnalyses].sort((a, b) => {
     switch (sortBy) {
       case 'recent':
-        return new Date(b.analyzedAt).getTime() - new Date(a.analyzedAt).getTime();
+        return (
+          new Date(b.analyzedAt).getTime() - new Date(a.analyzedAt).getTime()
+        );
       case 'score':
         return b.ethicalScore - a.ethicalScore;
       case 'category':
@@ -362,34 +398,37 @@ export default function ReportsPage() {
     return 'bg-red-100 dark:bg-red-900/30';
   };
 
-  const categories = ['all', ...Array.from(new Set(analyses.map(a => a.category)))];
+  const categories = [
+    'all',
+    ...Array.from(new Set(analyses.map((a) => a.category))),
+  ];
 
   const handleQuickAnalysis = async () => {
     if (!newAnalysisUrl.trim()) return;
-    
+
     setIsAnalyzing(true);
-    
+
     try {
       // Validate URL
       new URL(newAnalysisUrl.trim());
-      
+
       console.log('🚀 Starting comprehensive analysis for:', newAnalysisUrl);
-      
+
       // Perform comprehensive analysis
       const response = await fetch('/api/comprehensive-analysis', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'X-Session-Id': `quick_${Date.now()}`
+          'X-Session-Id': `quick_${Date.now()}`,
         },
         body: JSON.stringify({
           action: 'comprehensive_analysis',
           productData: {
             url: newAnalysisUrl.trim(),
             title: `Quick Analysis: ${new URL(newAnalysisUrl.trim()).hostname}`,
-            category: 'general'
-          }
-        })
+            category: 'general',
+          },
+        }),
       });
 
       if (response.ok) {
@@ -397,14 +436,13 @@ export default function ReportsPage() {
         const params = new URLSearchParams({
           url: newAnalysisUrl.trim(),
           comprehensive: 'true',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
-        
+
         router.push(`/reports?${params.toString()}`);
       } else {
         throw new Error('Analysis failed');
       }
-      
     } catch (error) {
       console.error('Comprehensive analysis failed:', error);
       alert('Please enter a valid URL or try again later');
@@ -427,9 +465,9 @@ export default function ReportsPage() {
                 Detailed insights from your product analyses
               </p>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-4">
-              <button 
+              <button
                 onClick={() => router.push('/' as any)}
                 className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
               >
@@ -440,7 +478,7 @@ export default function ReportsPage() {
                 <IconDownload size={16} />
                 <span>Export Reports</span>
               </button>
-              <button 
+              <button
                 onClick={() => window.location.reload()}
                 className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
               >
@@ -456,24 +494,31 @@ export default function ReportsPage() {
         {/* Time Period Selector */}
         <div className="mb-6">
           <div className="flex flex-wrap gap-2">
-            {(['24h', '7d', '30d', '90d', '6m', '1y'] as const).map((period) => (
-              <button
-                key={period}
-                onClick={() => setSelectedPeriod(period)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  selectedPeriod === period
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-slate-700'
-                }`}
-              >
-                {period === '24h' ? 'Last 24 Hours' :
-                 period === '7d' ? 'Last 7 Days' :
-                 period === '30d' ? 'Last 30 Days' :
-                 period === '90d' ? 'Last 3 Months' :
-                 period === '6m' ? 'Last 6 Months' :
-                 'Last Year'}
-              </button>
-            ))}
+            {(['24h', '7d', '30d', '90d', '6m', '1y'] as const).map(
+              (period) => (
+                <button
+                  key={period}
+                  onClick={() => setSelectedPeriod(period)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    selectedPeriod === period
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  {period === '24h'
+                    ? 'Last 24 Hours'
+                    : period === '7d'
+                      ? 'Last 7 Days'
+                      : period === '30d'
+                        ? 'Last 30 Days'
+                        : period === '90d'
+                          ? 'Last 3 Months'
+                          : period === '6m'
+                            ? 'Last 6 Months'
+                            : 'Last Year'}
+                </button>
+              ),
+            )}
           </div>
         </div>
 
@@ -487,17 +532,26 @@ export default function ReportsPage() {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Total Analyses</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    Total Analyses
+                  </p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {timeBasedMetrics?.totalAnalyses || stats?.totalAnalyses || 0}
+                    {timeBasedMetrics?.totalAnalyses ||
+                      stats?.totalAnalyses ||
+                      0}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    {selectedPeriod === '24h' ? 'Last 24 hours' :
-                     selectedPeriod === '7d' ? 'Last 7 days' :
-                     selectedPeriod === '30d' ? 'Last 30 days' :
-                     selectedPeriod === '90d' ? 'Last 3 months' :
-                     selectedPeriod === '6m' ? 'Last 6 months' :
-                     'Last year'}
+                    {selectedPeriod === '24h'
+                      ? 'Last 24 hours'
+                      : selectedPeriod === '7d'
+                        ? 'Last 7 days'
+                        : selectedPeriod === '30d'
+                          ? 'Last 30 days'
+                          : selectedPeriod === '90d'
+                            ? 'Last 3 months'
+                            : selectedPeriod === '6m'
+                              ? 'Last 6 months'
+                              : 'Last year'}
                   </p>
                 </div>
                 <IconChartBar className="text-blue-500" size={24} />
@@ -512,14 +566,30 @@ export default function ReportsPage() {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Average Ethical Score</p>
-                  <p className={`text-2xl font-bold ${getScoreColor(timeBasedMetrics?.averageEthicalScore || stats?.averageScore || 0)}`}>
-                    {timeBasedMetrics?.averageEthicalScore || stats?.averageScore || 0}/100
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    Average Ethical Score
+                  </p>
+                  <p
+                    className={`text-2xl font-bold ${getScoreColor(timeBasedMetrics?.averageEthicalScore || stats?.averageScore || 0)}`}
+                  >
+                    {timeBasedMetrics?.averageEthicalScore ||
+                      stats?.averageScore ||
+                      0}
+                    /100
                   </p>
                   {timeBasedMetrics?.marketTrends.ethicalImprovement && (
                     <div className="flex items-center mt-1">
-                      <IconTrendingUp size={12} className="text-green-500 mr-1" />
-                      <span className="text-xs text-green-600">+{timeBasedMetrics.marketTrends.ethicalImprovement.toFixed(1)}% improvement</span>
+                      <IconTrendingUp
+                        size={12}
+                        className="text-green-500 mr-1"
+                      />
+                      <span className="text-xs text-green-600">
+                        +
+                        {timeBasedMetrics.marketTrends.ethicalImprovement.toFixed(
+                          1,
+                        )}
+                        % improvement
+                      </span>
                     </div>
                   )}
                 </div>
@@ -535,9 +605,13 @@ export default function ReportsPage() {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Unique Products</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    Unique Products
+                  </p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {timeBasedMetrics?.uniqueProducts || stats?.totalAnalyses || 0}
+                    {timeBasedMetrics?.uniqueProducts ||
+                      stats?.totalAnalyses ||
+                      0}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     Distinct items analyzed
@@ -555,28 +629,46 @@ export default function ReportsPage() {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Market Trends</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    Market Trends
+                  </p>
                   <div className="flex items-center space-x-2">
-                    {timeBasedMetrics?.marketTrends.priceInflation !== undefined ? (
+                    {timeBasedMetrics?.marketTrends.priceInflation !==
+                    undefined ? (
                       <div className="flex items-center">
                         {timeBasedMetrics.marketTrends.priceInflation > 0 ? (
                           <>
-                            <IconTrendingUp size={16} className="text-red-500 mr-1" />
+                            <IconTrendingUp
+                              size={16}
+                              className="text-red-500 mr-1"
+                            />
                             <span className="text-lg font-bold text-red-600">
-                              +{timeBasedMetrics.marketTrends.priceInflation.toFixed(1)}%
+                              +
+                              {timeBasedMetrics.marketTrends.priceInflation.toFixed(
+                                1,
+                              )}
+                              %
                             </span>
                           </>
                         ) : (
                           <>
-                            <IconTrendingDown size={16} className="text-green-500 mr-1" />
+                            <IconTrendingDown
+                              size={16}
+                              className="text-green-500 mr-1"
+                            />
                             <span className="text-lg font-bold text-green-600">
-                              {timeBasedMetrics.marketTrends.priceInflation.toFixed(1)}%
+                              {timeBasedMetrics.marketTrends.priceInflation.toFixed(
+                                1,
+                              )}
+                              %
                             </span>
                           </>
                         )}
                       </div>
                     ) : (
-                      <span className="text-lg font-bold text-gray-900 dark:text-white">Stable</span>
+                      <span className="text-lg font-bold text-gray-900 dark:text-white">
+                        Stable
+                      </span>
                     )}
                   </div>
                   <p className="text-xs text-gray-500 mt-1">Price inflation</p>
@@ -598,63 +690,96 @@ export default function ReportsPage() {
               <IconAward className="mr-2" size={20} />
               Market Insights - {selectedPeriod.toUpperCase()}
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Top Categories */}
               <div>
-                <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">Top Categories</h4>
-                {timeBasedMetrics.topCategories.slice(0, 3).map((category, index) => (
-                  <div key={category.category} className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-300 capitalize">
-                      {index + 1}. {category.category}
-                    </span>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                        {category.count}
+                <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                  Top Categories
+                </h4>
+                {timeBasedMetrics.topCategories
+                  .slice(0, 3)
+                  .map((category, index) => (
+                    <div
+                      key={category.category}
+                      className="flex justify-between items-center mb-2"
+                    >
+                      <span className="text-sm text-gray-600 dark:text-gray-300 capitalize">
+                        {index + 1}. {category.category}
                       </span>
-                      <span className={`text-xs px-2 py-1 rounded ${getScoreBg(category.averageScore)} ${getScoreColor(category.averageScore)}`}>
-                        {category.averageScore}
-                      </span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                          {category.count}
+                        </span>
+                        <span
+                          className={`text-xs px-2 py-1 rounded ${getScoreBg(category.averageScore)} ${getScoreColor(category.averageScore)}`}
+                        >
+                          {category.averageScore}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
 
               {/* Popular Brands */}
               <div>
-                <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">Trending Brands</h4>
-                {timeBasedMetrics.marketTrends.popularBrands.slice(0, 4).map((brand, index) => (
-                  <div key={brand} className="flex items-center mb-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">
-                      {index + 1}. {brand}
-                    </span>
-                  </div>
-                ))}
+                <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                  Trending Brands
+                </h4>
+                {timeBasedMetrics.marketTrends.popularBrands
+                  .slice(0, 4)
+                  .map((brand, index) => (
+                    <div key={brand} className="flex items-center mb-2">
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        {index + 1}. {brand}
+                      </span>
+                    </div>
+                  ))}
               </div>
 
               {/* Key Metrics */}
               <div>
-                <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">Key Metrics</h4>
+                <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                  Key Metrics
+                </h4>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Ethical Improvement:</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">
+                      Ethical Improvement:
+                    </span>
                     <span className="text-sm font-medium text-green-600">
-                      +{timeBasedMetrics.marketTrends.ethicalImprovement.toFixed(1)}%
+                      +
+                      {timeBasedMetrics.marketTrends.ethicalImprovement.toFixed(
+                        1,
+                      )}
+                      %
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Price Stability:</span>
-                    <span className={`text-sm font-medium ${
-                      Math.abs(timeBasedMetrics.marketTrends.priceInflation) < 2 
-                        ? 'text-green-600' 
-                        : 'text-orange-600'
-                    }`}>
-                      {Math.abs(timeBasedMetrics.marketTrends.priceInflation) < 2 ? 'Stable' : 'Volatile'}
+                    <span className="text-sm text-gray-600 dark:text-gray-300">
+                      Price Stability:
+                    </span>
+                    <span
+                      className={`text-sm font-medium ${
+                        Math.abs(timeBasedMetrics.marketTrends.priceInflation) <
+                        2
+                          ? 'text-green-600'
+                          : 'text-orange-600'
+                      }`}
+                    >
+                      {Math.abs(timeBasedMetrics.marketTrends.priceInflation) <
+                      2
+                        ? 'Stable'
+                        : 'Volatile'}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Data Quality:</span>
-                    <span className="text-sm font-medium text-blue-600">Excellent</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">
+                      Data Quality:
+                    </span>
+                    <span className="text-sm font-medium text-blue-600">
+                      Excellent
+                    </span>
                   </div>
                 </div>
               </div>
@@ -705,7 +830,10 @@ export default function ReportsPage() {
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <IconSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <IconSearch
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="Search products, domains, or URLs..."
@@ -723,13 +851,18 @@ export default function ReportsPage() {
                 aria-label="Filter by category"
                 className="appearance-none px-4 py-2 pr-8 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white min-w-[150px]"
               >
-                {categories.map(category => (
+                {categories.map((category) => (
                   <option key={category} value={category}>
-                    {category === 'all' ? 'All Categories' : category.charAt(0).toUpperCase() + category.slice(1)}
+                    {category === 'all'
+                      ? 'All Categories'
+                      : category.charAt(0).toUpperCase() + category.slice(1)}
                   </option>
                 ))}
               </select>
-              <IconChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <IconChevronDown
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={16}
+              />
             </div>
 
             {/* Sort */}
@@ -744,7 +877,10 @@ export default function ReportsPage() {
                 <option value="score">Highest Score</option>
                 <option value="category">Category</option>
               </select>
-              <IconChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <IconChevronDown
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={16}
+              />
             </div>
           </div>
         </div>
@@ -754,8 +890,11 @@ export default function ReportsPage() {
           {isLoading ? (
             // Loading State
             <div className="space-y-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700"
+                >
                   <div className="animate-pulse">
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3"></div>
                     <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-4"></div>
@@ -816,12 +955,14 @@ export default function ReportsPage() {
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreBg(analysis.ethicalScore)} ${getScoreColor(analysis.ethicalScore)}`}>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreBg(analysis.ethicalScore)} ${getScoreColor(analysis.ethicalScore)}`}
+                      >
                         {analysis.ethicalScore}/100
                       </span>
-                      <button 
+                      <button
                         aria-label="View product details"
                         className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                       >
@@ -833,28 +974,42 @@ export default function ReportsPage() {
                   {/* Scores Grid */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     <div className="text-center p-3 bg-gray-50 dark:bg-slate-700 rounded-lg">
-                      <div className={`text-lg font-bold ${getScoreColor(analysis.ethicalScore)}`}>
+                      <div
+                        className={`text-lg font-bold ${getScoreColor(analysis.ethicalScore)}`}
+                      >
                         {analysis.ethicalScore}
                       </div>
-                      <div className="text-xs text-gray-700 dark:text-gray-200">Ethical Score</div>
+                      <div className="text-xs text-gray-700 dark:text-gray-200">
+                        Ethical Score
+                      </div>
                     </div>
                     <div className="text-center p-3 bg-gray-50 dark:bg-slate-700 rounded-lg">
-                      <div className={`text-lg font-bold ${getScoreColor(analysis.priceScore)}`}>
+                      <div
+                        className={`text-lg font-bold ${getScoreColor(analysis.priceScore)}`}
+                      >
                         {analysis.priceScore}
                       </div>
-                      <div className="text-xs text-gray-700 dark:text-gray-200">Price Score</div>
+                      <div className="text-xs text-gray-700 dark:text-gray-200">
+                        Price Score
+                      </div>
                     </div>
                     <div className="text-center p-3 bg-gray-50 dark:bg-slate-700 rounded-lg">
-                      <div className={`text-lg font-bold ${getScoreColor(analysis.reviewTrust)}`}>
+                      <div
+                        className={`text-lg font-bold ${getScoreColor(analysis.reviewTrust)}`}
+                      >
                         {analysis.reviewTrust}
                       </div>
-                      <div className="text-xs text-gray-700 dark:text-gray-200">Review Trust</div>
+                      <div className="text-xs text-gray-700 dark:text-gray-200">
+                        Review Trust
+                      </div>
                     </div>
                     <div className="text-center p-3 bg-gray-50 dark:bg-slate-700 rounded-lg">
                       <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
                         {analysis.alternatives}
                       </div>
-                      <div className="text-xs text-gray-700 dark:text-gray-200">Alternatives</div>
+                      <div className="text-xs text-gray-700 dark:text-gray-200">
+                        Alternatives
+                      </div>
                     </div>
                   </div>
 
@@ -862,11 +1017,15 @@ export default function ReportsPage() {
                   <div className="flex flex-wrap gap-4 text-sm">
                     <div className="flex items-center gap-2">
                       <IconLeaf size={16} className="text-emerald-500" />
-                      <span className="text-gray-800 dark:text-gray-100">{analysis.environmentalImpact}</span>
+                      <span className="text-gray-800 dark:text-gray-100">
+                        {analysis.environmentalImpact}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <IconShield size={16} className="text-blue-500" />
-                      <span className="text-gray-800 dark:text-gray-100">{analysis.laborPractices}</span>
+                      <span className="text-gray-800 dark:text-gray-100">
+                        {analysis.laborPractices}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                       <IconClock size={16} />

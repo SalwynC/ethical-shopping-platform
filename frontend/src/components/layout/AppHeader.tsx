@@ -1,9 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useState, useEffect, useCallback } from 'react';
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   IconHome,
   IconSearch,
@@ -12,14 +17,14 @@ import {
   IconMenu2,
   IconX,
   IconSparkles,
-} from "@tabler/icons-react";
-import { ThemeToggle } from "./ThemeToggle";
+} from '@tabler/icons-react';
+import { ThemeToggle } from './ThemeToggle';
 
 const navigation = [
-  { name: "Home", href: "/" as const, icon: IconHome },
-  { name: "Analysis", href: "/analysis" as const, icon: IconSearch },
-  { name: "Reports", href: "/reports" as const, icon: IconShieldCheck },
-  { name: "Track", href: "/track-analysis" as const, icon: IconHistory },
+  { name: 'Home', href: '/' as const, icon: IconHome },
+  { name: 'Analysis', href: '/analysis' as const, icon: IconSearch },
+  { name: 'Reports', href: '/reports' as const, icon: IconShieldCheck },
+  { name: 'Track', href: '/track-analysis' as const, icon: IconHistory },
 ];
 
 export function AppHeader() {
@@ -36,9 +41,10 @@ export function AppHeader() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const windowHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       const progress = (currentScrollY / windowHeight) * 100;
-      
+
       setScrollProgress(Math.min(progress, 100));
 
       // Always show header at the very top
@@ -57,15 +63,13 @@ export function AppHeader() {
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
   const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
   }, []);
-
-  
 
   return (
     <>
@@ -79,7 +83,7 @@ export function AppHeader() {
       {/* Desktop Navigation */}
       <motion.nav
         initial={{ opacity: 1 }}
-        animate={{ 
+        animate={{
           opacity: isVisible ? 1 : 0,
           y: isVisible ? '0%' : '-100%',
         }}
@@ -95,13 +99,16 @@ export function AppHeader() {
                 className="relative flex items-center justify-center w-10 h-10 bg-gradient-to-br from-green-500 via-blue-500 to-purple-600 rounded-xl shadow-lg overflow-hidden"
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-br from-green-400 to-blue-600 opacity-0 group-hover:opacity-100"
                   transition={{ duration: 0.3 }}
                 />
-                <IconShieldCheck size={20} className="text-white relative z-10" />
+                <IconShieldCheck
+                  size={20}
+                  className="text-white relative z-10"
+                />
                 <motion.div
                   className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20"
                   animate={{
@@ -111,7 +118,7 @@ export function AppHeader() {
                   transition={{
                     duration: 2,
                     repeat: Infinity,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                   }}
                 />
               </motion.div>
@@ -120,16 +127,20 @@ export function AppHeader() {
                 <motion.h1
                   className="text-xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent"
                   style={{
-                    backgroundSize: "200% auto",
-                    backgroundPosition: "0% center",
+                    backgroundSize: '200% auto',
+                    backgroundPosition: '0% center',
                   }}
                   animate={{
-                    backgroundPosition: ["0% center", "100% center", "0% center"],
+                    backgroundPosition: [
+                      '0% center',
+                      '100% center',
+                      '0% center',
+                    ],
                   }}
                   transition={{
                     duration: 5,
                     repeat: Infinity,
-                    ease: "linear",
+                    ease: 'linear',
                   }}
                 >
                   EthiShop
@@ -139,15 +150,15 @@ export function AppHeader() {
                     className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-gradient-to-r from-green-100 to-blue-100 text-green-800 dark:from-green-900/30 dark:to-blue-900/30 dark:text-green-300 border border-green-200 dark:border-green-700"
                     animate={{
                       boxShadow: [
-                        "0 0 0px rgba(34, 197, 94, 0.5)",
-                        "0 0 10px rgba(34, 197, 94, 0.5)",
-                        "0 0 0px rgba(34, 197, 94, 0.5)",
+                        '0 0 0px rgba(34, 197, 94, 0.5)',
+                        '0 0 10px rgba(34, 197, 94, 0.5)',
+                        '0 0 0px rgba(34, 197, 94, 0.5)',
                       ],
                     }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
-                      ease: "easeInOut",
+                      ease: 'easeInOut',
                     }}
                   >
                     <IconSparkles size={10} className="mr-1" />
@@ -172,8 +183,8 @@ export function AppHeader() {
                       <motion.div
                         className={`relative flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                           isActive
-                            ? "text-white"
-                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            ? 'text-white'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                         }`}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -182,11 +193,20 @@ export function AppHeader() {
                           <motion.div
                             layoutId="activeTab"
                             className="absolute inset-0 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg shadow-lg"
-                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                            transition={{
+                              type: 'spring',
+                              stiffness: 380,
+                              damping: 30,
+                            }}
                           />
                         )}
-                        <Icon size={18} className={`mr-2 ${isActive ? "relative z-10" : ""}`} />
-                        <span className={isActive ? "relative z-10" : ""}>{item.name}</span>
+                        <Icon
+                          size={18}
+                          className={`mr-2 ${isActive ? 'relative z-10' : ''}`}
+                        />
+                        <span className={isActive ? 'relative z-10' : ''}>
+                          {item.name}
+                        </span>
                       </motion.div>
                     </Link>
                   );
@@ -197,8 +217,6 @@ export function AppHeader() {
               <div className="ml-6 pl-6 border-l border-gray-200 dark:border-gray-700">
                 <ThemeToggle />
               </div>
-
-              
             </div>
           </div>
         </div>
@@ -208,7 +226,7 @@ export function AppHeader() {
       <div className="md:hidden">
         <motion.div
           initial={{ opacity: 1 }}
-          animate={{ 
+          animate={{
             opacity: isVisible ? 1 : 0,
             y: isVisible ? '0%' : '-100%',
           }}
@@ -236,7 +254,7 @@ export function AppHeader() {
                   transition={{
                     duration: 2,
                     repeat: Infinity,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                   }}
                 >
                   <IconSparkles size={8} className="mr-0.5" />
@@ -261,7 +279,10 @@ export function AppHeader() {
                       exit={{ rotate: 90, opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <IconX size={24} className="text-gray-700 dark:text-gray-300" />
+                      <IconX
+                        size={24}
+                        className="text-gray-700 dark:text-gray-300"
+                      />
                     </motion.div>
                   ) : (
                     <motion.div
@@ -271,7 +292,10 @@ export function AppHeader() {
                       exit={{ rotate: -90, opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <IconMenu2 size={24} className="text-gray-700 dark:text-gray-300" />
+                      <IconMenu2
+                        size={24}
+                        className="text-gray-700 dark:text-gray-300"
+                      />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -293,10 +317,10 @@ export function AppHeader() {
                 onClick={closeMobileMenu}
               />
               <motion.div
-                initial={{ x: "100%" }}
+                initial={{ x: '100%' }}
                 animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                 className="fixed right-0 top-14 bottom-0 w-72 bg-white dark:bg-gray-900 shadow-2xl z-40 overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -315,8 +339,8 @@ export function AppHeader() {
                           <motion.div
                             className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                               isActive
-                                ? "bg-gradient-to-r from-green-500 to-blue-600 text-white shadow-lg"
-                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                                ? 'bg-gradient-to-r from-green-500 to-blue-600 text-white shadow-lg'
+                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                             }`}
                             whileTap={{ scale: 0.95 }}
                           >
@@ -331,7 +355,7 @@ export function AppHeader() {
                                 transition={{
                                   duration: 2,
                                   repeat: Infinity,
-                                  ease: "easeInOut",
+                                  ease: 'easeInOut',
                                 }}
                               />
                             )}
@@ -349,4 +373,3 @@ export function AppHeader() {
     </>
   );
 }
-

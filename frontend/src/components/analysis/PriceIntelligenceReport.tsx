@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 // Simplified PriceIntelligenceReport component - Tailwind version
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   IconCurrency,
   IconTrendingUp,
@@ -12,8 +12,8 @@ import {
   IconTarget,
   IconClock,
   IconCheck,
-} from "@tabler/icons-react";
-import { formatCurrency } from "../../lib/currency";
+} from '@tabler/icons-react';
+import { formatCurrency } from '../../lib/currency';
 
 interface PriceIntelligenceData {
   currentPrice: {
@@ -52,7 +52,10 @@ interface PriceIntelligenceReportProps {
   isLoading?: boolean;
 }
 
-export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceReportProps) {
+export function PriceIntelligenceReport({
+  data,
+  isLoading,
+}: PriceIntelligenceReportProps) {
   const [showDetails, setShowDetails] = useState(false);
   const resolveCurrency = (c: string) => 'INR';
 
@@ -70,19 +73,27 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
 
   const getActionColor = (action: string) => {
     switch (action) {
-      case 'BUY_NOW': return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800';
-      case 'WAIT': return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800';
-      case 'AVOID': return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800';
-      default: return 'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-800';
+      case 'BUY_NOW':
+        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800';
+      case 'WAIT':
+        return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800';
+      case 'AVOID':
+        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800';
+      default:
+        return 'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-800';
     }
   };
 
   const getConfidenceColor = (confidence: string) => {
     switch (confidence) {
-      case 'HIGH': return 'text-green-600 dark:text-green-400';
-      case 'MEDIUM': return 'text-yellow-600 dark:text-yellow-400';
-      case 'LOW': return 'text-red-600 dark:text-red-400';
-      default: return 'text-gray-600 dark:text-gray-400';
+      case 'HIGH':
+        return 'text-green-600 dark:text-green-400';
+      case 'MEDIUM':
+        return 'text-yellow-600 dark:text-yellow-400';
+      case 'LOW':
+        return 'text-red-600 dark:text-red-400';
+      default:
+        return 'text-gray-600 dark:text-gray-400';
     }
   };
 
@@ -111,7 +122,10 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
             <div className="text-2xl font-bold">
               {(() => {
                 const base = resolveCurrency(data.currentPrice.currency);
-                const inrAmount = base === 'USD' ? Math.round(data.currentPrice.amount * 84) : data.currentPrice.amount;
+                const inrAmount =
+                  base === 'USD'
+                    ? Math.round(data.currentPrice.amount * 84)
+                    : data.currentPrice.amount;
                 return (
                   <div>
                     <div>{formatCurrency(inrAmount, 'INR')}</div>
@@ -119,7 +133,9 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
                 );
               })()}
             </div>
-            <div className={`text-sm ${getConfidenceColor(data.currentPrice.confidence)}`}>
+            <div
+              className={`text-sm ${getConfidenceColor(data.currentPrice.confidence)}`}
+            >
               {data.currentPrice.confidence} Confidence
             </div>
           </div>
@@ -130,7 +146,10 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
             <div className="text-2xl font-bold text-green-300">
               {(() => {
                 const base = resolveCurrency(data.currentPrice.currency);
-                const inrAmount = base === 'USD' ? Math.round(data.originalPrice.savings * 84) : data.originalPrice.savings;
+                const inrAmount =
+                  base === 'USD'
+                    ? Math.round(data.originalPrice.savings * 84)
+                    : data.originalPrice.savings;
                 return (
                   <div>
                     <div>{formatCurrency(inrAmount, 'INR')}</div>
@@ -165,9 +184,7 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
             <div className="text-2xl font-bold">
               {data.scores.dealScore}/100
             </div>
-            <div className="text-sm text-green-200">
-              Excellent Value
-            </div>
+            <div className="text-sm text-green-200">Excellent Value</div>
           </div>
         </div>
       </div>
@@ -175,12 +192,18 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
       {/* Content */}
       <div className="p-6">
         {/* Recommendation Banner */}
-        <div className={`p-4 rounded-lg border mb-6 ${getActionColor(data.recommendation.action)}`}>
+        <div
+          className={`p-4 rounded-lg border mb-6 ${getActionColor(data.recommendation.action)}`}
+        >
           <div className="flex items-center justify-between mb-2">
-            <h4 className="font-bold text-lg">Recommendation: {data.recommendation.action.replace('_', ' ')}</h4>
+            <h4 className="font-bold text-lg">
+              Recommendation: {data.recommendation.action.replace('_', ' ')}
+            </h4>
             <div className="flex items-center gap-2">
               <IconTarget size={20} />
-              <span className="font-medium">{data.recommendation.confidence}% Confident</span>
+              <span className="font-medium">
+                {data.recommendation.confidence}% Confident
+              </span>
             </div>
           </div>
           <p className="text-sm opacity-90">{data.recommendation.reasoning}</p>
@@ -189,19 +212,22 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
         {/* Market Analysis */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="space-y-3">
-            <h5 className="font-semibold text-gray-900 dark:text-white">Market Comparison</h5>
+            <h5 className="font-semibold text-gray-900 dark:text-white">
+              Market Comparison
+            </h5>
             <div className="bg-gray-50 dark:bg-slate-700 rounded-lg p-4">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Market Average</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Market Average
+                </span>
                 <span className="font-medium">
                   {(() => {
                     const base = resolveCurrency(data.currentPrice.currency);
-                    const inrAmount = base === 'USD' ? Math.round(data.marketAnalysis.averagePrice * 84) : data.marketAnalysis.averagePrice;
-                    return (
-                      <span>
-                        {formatCurrency(inrAmount, 'INR')}
-                      </span>
-                    );
+                    const inrAmount =
+                      base === 'USD'
+                        ? Math.round(data.marketAnalysis.averagePrice * 84)
+                        : data.marketAnalysis.averagePrice;
+                    return <span>{formatCurrency(inrAmount, 'INR')}</span>;
                   })()}
                 </span>
               </div>
@@ -212,7 +238,9 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
           </div>
 
           <div className="space-y-3">
-            <h5 className="font-semibold text-gray-900 dark:text-white">Trust Metrics</h5>
+            <h5 className="font-semibold text-gray-900 dark:text-white">
+              Trust Metrics
+            </h5>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-sm">Data Trust</span>
@@ -224,7 +252,9 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
               </div>
               <div className="flex justify-between">
                 <span className="text-sm">Overall Rating</span>
-                <span className="font-medium">{data.scores.overallRating}%</span>
+                <span className="font-medium">
+                  {data.scores.overallRating}%
+                </span>
               </div>
             </div>
           </div>
@@ -252,9 +282,10 @@ export function PriceIntelligenceReport({ data, isLoading }: PriceIntelligenceRe
                 Advanced Price Intelligence
               </h6>
               <p className="text-sm text-blue-700 dark:text-blue-300">
-                Our AI analyzes pricing patterns, market trends, and consumer behavior to provide 
-                the most accurate recommendations. This analysis is based on real-time data from 
-                multiple sources and our proprietary algorithms.
+                Our AI analyzes pricing patterns, market trends, and consumer
+                behavior to provide the most accurate recommendations. This
+                analysis is based on real-time data from multiple sources and
+                our proprietary algorithms.
               </p>
             </div>
           </motion.div>

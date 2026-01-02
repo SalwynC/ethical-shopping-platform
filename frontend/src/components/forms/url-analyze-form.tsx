@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { SparklesIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { SparklesIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { useTheme } from '@/contexts/ThemeContext';
 
-import type { AnalyzeResponse } from "@/types/api";
+import type { AnalyzeResponse } from '@/types/api';
 
 type UrlAnalyzeFormProps = {
   onSubmitStart?: () => void;
@@ -18,14 +18,14 @@ const validateUrl = (url: string) => {
     new URL(url);
     return null;
   } catch {
-    return "Please enter a valid URL";
+    return 'Please enter a valid URL';
   }
 };
 
-export function UrlAnalyzeForm({ 
-  onSubmitStart, 
-  onCompleted, 
-  onError 
+export function UrlAnalyzeForm({
+  onSubmitStart,
+  onCompleted,
+  onError,
 }: UrlAnalyzeFormProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [includeAlternatives, setIncludeAlternatives] = useState(true);
@@ -48,54 +48,55 @@ export function UrlAnalyzeForm({
 
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Mock response for now
       const mockResponse: AnalyzeResponse = {
-        decision: "buy_now",
+        decision: 'buy_now',
         ethicalScore: 85,
         dealScore: 92,
         priceTrend: {
           current: 299.99,
           original: 399.99,
-          predictedNextWeek: 320.00,
+          predictedNextWeek: 320.0,
           confidence: 0.85,
-          currency: "USD",
-          discountPercent: 25
+          currency: 'USD',
+          discountPercent: 25,
         },
         explanations: [
           {
-            rule: "Price Drop Detection",
+            rule: 'Price Drop Detection',
             contribution: 40,
-            reason: "Price has dropped 25% from original listing"
+            reason: 'Price has dropped 25% from original listing',
           },
           {
-            rule: "Ethical Brand Assessment",
+            rule: 'Ethical Brand Assessment',
             contribution: 45,
-            reason: "Company has strong sustainability practices and fair labor policies"
-          }
+            reason:
+              'Company has strong sustainability practices and fair labor policies',
+          },
         ],
         alternatives: [
           {
-            title: "Similar Product Alternative",
-            url: "https://example.com/alt1",
+            title: 'Similar Product Alternative',
+            url: 'https://example.com/alt1',
             ethicalScore: 90,
-            rationale: "Better ethical practices with similar features",
+            rationale: 'Better ethical practices with similar features',
             price: 279.99,
-            confidence: 0.8
-          }
+            confidence: 0.8,
+          },
         ],
         sources: [
           {
-            label: "Company Sustainability Report",
-            href: "https://example.com/sustainability"
-          }
+            label: 'Company Sustainability Report',
+            href: 'https://example.com/sustainability',
+          },
         ],
         meta: {
           analyzedAt: new Date().toISOString(),
           latencyMs: 2000,
-          version: "1.0.0"
-        }
+          version: '1.0.0',
+        },
       };
 
       onCompleted?.(mockResponse);
@@ -129,22 +130,24 @@ export function UrlAnalyzeForm({
                 urlError
                   ? 'border-red-400 bg-red-50 dark:bg-red-900/20 dark:border-red-500 focus:ring-red-500/30'
                   : url && !urlError
-                  ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-500'
-                  : 'border-slate-300 dark:border-slate-600 bg-white/90 dark:bg-slate-700/90'
+                    ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-500'
+                    : 'border-slate-300 dark:border-slate-600 bg-white/90 dark:bg-slate-700/90'
               } text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 hover:border-slate-400 dark:hover:border-slate-500`}
             />
-            
+
             {url && !urlError && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <CheckCircleIcon className="w-5 h-5 text-emerald-600" />
               </div>
             )}
           </div>
-          
+
           {urlError && (
-            <p className="text-sm text-red-600 dark:text-red-400 font-medium">{urlError}</p>
+            <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+              {urlError}
+            </p>
           )}
-          
+
           <p className="text-sm text-slate-600 dark:text-slate-400">
             We'll analyze the product's pricing, ethics, and find alternatives
           </p>
@@ -162,7 +165,10 @@ export function UrlAnalyzeForm({
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="include-alternatives" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+            <label
+              htmlFor="include-alternatives"
+              className="text-sm font-semibold text-slate-700 dark:text-slate-200"
+            >
               Find ethical alternatives
             </label>
             <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -198,10 +204,10 @@ export function UrlAnalyzeForm({
 
         {/* Description */}
         <p className="text-sm text-center text-slate-600 dark:text-slate-400">
-          Analysis includes price trends, ethical scoring, and alternative recommendations
+          Analysis includes price trends, ethical scoring, and alternative
+          recommendations
         </p>
       </form>
     </motion.div>
   );
 }
-

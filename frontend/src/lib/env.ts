@@ -1,11 +1,11 @@
-const REQUIRED_ENV_VARS = ["NEXT_PUBLIC_API_BASE_URL"] as const;
+const REQUIRED_ENV_VARS = ['NEXT_PUBLIC_API_BASE_URL'] as const;
 
 type RequiredEnvKey = (typeof REQUIRED_ENV_VARS)[number];
 
 function loadEnv() {
   return {
     NEXT_PUBLIC_API_BASE_URL:
-      process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000",
+      process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000',
   };
 }
 
@@ -18,4 +18,3 @@ REQUIRED_ENV_VARS.forEach((key: RequiredEnvKey) => {
 });
 
 export const env = parsedEnv;
-

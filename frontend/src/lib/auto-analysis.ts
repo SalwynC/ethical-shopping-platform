@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useCallback } from 'react';
 
@@ -49,16 +49,18 @@ interface AutoAnalysisResult {
 }
 
 // Enhanced URL analysis with product detection
-export const analyzeProductUrl = async (url: string): Promise<AutoAnalysisResult> => {
+export const analyzeProductUrl = async (
+  url: string,
+): Promise<AutoAnalysisResult> => {
   // Simulate API processing time
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
   // Extract platform and product info from URL
   const domain = new URL(url).hostname.toLowerCase();
   let platform = 'Unknown';
   let category = 'Electronics';
-  let brand = '';
-  
+  const brand = '';
+
   // Platform detection
   if (domain.includes('amazon')) {
     platform = 'Amazon';
@@ -79,7 +81,7 @@ export const analyzeProductUrl = async (url: string): Promise<AutoAnalysisResult
   const originalPrice = currentPrice + Math.floor(Math.random() * 20000) + 500;
   const dealScore = Math.floor(Math.random() * 40) + 60; // 60-100
   const ethicalScore = Math.floor(Math.random() * 50) + 50; // 50-100
-  
+
   return {
     platform,
     productInfo: {
@@ -90,40 +92,66 @@ export const analyzeProductUrl = async (url: string): Promise<AutoAnalysisResult
       originalPrice,
       rating: 3.5 + Math.random() * 1.5,
       reviews: Math.floor(Math.random() * 10000) + 100,
-      availability: Math.random() > 0.2 ? 'in_stock' : 'limited'
+      availability: Math.random() > 0.2 ? 'in_stock' : 'limited',
     },
     priceTrend: {
       current: currentPrice,
       original: originalPrice,
       currency: '₹',
-      dataCertainty: dealScore > 80 ? 'high' : dealScore > 60 ? 'medium' : 'low',
-      marketAverage: currentPrice + Math.floor(Math.random() * 5000) - 2500
+      dataCertainty:
+        dealScore > 80 ? 'high' : dealScore > 60 ? 'medium' : 'low',
+      marketAverage: currentPrice + Math.floor(Math.random() * 5000) - 2500,
     },
     priceAnalysis: {
       isGoodDeal: dealScore > 75,
-      priceRank: dealScore > 90 ? 'excellent' : dealScore > 75 ? 'good' : dealScore > 60 ? 'average' : 'poor',
+      priceRank:
+        dealScore > 90
+          ? 'excellent'
+          : dealScore > 75
+            ? 'good'
+            : dealScore > 60
+              ? 'average'
+              : 'poor',
       savingsAmount: originalPrice - currentPrice,
       certaintyLevel: dealScore > 80 ? 'high' : 'medium',
-      marketComparison: currentPrice < (currentPrice + 2000) ? 'Below market average' : 'Above market average',
-      bestTimeDescription: dealScore > 85 ? 'Excellent time to buy' : 'Consider waiting for better deals'
+      marketComparison:
+        currentPrice < currentPrice + 2000
+          ? 'Below market average'
+          : 'Above market average',
+      bestTimeDescription:
+        dealScore > 85
+          ? 'Excellent time to buy'
+          : 'Consider waiting for better deals',
     },
     dealScore,
     ethicalScore,
-    decision: dealScore > 85 ? 'buy_now' : dealScore > 65 ? 'wait' : 'research_more',
+    decision:
+      dealScore > 85 ? 'buy_now' : dealScore > 65 ? 'wait' : 'research_more',
     recommendation: {
-      action: dealScore > 85 ? 'Buy Now - Great Deal!' : dealScore > 65 ? 'Wait for Better Price' : 'Research More Options',
+      action:
+        dealScore > 85
+          ? 'Buy Now - Great Deal!'
+          : dealScore > 65
+            ? 'Wait for Better Price'
+            : 'Research More Options',
       confidence: dealScore,
-      urgency: dealScore > 85 ? 'high' : 'medium'
+      urgency: dealScore > 85 ? 'high' : 'medium',
     },
     trustScore: {
       dataReliability: Math.floor(Math.random() * 20) + 80,
       overallTrust: dealScore > 80 ? 'high' : 'medium',
-      explanation: `Analysis based on ${platform} data with ${dealScore > 80 ? 'high' : 'medium'} confidence`
+      explanation: `Analysis based on ${platform} data with ${dealScore > 80 ? 'high' : 'medium'} confidence`,
     },
     insights: {
       honestAssessment: generateHonestAssessment(dealScore, platform),
-      warnings: dealScore < 60 ? ['Price seems high compared to market', 'Consider checking other platforms'] : undefined
-    }
+      warnings:
+        dealScore < 60
+          ? [
+              'Price seems high compared to market',
+              'Consider checking other platforms',
+            ]
+          : undefined,
+    },
   };
 };
 
@@ -147,51 +175,56 @@ const detectFlipkartCategory = (url: string): string => {
 
 const generateProductTitle = (category: string, platform: string): string => {
   const titles = {
-    'Smartphones': [
+    Smartphones: [
       'Premium 5G Smartphone with 108MP Camera',
       'Latest Android Phone with Fast Charging',
-      'High-Performance Gaming Smartphone'
+      'High-Performance Gaming Smartphone',
     ],
-    'Laptops': [
+    Laptops: [
       'Ultra-Thin Business Laptop 14-inch',
       'Gaming Laptop with RTX Graphics',
-      '2-in-1 Convertible Laptop'
+      '2-in-1 Convertible Laptop',
     ],
-    'Fashion': [
+    Fashion: [
       'Premium Cotton Casual Shirt',
       'Designer Ethnic Wear Collection',
-      'Comfortable Sports Sneakers'
+      'Comfortable Sports Sneakers',
     ],
-    'Audio': [
+    Audio: [
       'Wireless Noise Cancelling Headphones',
       'Premium Bluetooth Earbuds',
-      'Studio Quality Over-Ear Headphones'
+      'Studio Quality Over-Ear Headphones',
     ],
-    'Electronics': [
+    Electronics: [
       'Smart Home Device with AI',
       'Portable Electronics Gadget',
-      'Advanced Tech Accessory'
-    ]
+      'Advanced Tech Accessory',
+    ],
   };
-  
-  const categoryTitles = titles[category as keyof typeof titles] || titles.Electronics;
+
+  const categoryTitles =
+    titles[category as keyof typeof titles] || titles.Electronics;
   return categoryTitles[Math.floor(Math.random() * categoryTitles.length)];
 };
 
 const generateBrand = (category: string): string => {
   const brands = {
-    'Smartphones': ['Samsung', 'OnePlus', 'Xiaomi', 'Realme', 'Apple'],
-    'Laptops': ['Dell', 'HP', 'Lenovo', 'Asus', 'Acer'],
-    'Fashion': ['Nike', 'Adidas', 'Puma', 'Levi\'s', 'H&M'],
-    'Audio': ['Sony', 'JBL', 'Bose', 'Sennheiser', 'Audio-Technica'],
-    'Electronics': ['Philips', 'LG', 'Samsung', 'Panasonic', 'Bosch']
+    Smartphones: ['Samsung', 'OnePlus', 'Xiaomi', 'Realme', 'Apple'],
+    Laptops: ['Dell', 'HP', 'Lenovo', 'Asus', 'Acer'],
+    Fashion: ['Nike', 'Adidas', 'Puma', "Levi's", 'H&M'],
+    Audio: ['Sony', 'JBL', 'Bose', 'Sennheiser', 'Audio-Technica'],
+    Electronics: ['Philips', 'LG', 'Samsung', 'Panasonic', 'Bosch'],
   };
-  
-  const categoryBrands = brands[category as keyof typeof brands] || brands.Electronics;
+
+  const categoryBrands =
+    brands[category as keyof typeof brands] || brands.Electronics;
   return categoryBrands[Math.floor(Math.random() * categoryBrands.length)];
 };
 
-const generateHonestAssessment = (dealScore: number, platform: string): string => {
+const generateHonestAssessment = (
+  dealScore: number,
+  platform: string,
+): string => {
   if (dealScore > 90) {
     return `Exceptional deal on ${platform}! This is among the lowest prices we've tracked. Strong recommendation to purchase now.`;
   } else if (dealScore > 75) {
@@ -240,6 +273,6 @@ export const useAutoAnalysis = () => {
     clearResult,
     isAnalyzing,
     result,
-    error
+    error,
   };
 };

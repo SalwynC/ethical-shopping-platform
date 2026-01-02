@@ -2,8 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { IconBrain, IconClock, IconTrendingUp, IconTarget } from '@tabler/icons-react';
-import { getDailyAnalytics, getSessionInsights, getQuickTestCount, recordQuickTest } from '../../lib/real-analytics';
+import {
+  IconBrain,
+  IconClock,
+  IconTrendingUp,
+  IconTarget,
+} from '@tabler/icons-react';
+import {
+  getDailyAnalytics,
+  getSessionInsights,
+  getQuickTestCount,
+  recordQuickTest,
+} from '../../lib/real-analytics';
 
 export function SmartAnalyticsDashboard() {
   const [dailyStats, setDailyStats] = useState({
@@ -13,32 +23,32 @@ export function SmartAnalyticsDashboard() {
     averageTimePerAnalysis: 0,
     successRate: 0,
     topCategories: [] as string[],
-    isLearning: false
+    isLearning: false,
   });
-  
+
   const [sessionStats, setSessionStats] = useState({
     sessionDuration: 0,
     totalAnalyses: 0,
     averageTimeSpent: 0,
     successRate: 0,
     favoriteCategory: 'None',
-    isLearningActive: false
+    isLearningActive: false,
   });
-  
+
   const [quickTests, setQuickTests] = useState(0);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     // Mark as client-side
     setIsClient(true);
-    
+
     // Update analytics every few seconds (only on client)
     const updateStats = () => {
       try {
         const daily = getDailyAnalytics();
         const session = getSessionInsights();
         const quickCount = getQuickTestCount();
-        
+
         setDailyStats(daily);
         setSessionStats(session);
         setQuickTests(quickCount);
@@ -49,10 +59,10 @@ export function SmartAnalyticsDashboard() {
 
     // Initial load
     updateStats();
-    
+
     // Update every 10 seconds
     const interval = setInterval(updateStats, 10000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -83,11 +93,18 @@ export function SmartAnalyticsDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <IconBrain size={16} className="text-emerald-600 dark:text-emerald-400" />
-              <h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Smart Analyses</h3>
+              <IconBrain
+                size={16}
+                className="text-emerald-600 dark:text-emerald-400"
+              />
+              <h3 className="font-semibold text-emerald-900 dark:text-emerald-100">
+                Smart Analyses
+              </h3>
             </div>
             <p className="text-xs text-emerald-700 dark:text-emerald-300">
-              {dailyStats.isLearning ? '🧠 Learning from your usage' : 'Ready to learn'}
+              {dailyStats.isLearning
+                ? '🧠 Learning from your usage'
+                : 'Ready to learn'}
             </p>
           </div>
           <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
@@ -109,11 +126,18 @@ export function SmartAnalyticsDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <IconClock size={16} className="text-blue-600 dark:text-blue-400" />
-              <h3 className="font-semibold text-blue-900 dark:text-blue-100">Session Time</h3>
+              <IconClock
+                size={16}
+                className="text-blue-600 dark:text-blue-400"
+              />
+              <h3 className="font-semibold text-blue-900 dark:text-blue-100">
+                Session Time
+              </h3>
             </div>
             <p className="text-xs text-blue-700 dark:text-blue-300">
-              {sessionStats.isLearningActive ? '⚡ Active learning' : 'Monitoring usage'}
+              {sessionStats.isLearningActive
+                ? '⚡ Active learning'
+                : 'Monitoring usage'}
             </p>
           </div>
           <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
@@ -138,14 +162,22 @@ export function SmartAnalyticsDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <IconTarget size={16} className="text-purple-600 dark:text-purple-400" />
-              <h3 className="font-semibold text-purple-900 dark:text-purple-100">Quick Tests</h3>
+              <IconTarget
+                size={16}
+                className="text-purple-600 dark:text-purple-400"
+              />
+              <h3 className="font-semibold text-purple-900 dark:text-purple-100">
+                Quick Tests
+              </h3>
             </div>
             <p className="text-xs text-purple-700 dark:text-purple-300">
               Click to test analysis
             </p>
           </div>
-          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400" id="quick-analysis-counter">
+          <div
+            className="text-2xl font-bold text-purple-600 dark:text-purple-400"
+            id="quick-analysis-counter"
+          >
             {quickTests}
           </div>
         </div>
@@ -164,8 +196,13 @@ export function SmartAnalyticsDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <IconTrendingUp size={16} className="text-amber-600 dark:text-amber-400" />
-              <h3 className="font-semibold text-amber-900 dark:text-amber-100">Success Rate</h3>
+              <IconTrendingUp
+                size={16}
+                className="text-amber-600 dark:text-amber-400"
+              />
+              <h3 className="font-semibold text-amber-900 dark:text-amber-100">
+                Success Rate
+              </h3>
             </div>
             <p className="text-xs text-amber-700 dark:text-amber-300">
               Analysis quality
@@ -176,7 +213,9 @@ export function SmartAnalyticsDashboard() {
           </div>
         </div>
         <div className="mt-2 text-xs text-amber-600 dark:text-amber-400">
-          {sessionStats.favoriteCategory !== 'None' ? `Fav: ${sessionStats.favoriteCategory}` : 'No preference yet'}
+          {sessionStats.favoriteCategory !== 'None'
+            ? `Fav: ${sessionStats.favoriteCategory}`
+            : 'No preference yet'}
         </div>
       </motion.div>
     </div>

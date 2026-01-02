@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 export default function GlobalError({
   error,
@@ -16,14 +16,14 @@ export default function GlobalError({
               Application Error
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
-              {error.message || "A critical error occurred"}
+              {error.message || 'A critical error occurred'}
             </p>
             {error.digest && (
               <p className="text-sm text-gray-500 dark:text-gray-500">
                 Error ID: {error.digest}
               </p>
             )}
-            <button 
+            <button
               onClick={reset}
               className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
             >
@@ -35,4 +35,3 @@ export default function GlobalError({
     </html>
   );
 }
-

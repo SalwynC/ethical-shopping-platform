@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -7,7 +7,10 @@ import { useTheme } from '../../contexts/ThemeContext';
 export function LiveBackground() {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
   const [time, setTime] = useState(0);
-  const [windowDimensions, setWindowDimensions] = useState({ width: 1920, height: 1080 });
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: 1920,
+    height: 1080,
+  });
   const [isClient, setIsClient] = useState(false);
   const { theme } = useTheme();
   const intervalRef = useRef<NodeJS.Timeout>();
@@ -15,13 +18,13 @@ export function LiveBackground() {
   useEffect(() => {
     // Mark as client-side
     setIsClient(true);
-    
+
     // Set initial window dimensions
     const updateWindowDimensions = () => {
       if (typeof window !== 'undefined') {
         setWindowDimensions({
           width: window.innerWidth,
-          height: window.innerHeight
+          height: window.innerHeight,
         });
       }
     };
@@ -31,7 +34,7 @@ export function LiveBackground() {
       if (typeof window !== 'undefined') {
         setMousePosition({
           x: (e.clientX / window.innerWidth) * 100,
-          y: (e.clientY / window.innerHeight) * 100
+          y: (e.clientY / window.innerHeight) * 100,
         });
       }
     };
@@ -43,7 +46,7 @@ export function LiveBackground() {
 
     // Initialize dimensions and add event listeners
     updateWindowDimensions();
-    
+
     if (typeof window !== 'undefined') {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('resize', updateWindowDimensions);
@@ -64,25 +67,33 @@ export function LiveBackground() {
   const dynamicColors = {
     primary: `hsl(${(time / 100) % 360}, 70%, 60%)`,
     secondary: `hsl(${(time / 150 + 120) % 360}, 65%, 55%)`,
-    accent: `hsl(${(time / 200 + 240) % 360}, 80%, 65%)`
+    accent: `hsl(${(time / 200 + 240) % 360}, 80%, 65%)`,
   };
 
   // Don't render complex animations on server
   if (!isClient) {
     return (
-      <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: -1 }}>
+      <div
+        className="fixed inset-0 overflow-hidden pointer-events-none"
+        style={{ zIndex: -1 }}
+      >
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" />
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: -1 }}>
+    <div
+      className="fixed inset-0 overflow-hidden pointer-events-none"
+      style={{ zIndex: -1 }}
+    >
       {/* Dynamic Gradient Background that shifts colors in real-time */}
       <motion.div
         className="absolute inset-0"
         style={{
-          background: theme === 'dark' ? `
+          background:
+            theme === 'dark'
+              ? `
             radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
               rgba(16, 185, 129, 0.15) 0%, 
               rgba(6, 182, 212, 0.1) 35%, 
@@ -95,7 +106,8 @@ export function LiveBackground() {
               rgba(30, 41, 59, 1) 50%, 
               rgba(15, 23, 42, 1) 100%
             )
-          ` : `
+          `
+              : `
             radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
               rgba(16, 185, 129, 0.08) 0%, 
               rgba(6, 182, 212, 0.05) 35%, 
@@ -113,7 +125,7 @@ export function LiveBackground() {
         animate={{
           background: [
             `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(16, 185, 129, 0.15) 0%, rgba(6, 182, 212, 0.1) 35%, rgba(99, 102, 241, 0.05) 70%, transparent 100%), linear-gradient(${(time / 100) % 360}deg, rgba(15, 23, 42, 1) 0%, rgba(30, 41, 59, 1) 50%, rgba(15, 23, 42, 1) 100%)`,
-          ]
+          ],
         }}
         transition={{ duration: 0.1 }}
       />
@@ -126,29 +138,30 @@ export function LiveBackground() {
           style={{
             width: `${60 + i * 20}px`,
             height: `${60 + i * 20}px`,
-            background: theme === 'dark' 
-              ? `radial-gradient(circle, ${dynamicColors.primary}40 0%, transparent 70%)`
-              : `radial-gradient(circle, ${dynamicColors.primary}20 0%, transparent 70%)`,
+            background:
+              theme === 'dark'
+                ? `radial-gradient(circle, ${dynamicColors.primary}40 0%, transparent 70%)`
+                : `radial-gradient(circle, ${dynamicColors.primary}20 0%, transparent 70%)`,
           }}
           animate={{
             x: [
               `${10 + i * 15}vw`,
               `${mousePosition.x / 5 + 15 + i * 10}vw`,
-              `${20 + i * 12}vw`
+              `${20 + i * 12}vw`,
             ],
             y: [
               `${10 + i * 10}vh`,
               `${mousePosition.y / 3 + 20 + i * 8}vh`,
-              `${15 + i * 15}vh`
+              `${15 + i * 15}vh`,
             ],
             scale: [1, 1.2, 0.8, 1],
-            opacity: [0.3, 0.6, 0.2, 0.4]
+            opacity: [0.3, 0.6, 0.2, 0.4],
           }}
           transition={{
             duration: 8 + i * 2,
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: i * 0.5
+            ease: 'easeInOut',
+            delay: i * 0.5,
           }}
         />
       ))}
@@ -166,12 +179,12 @@ export function LiveBackground() {
             strokeWidth="1"
             animate={{
               opacity: [0.1, 0.5, 0.1],
-              strokeWidth: [0.5, 2, 0.5]
+              strokeWidth: [0.5, 2, 0.5],
             }}
             transition={{
               duration: 3 + i,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: 'easeInOut',
             }}
           />
         ))}
@@ -188,11 +201,11 @@ export function LiveBackground() {
       <div className="absolute inset-0">
         {[...Array(25)].map((_, i) => {
           // Use deterministic values based on index to prevent hydration issues
-          const leftPos = ((i * 37) % 100);
-          const topPos = ((i * 23) % 100);
+          const leftPos = (i * 37) % 100;
+          const topPos = (i * 23) % 100;
           const duration = 5 + (i % 10);
           const delay = (i * 0.2) % 5;
-          
+
           return (
             <motion.div
               key={i}
@@ -206,13 +219,13 @@ export function LiveBackground() {
               animate={{
                 y: [0, -(windowDimensions.height + 100)],
                 opacity: [0, 1, 0],
-                scale: [0, 1.5, 0]
+                scale: [0, 1.5, 0],
               }}
               transition={{
                 duration: duration,
                 repeat: Infinity,
-                ease: "linear",
-                delay: delay
+                ease: 'linear',
+                delay: delay,
               }}
             />
           );
@@ -225,16 +238,16 @@ export function LiveBackground() {
         style={{
           left: `${mousePosition.x}%`,
           top: `${mousePosition.y}%`,
-          transform: 'translate(-50%, -50%)'
+          transform: 'translate(-50%, -50%)',
         }}
         animate={{
           scale: [0, 2, 0],
-          opacity: [1, 0.3, 0]
+          opacity: [1, 0.3, 0],
         }}
         transition={{
           duration: 2,
           repeat: Infinity,
-          ease: "easeOut"
+          ease: 'easeOut',
         }}
       />
 
@@ -242,16 +255,16 @@ export function LiveBackground() {
       <motion.div
         className="absolute inset-0"
         style={{
-          background: `radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 60%)`
+          background: `radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 60%)`,
         }}
         animate={{
           opacity: [0.3, 0.7, 0.3],
-          scale: [0.8, 1.2, 0.8]
+          scale: [0.8, 1.2, 0.8],
         }}
         transition={{
           duration: 4,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: 'easeInOut',
         }}
       />
 
@@ -261,26 +274,26 @@ export function LiveBackground() {
           // Use deterministic values to prevent hydration mismatch
           const duration = 3 + (i % 4);
           const delay = (i * 0.1) % 3;
-          
+
           return (
             <motion.div
               key={i}
               className={`absolute w-full bg-gradient-to-b from-transparent to-transparent ${
-              theme === 'dark' ? 'via-cyan-400' : 'via-cyan-500/40'
-            }`}
+                theme === 'dark' ? 'via-cyan-400' : 'via-cyan-500/40'
+              }`}
               style={{
                 height: '20px',
-                top: `${i * 4}%`
+                top: `${i * 4}%`,
               }}
               animate={{
                 y: [0, windowDimensions.height + 100],
-                opacity: [0, 1, 0]
+                opacity: [0, 1, 0],
               }}
               transition={{
                 duration: duration,
                 repeat: Infinity,
-                ease: "linear",
-                delay: delay
+                ease: 'linear',
+                delay: delay,
               }}
             />
           );

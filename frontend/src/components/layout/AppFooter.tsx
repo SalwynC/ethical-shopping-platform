@@ -1,13 +1,18 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Route } from "next";
-import { IconHeart, IconShield, IconBolt, IconWorld } from "@tabler/icons-react";
-import { useTheme } from "@/contexts/ThemeContext";
+import Link from 'next/link';
+import { Route } from 'next';
+import {
+  IconHeart,
+  IconShield,
+  IconBolt,
+  IconWorld,
+} from '@tabler/icons-react';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export function AppFooter() {
   const { theme } = useTheme();
-  
+
   return (
     <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,16 +24,24 @@ export function AppFooter() {
               <div className="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-lg">
                 <IconBolt size={20} className="text-white" />
               </div>
-              <span className="text-lg font-bold text-gray-900 dark:text-white">EthiShop</span>
+              <span className="text-lg font-bold text-gray-900 dark:text-white">
+                EthiShop
+              </span>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-              Making ethical shopping decisions easier with AI-powered analysis and recommendations.
+              Making ethical shopping decisions easier with AI-powered analysis
+              and recommendations.
             </p>
             <div className="flex items-center space-x-2">
               <div className="flex items-center justify-center w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded">
-                <IconShield size={14} className="text-green-600 dark:text-green-400" />
+                <IconShield
+                  size={14}
+                  className="text-green-600 dark:text-green-400"
+                />
               </div>
-              <span className="text-xs text-gray-500 dark:text-gray-400">Trusted Analysis</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                Trusted Analysis
+              </span>
             </div>
           </div>
 
@@ -43,9 +56,12 @@ export function AppFooter() {
                 'Ethical Scoring',
                 'Product Alternatives',
                 'Market Analysis',
-                'Deal Alerts'
+                'Deal Alerts',
               ].map((feature) => (
-                <div key={feature} className="text-sm text-gray-600 dark:text-gray-400">
+                <div
+                  key={feature}
+                  className="text-sm text-gray-600 dark:text-gray-400"
+                >
                   {feature}
                 </div>
               ))}
@@ -63,7 +79,7 @@ export function AppFooter() {
                 { label: 'Privacy Policy', href: '/privacy' },
                 { label: 'Terms of Service', href: '/terms' },
                 { label: 'Contact', href: '/contact' },
-                { label: 'API', href: '/api' }
+                { label: 'API', href: '/api' },
               ].map((link) => (
                 <Link
                   key={link.label}
@@ -87,15 +103,25 @@ export function AppFooter() {
               </p>
               <div className="flex items-center space-x-2">
                 <div className="flex items-center justify-center w-6 h-6 bg-red-100 dark:bg-red-900/30 rounded">
-                  <IconHeart size={14} className="text-red-600 dark:text-red-400" />
+                  <IconHeart
+                    size={14}
+                    className="text-red-600 dark:text-red-400"
+                  />
                 </div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">Community Driven</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  Community Driven
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="flex items-center justify-center w-6 h-6 bg-cyan-100 dark:bg-cyan-900/30 rounded">
-                  <IconWorld size={14} className="text-cyan-600 dark:text-cyan-400" />
+                  <IconWorld
+                    size={14}
+                    className="text-cyan-600 dark:text-cyan-400"
+                  />
                 </div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">Global Impact</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  Global Impact
+                </span>
               </div>
             </div>
           </div>
@@ -109,13 +135,13 @@ export function AppFooter() {
             </p>
             <div className="flex space-x-6">
               <Link
-                href={"/privacy" as Route}
+                href={'/privacy' as Route}
                 className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
               >
                 Privacy
               </Link>
               <Link
-                href={"/terms" as Route}
+                href={'/terms' as Route}
                 className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
               >
                 Terms
@@ -127,4 +153,3 @@ export function AppFooter() {
     </footer>
   );
 }
-

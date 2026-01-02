@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { useTheme } from "@/contexts/ThemeContext";
+import { ReactNode } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
 
 type EmptyStateProps = {
   title: string;
@@ -15,11 +15,8 @@ export function EmptyState({ title, description, action }: EmptyStateProps) {
       <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
         {title}
       </h3>
-      <p className="text-gray-600 dark:text-gray-400 mb-6">
-        {description}
-      </p>
+      <p className="text-gray-600 dark:text-gray-400 mb-6">{description}</p>
       {action}
     </div>
   );
 }
-

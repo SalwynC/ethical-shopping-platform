@@ -79,20 +79,43 @@ export async function fetchUsdInrRate(): Promise<FxRate> {
   }
 }
 
-export function convert(amount: number, from: 'USD' | 'INR', to: 'USD' | 'INR', usdInrRate: number): number {
+export function convert(
+  amount: number,
+  from: 'USD' | 'INR',
+  to: 'USD' | 'INR',
+  usdInrRate: number,
+): number {
   if (from === to) return amount;
-  return from === 'USD' && to === 'INR' ? amount * usdInrRate : amount / usdInrRate;
+  return from === 'USD' && to === 'INR'
+    ? amount * usdInrRate
+    : amount / usdInrRate;
 }
 
-export function formatCurrency(amount: number, currency: 'USD' | 'INR'): string {
+export function formatCurrency(
+  amount: number,
+  currency: 'USD' | 'INR',
+): string {
   const locale = currency === 'INR' ? 'en-IN' : 'en-US';
-  return new Intl.NumberFormat(locale, { style: 'currency', currency, maximumFractionDigits: 2 }).format(amount);
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 2,
+  }).format(amount);
 }
 
-export function formatDual(amount: number, base: 'USD' | 'INR', usdInrRate: number): { usd: string; inr: string } {
-  const usdAmount = base === 'USD' ? amount : convert(amount, 'INR', 'USD', usdInrRate);
-  const inrAmount = base === 'INR' ? amount : convert(amount, 'USD', 'INR', usdInrRate);
-  return { usd: formatCurrency(usdAmount, 'USD'), inr: formatCurrency(inrAmount, 'INR') };
+export function formatDual(
+  amount: number,
+  base: 'USD' | 'INR',
+  usdInrRate: number,
+): { usd: string; inr: string } {
+  const usdAmount =
+    base === 'USD' ? amount : convert(amount, 'INR', 'USD', usdInrRate);
+  const inrAmount =
+    base === 'INR' ? amount : convert(amount, 'USD', 'INR', usdInrRate);
+  return {
+    usd: formatCurrency(usdAmount, 'USD'),
+    inr: formatCurrency(inrAmount, 'INR'),
+  };
 }
 
 // Simple React hook to provide live USD→INR rate with periodic refresh
