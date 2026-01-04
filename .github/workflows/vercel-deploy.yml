@@ -26,6 +26,7 @@ jobs:
           npm ci --prefer-offline
           npm run build
       - name: Deploy to Vercel
+        id: vercel_deploy
         if: ${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}
         uses: amondnet/vercel-action@v20
         with:
@@ -34,8 +35,32 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: "--prod"
           working-directory: "frontend"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Get deployment preview URL and smoke test
+        if: ${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}
+        run: |
+          echo "Deployment preview url: ${{ steps.vercel_deploy.outputs.preview-url }}"
+          # Wait a few seconds for the deployment to be routable
+          sleep 5
+          curl -fS --max-time 10 "${{ steps.vercel_deploy.outputs.preview-url }}" || (echo "Smoke test failed for deployment URL" && exit 1)
+
+      - name: Comment on PR with preview URL
+        if: ${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' && github.event_name == 'pull_request' }}
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ✅ Vercel deployment completed.
+
+            - Preview URL: ${{ steps.vercel_deploy.outputs.preview-url }}
+            - GitHub Actions run: ${{ github.run_id }}
+
+            If you don't see the site responding, check the project settings on Vercel (build command, environment variables). If Vercel is still set up via the GitHub App integration, consider disabling it (set `github.enabled: false` in `vercel.json`) to prevent duplicate/cancelled deployments.
+
       - name: Skip deploy - Vercel secrets missing
         if: ${{ secrets.VERCEL_TOKEN == '' || secrets.VERCEL_ORG_ID == '' || secrets.VERCEL_PROJECT_ID == '' }}
         run: |

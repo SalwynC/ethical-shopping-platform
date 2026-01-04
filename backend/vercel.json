@@ -5,6 +5,7 @@
   "devCommand": "npm run start:dev",
   "installCommand": "npm install",
   "framework": "nestjs",
+  "github": { "enabled": false },
   "env": {
     "NODE_ENV": "production"
   }
