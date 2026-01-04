@@ -403,6 +403,8 @@ export class PrismaService
 
   // Helper methods for common queries
   async findOrCreateProduct(url: string, productData: any) {
+    this.logger.log(`🔁 findOrCreateProduct called with URL: ${url}`);
+
     if (!this.isConnected) {
       // Use in-memory fallback
       const productId = Date.now().toString();

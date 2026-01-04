@@ -15,6 +15,7 @@ import { AIService, AIAnalysis } from './ai.service';
 import { PrismaService } from './database/prisma.service';
 import { ReviewCheckerService } from './services/review-checker.service';
 import { RealProductAnalyzerService } from './services/real-product-analyzer.service';
+import { normalizeUrl } from './utils/url';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
@@ -30,6 +31,11 @@ export class AnalyzeDto {
   @IsUrl()
   url!: string;
 
+  @IsOptional()
+  @IsBoolean()
+  forceRefresh?: boolean;
+
+  // Allow productData structure below for clarity
   @IsOptional()
   productData?: {
     title?: string;
@@ -297,10 +303,15 @@ export class AppController {
       // Step 1: Get product data (either from extension or scrape)
       let productData: ProductData;
 
+      // Normalize the URL early and log both forms
+      const normalizedUrl = normalizeUrl(body.url);
+      this.logger.log(`🔁 Normalized URL: ${normalizedUrl} (from ${body.url})`);
+
       if (
         body.productData &&
         body.productData.title &&
-        body.productData.price
+        body.productData.price &&
+        !body.forceRefresh
       ) {
         // Use data from browser extension (REAL data from the page!)
         this.logger.log(`📱 Using data from browser extension`);
@@ -316,7 +327,7 @@ export class AppController {
           availability: body.productData.availability || 'In Stock',
           imageUrl: body.productData.images?.[0], // Use first image from array
           description: body.productData.description,
-          productId: body.url, // Use URL as productId
+          productId: normalizedUrl, // Use normalized URL as productId
         };
         this.logger.log(`✅ Extension data: ${productData.title}`);
         this.logger.log(
@@ -327,11 +338,11 @@ export class AppController {
         );
       } else {
         // Fallback to scraping with timeout
-        this.logger.log(`🌐 No extension data, attempting to scrape...`);
+        this.logger.log(`🌐 No extension data or forceRefresh=true, attempting to scrape...`);
         try {
           // Use Promise.race with timeout to ensure we don't hang
           productData = (await Promise.race([
-            this.scraperService.scrapeProduct(body.url),
+            this.scraperService.scrapeProduct(normalizedUrl),
             new Promise((_, reject) =>
               setTimeout(
                 () =>
@@ -342,15 +353,15 @@ export class AppController {
           ])) as ProductData;
         } catch (scraperError) {
           this.logger.warn(
-            `⚠️ Scraper failed, using mock fallback: ${scraperError.message}`,
+            `⚠️ Scraper failed for ${normalizedUrl}, using mock fallback: ${scraperError.message}`,
           );
           // Use a quick mock fallback instead of failing
           productData = {
-            title: `Product from ${this.detectPlatform(body.url)}`,
+            title: `Product from ${this.detectPlatform(normalizedUrl)}`,
             price: Math.random() * 5000 + 500, // Realistic price range
             currency: 'INR',
             availability: 'In Stock',
-            productId: body.url,
+            productId: normalizedUrl,
             category: 'Electronics',
             brand: 'Popular Brand',
             rating: Math.random() * 2 + 3.5, // 3.5-5.5 rating
@@ -375,9 +386,9 @@ export class AppController {
       // Step 2: Store/Update product in database
       let product;
       try {
-        product = await this.prismaService.findOrCreateProduct(body.url, {
+        product = await this.prismaService.findOrCreateProduct(normalizedUrl, {
           ...productData,
-          platform: this.detectPlatform(body.url),
+          platform: this.detectPlatform(normalizedUrl),
         });
       } catch (dbError) {
         this.logger.error(`❌ Database error: ${dbError.message}`);
@@ -387,7 +398,7 @@ export class AppController {
       // Step 3: AI Analysis
       let aiAnalysis: AIAnalysis;
       try {
-        aiAnalysis = await this.aiService.analyzeProduct(productData, body.url);
+        aiAnalysis = await this.aiService.analyzeProduct(productData, normalizedUrl);
       } catch (aiError) {
         this.logger.error(`❌ AI analysis failed: ${aiError.message}`);
         throw new Error(`AI analysis failed: ${aiError.message}`);
