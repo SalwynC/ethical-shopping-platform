@@ -35,9 +35,9 @@ jobs:
         run: npx wait-on tcp:5432 --timeout 300000
 
       - name: Configure DATABASE_URL
-        env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/testdb?schema=public
-        run: echo "DATABASE_URL=$DATABASE_URL" > backend/.env.test
+        run: |
+          echo "DATABASE_URL=postgresql://test:test@localhost:5432/testdb?schema=public" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgresql://test:test@localhost:5432/testdb?schema=public" > backend/.env.test
 
       - name: Generate Prisma Client
         run: npx prisma generate --schema=backend/prisma/schema.prisma
