@@ -1,0 +1,56 @@
+name: Integration Tests
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        options: >-
+          --health-cmd "pg_isready -U test -d testdb" --health-interval 5s --health-timeout 2s --health-retries 10
+        ports:
+          - 5432:5432
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci --workspaces
+
+      - name: Wait for Postgres
+        run: npx wait-on tcp:5432 --timeout 300000
+
+      - name: Configure DATABASE_URL
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/testdb?schema=public
+        run: echo "DATABASE_URL=$DATABASE_URL" > backend/.env.test
+
+      - name: Generate Prisma Client
+        run: npx prisma generate --schema=backend/prisma/schema.prisma
+
+      - name: Apply Prisma schema
+        run: npx prisma db push --schema=backend/prisma/schema.prisma
+
+      - name: Seed test DB
+        run: npm --workspace backend run seed
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/testdb?schema=public
+
+      - name: Run integration tests
+        run: npm --workspace backend run test:e2e
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/testdb?schema=public
